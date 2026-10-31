@@ -20,8 +20,11 @@ function Num({ value }: { value: number }) {
 }
 
 /** Üst durum çubuğu (kılavuz §09: dönem / enerji / atık / bütçe). */
+import { authStore, useAuth } from '../../state/authStore';
+
 export function TopBar() {
   const { world } = useGameState();
+  const { user } = useAuth();
   return (
     <header className="topbar">
       <span className="brand">
@@ -35,6 +38,7 @@ export function TopBar() {
       </span>
       <span className="topbar-actions">
         <button onClick={gs.openIntro} aria-label="Nasıl oynanır?">?</button>
+        <button onClick={authStore.open}>{user ? user.displayName : 'Giriş'}</button>
         <button onClick={teacherStore.openTeacher}>Öğretmen</button>
         <button onClick={teacherStore.openSources}>Kaynaklar</button>
         <button onClick={settingsStore.open} aria-label="Ayarlar">⚙</button>
