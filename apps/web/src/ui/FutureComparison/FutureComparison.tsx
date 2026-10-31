@@ -25,6 +25,7 @@ import { gameStore, useGameState } from '../../state/gameStore';
 import type { Resources } from '../../state/types';
 import { fallbackForComparison } from '../../ai/fallbackResponses';
 import { Modal } from '../Modal/Modal';
+import { Mascot, Speech } from '../Mascot';
 
 type Metric = { key: string; label: string; unit: string; max: number; lowerIsBetter?: boolean; read: (r: Resources, choice: PlayableChoice) => number };
 
@@ -147,14 +148,19 @@ export function FutureComparison() {
   });
 
   return (
-    <Modal titleId="fc-title" title="Aynı okul, iki farklı gelecek" onClose={gameStore.closeComparison} wide>
+     <Modal titleId="fc-title" title="🔮 Aynı okul, iki farklı gelecek" onClose={gameStore.closeComparison} wide>
       <p className="hint">
         {scenario.shortTitle}: her iki gelecek de bu görevin başlangıcından hesaplanır
         {scenario.cross === 'waste-loop' ? ` (kantin gıda atığı ${num(liveFood)} kg/gün bu karşılaştırmada sabit)` : ''}.
       </p>
+      <Speech mood="think">İki kapıdan bakalım: Sol ve sağ, aynı okulun farklı kararlarla vardığı gelecekler. Hangisi daha dengeli? Sayılara ve nedenlerine bak!</Speech>
       <div className="future-grid">
         {sides.map((x) => (
-          <section key={x.slot} className="future-card" aria-labelledby={`fc-${x.slot}`}>
+          <section key={x.slot} className={`future-card portal-${x.score >= 70 ? 'bright' : x.score >= 50 ? 'mid' : 'dim'}`} aria-labelledby={`fc-${x.slot}`}>
+            <div className="portal" aria-hidden="true">
+              <span className="portal-scene">{x.score >= 70 ? '🌳☀️🏫😊' : x.score >= 50 ? '🌱⛅🏫🙂' : '🗑️🌫️🏫😟'}</span>
+              <Mascot mood={x.score >= 70 ? 'wow' : x.score >= 50 ? 'happy' : 'worried'} size={58} />
+            </div>
             <label className="text-row">
               <span id={`fc-${x.slot}`}>
                 <strong>{x.title}</strong>

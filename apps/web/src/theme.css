@@ -233,3 +233,14 @@ label.choice { position: relative; }
 .kpis > div { background: #fff; border-radius: 16px; padding: 10px 12px; border: 2px solid #1b2a4110; }
 .kpis b { display: block; font-family: 'Baloo 2'; font-size: 1.6rem; line-height: 1; }
 .kpis span { font-size: 0.8rem; font-weight: 700; color: #3b4a60; }
+.future-card { border-radius: 22px !important; border: 3px solid #fff; box-shadow: var(--shadow); }
+.portal { display: flex; align-items: flex-end; justify-content: space-between; border-radius: 18px; padding: 10px 14px; margin-bottom: 8px; min-height: 84px; }
+.portal-scene { font-size: 2.1rem; letter-spacing: 4px; }
+.portal-bright .portal { background: linear-gradient(160deg, #d8f3dc, #95d5b2); }
+.portal-mid .portal { background: linear-gradient(160deg, #fff3c4, #ffe08a); }
+.portal-dim .portal { background: linear-gradient(160deg, #e5e5e5, #c9c9c9); }
+.bar-fill.a { background: #7a4fd6 !important; }
+.bar-fill.b { background: #ff9f1c !important; }
+/* Bildirim: altta ortada, panellerin düğmelerini örtmez; pencerelerin altında kalır */
+.toast { left: 50% !important; right: auto !important; bottom: 18px !important; transform: translateX(-50%); width: min(520px, calc(100% - 32px)) !important; z-index: 6; }
+@media (max-width: 760px) { .toast { bottom: 84px !important; } }

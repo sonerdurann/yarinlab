@@ -1,0 +1,414 @@
+{
+  "version": 1,
+  "note": "Kılavuz §06 asset manifesti. file:null olanlar çalışma anında kodla üretilir.",
+  "assets": [
+    {
+      "id": "tree",
+      "file": null,
+      "generator": "apps/web/src/game/scenes/BootScene.ts",
+      "description": "Ağaç (Kenney paketlerinde yok)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "shadow",
+      "file": null,
+      "generator": "apps/web/src/game/scenes/BootScene.ts",
+      "description": "Bina tabanı yumuşak gölge",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "crop",
+      "file": null,
+      "generator": "apps/web/src/game/scenes/BootScene.ts",
+      "description": "Ekin sırası",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "solar",
+      "file": null,
+      "generator": "apps/web/src/game/scenes/BootScene.ts",
+      "description": "Güneş paneli",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "battery",
+      "file": null,
+      "generator": "apps/web/src/game/scenes/BootScene.ts",
+      "description": "Batarya / depolama",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "turbine",
+      "file": null,
+      "generator": "apps/web/src/game/scenes/BootScene.ts",
+      "description": "Rüzgâr türbini direği",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "blades",
+      "file": null,
+      "generator": "apps/web/src/game/scenes/BootScene.ts",
+      "description": "Türbin kanatları",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "bin",
+      "file": null,
+      "generator": "apps/web/src/game/scenes/BootScene.ts",
+      "description": "Ayrıştırma kutuları",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "slot",
+      "file": null,
+      "generator": "apps/web/src/game/scenes/BootScene.ts",
+      "description": "Boş yapı alanı işareti",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": true
+    },
+    {
+      "id": "drop",
+      "file": null,
+      "generator": "apps/web/src/game/scenes/BootScene.ts",
+      "description": "Yağmur damlası",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "car",
+      "file": null,
+      "generator": "apps/web/src/game/scenes/BootScene.ts",
+      "description": "Elektrikli araç",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "walker",
+      "file": null,
+      "generator": "apps/web/src/game/scenes/BootScene.ts",
+      "description": "Yürüyen kişi",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "cloud",
+      "file": null,
+      "generator": "apps/web/src/game/scenes/BootScene.ts",
+      "description": "Bulut",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "quest",
+      "file": null,
+      "generator": "apps/web/src/game/scenes/BootScene.ts",
+      "description": "Görev işareti (❗)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "raingarden",
+      "file": null,
+      "generator": "apps/web/src/game/scenes/BootScene.ts",
+      "description": "Yağmur bahçesi",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0.267
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "greenhouse",
+      "file": null,
+      "generator": "apps/web/src/game/scenes/BootScene.ts",
+      "description": "Damla sulamalı sera",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0.45
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "compost",
+      "file": null,
+      "generator": "apps/web/src/game/scenes/BootScene.ts",
+      "description": "Kompost kutusu",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0.583
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "wetland",
+      "file": null,
+      "generator": "apps/web/src/game/scenes/BootScene.ts",
+      "description": "Kıyı sulak alanı",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0.283
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "kenney-cityTiles_sheet",
+      "file": "/assets/kenney/city/cityTiles_sheet.png",
+      "atlas": "/assets/kenney/city/cityTiles_sheet.xml",
+      "source": "https://kenney.nl/assets/isometric-tiles-city",
+      "license": "CC0",
+      "licenseFile": "/assets/kenney/city/License.txt",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "interactive": false
+    },
+    {
+      "id": "kenney-cityDetails_sheet",
+      "file": "/assets/kenney/city/cityDetails_sheet.png",
+      "atlas": "/assets/kenney/city/cityDetails_sheet.xml",
+      "source": "https://kenney.nl/assets/isometric-tiles-city",
+      "license": "CC0",
+      "licenseFile": "/assets/kenney/city/License.txt",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "interactive": false
+    },
+    {
+      "id": "kenney-buildingTiles_sheet",
+      "file": "/assets/kenney/buildings/buildingTiles_sheet.png",
+      "atlas": "/assets/kenney/buildings/buildingTiles_sheet.xml",
+      "source": "https://kenney.nl/assets/isometric-tiles-buildings",
+      "license": "CC0",
+      "licenseFile": "/assets/kenney/buildings/License.txt",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "interactive": false
+    },
+    {
+      "id": "kenney-landscapeTiles_sheet",
+      "file": "/assets/kenney/landscape/landscapeTiles_sheet.png",
+      "atlas": "/assets/kenney/landscape/landscapeTiles_sheet.xml",
+      "source": "https://kenney.nl/assets/isometric-tiles-landscape",
+      "license": "CC0",
+      "licenseFile": "/assets/kenney/landscape/License.txt",
+      "anchor": {
+        "x": 0.5,
+        "y": 0
+      },
+      "interactive": false
+    },
+    {
+      "id": "building_school",
+      "file": "/assets/kenney/buildings/buildingTiles_sheet.png",
+      "frameFrom": "apps/web/src/game/tiles/mapManifest.ts (BUILDING_FRAMES)",
+      "source": "https://kenney.nl/assets/isometric-tiles-buildings",
+      "license": "CC0",
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "tileFootprint": [
+        3,
+        3
+      ],
+      "interactive": true
+    },
+    {
+      "id": "building_canteen",
+      "file": "/assets/kenney/buildings/buildingTiles_sheet.png",
+      "frameFrom": "apps/web/src/game/tiles/mapManifest.ts (BUILDING_FRAMES)",
+      "source": "https://kenney.nl/assets/isometric-tiles-buildings",
+      "license": "CC0",
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "tileFootprint": [
+        3,
+        3
+      ],
+      "interactive": true
+    },
+    {
+      "id": "mascot-yari",
+      "file": null,
+      "generator": "apps/web/src/ui/Mascot.tsx",
+      "description": "Maskot Yarı (SVG)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "interactive": false
+    },
+    {
+      "id": "sfx",
+      "file": null,
+      "generator": "apps/web/src/audio/sfx.ts",
+      "description": "WebAudio ile üretilen ses efektleri",
+      "source": "custom",
+      "license": "team-owned",
+      "interactive": false
+    }
+  ]
+}

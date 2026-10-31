@@ -14,3 +14,8 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </StrictMode>,
 );
+
+// Üretimde service worker: oyun çekirdeği çevrim dışı da açılır. Geliştirmede kapalı (Vite HMR ile çakışmasın).
+if (import.meta.env.PROD && 'serviceWorker' in navigator && window.isSecureContext) {
+  window.addEventListener('load', () => void navigator.serviceWorker.register('/sw.js').catch(() => undefined));
+}

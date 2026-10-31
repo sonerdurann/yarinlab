@@ -59,7 +59,11 @@ export async function buildApp(opts: { logger?: boolean; authRateMax?: number; a
   // Üretim: web derlemesi aynı süreçten sunulur (tek alan adı, aynı köken çerezleri, HTTPS ters vekil arkasında).
   const webDist = process.env.WEB_DIST ?? path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../web/dist');
   if (existsSync(path.join(webDist, 'index.html'))) {
-    await app.register(fastifyStatic, { root: webDist, prefix: '/', wildcard: false, maxAge: '7d', immutable: false });
+    await app.register(fastifyStatic, {
+      root: webDist, prefix: '/', wildcard: false, maxAge: '7d', immutable: false,
+      // Güncellemeler hemen gelsin: sayfa ve service worker önbelleğe alınmaz.
+      setHeaders: (res, file) => { if (/(index\.html|sw\.js)$/.test(file)) res.header('cache-control', 'no-cache'); },
+    });
     app.setNotFoundHandler((req, reply) => {
       if (req.url.startsWith('/api/') || req.method !== 'GET') return reply.code(404).send({ error: 'not_found' });
       return reply.header('cache-control', 'no-cache').sendFile('index.html');

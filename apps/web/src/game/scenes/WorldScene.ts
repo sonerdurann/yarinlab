@@ -6,6 +6,9 @@ import { gameStore } from '../../state/gameStore';
 import { isReducedMotion as reducedMotion, settingsStore } from '../../state/settingsStore';
 import { BUILD_SLOTS, buildingDef, taskStatus, tasksOfModule, weatherFor, type PlacedBuilding, type Weather } from '@yarinlab/shared';
 
+/** BootScene'de üretilen özel dokuların zemin elması dikey kayması (px). */
+const CUSTOM_GROUND_OFFSET: Record<string, number> = { raingarden: 24, greenhouse: 54, compost: 56, wetland: 26 };
+
 /** Harita etiketlerinde modül simgesi. */
 const HOTSPOT_EMOJI: Record<string, string> = { school: '🏫', canteen: '🍎', energy: '⚡', waste: '♻️', city: '🏙️', farm: '🔍', ocean: '🐢' };
 const HOTSPOT_MODULE: Record<string, string> = { school: 'council', canteen: 'food', energy: 'energy', waste: 'waste', city: 'city', farm: 'carbon', ocean: 'ocean' };
@@ -307,7 +310,10 @@ export class WorldScene extends Phaser.Scene {
         objs.push(this.add.image(c.x, c.y + 6, 'tree').setOrigin(0.5, 1).setDepth(10 + c.y));
       }
     } else {
-      objs.push(this.add.image(p.x, p.y, def.sprite).setOrigin(0.5, 0).setDepth(def.sprite === 'crop' ? 1 : 10 + p.y + 10));
+      // Özel dokularda zemin elması dokunun içinde oy kadar aşağıdadır; karo üst köşesine hizalanır.
+      const oy = CUSTOM_GROUND_OFFSET[def.sprite] ?? 0;
+      const h = this.textures.getFrame(def.sprite).height;
+      objs.push(this.add.image(p.x, p.y, def.sprite).setOrigin(0.5, oy / h).setDepth(def.sprite === 'crop' || oy < 30 ? 2 + p.y / 1000 : 10 + p.y + 10));
     }
     if (b.level > 1) {
       const c = iso(s.x + 0.5, s.y + 0.5);

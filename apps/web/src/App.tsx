@@ -47,6 +47,12 @@ export function App() {
   }, []);
 
   useEffect(() => { startSaveSync(); startSfx(); void authStore.refresh(); }, []);
+  // Bildirimler 8 sn sonra kendiliğinden kapanır (ekranda kalıp düğmeleri örtmesin).
+  useEffect(() => {
+    if (!notice) return;
+    const t = setTimeout(() => gameStore.clearNotice(), 8000);
+    return () => clearTimeout(t);
+  }, [notice]);
 
   const zoom = (delta: number) => game.current?.scene.getScene('WorldScene')?.events.emit('zoom', delta);
 
@@ -95,7 +101,7 @@ export function App() {
         <aside role="status" className="panel toast">
           <Mascot mood={/rozet|kuruldu|seviye/i.test(notice) ? 'wow' : /kesinti|baskın|kilitli|yetmiyor|Önce/i.test(notice) ? 'worried' : 'happy'} size={48} />
           <p>{notice}</p>
-          <button onClick={gameStore.clearNotice}>Tamam</button>
+          <button onClick={gameStore.clearNotice} aria-label="Bildirimi kapat">Tamam</button>
         </aside>
       )}
       <div className={gs.worldReady ? 'loading done' : 'loading'} role="status" aria-hidden={gs.worldReady}>

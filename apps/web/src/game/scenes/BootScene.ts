@@ -127,6 +127,36 @@ export class BootScene extends Phaser.Scene {
       g.fillStyle(0x2e9e6b, 1).fillCircle(c.x, c.y, 13);
       g.fillStyle(0xffffff, 1).fillRect(c.x - 7, c.y - 2, 14, 4).fillRect(c.x - 2, c.y - 7, 4, 14);
     });
+    // yağmur bahçesi: elmas çukur, su, kenar taşları ve sazlar (kılavuz §04 özel parça)
+    make('raingarden', W, 90, (g) => {
+      const oy = 24;
+      quad(g, 0x7a5c3e, [P(0.08, 0.08, oy), P(0.92, 0.08, oy), P(0.92, 0.92, oy), P(0.08, 0.92, oy)]);
+      quad(g, 0x4aa8d8, [P(0.2, 0.2, oy + 3), P(0.8, 0.2, oy + 3), P(0.8, 0.8, oy + 3), P(0.2, 0.8, oy + 3)]);
+      quad(g, 0x8fd3f4, [P(0.32, 0.3, oy + 3), P(0.6, 0.3, oy + 3), P(0.6, 0.45, oy + 3), P(0.32, 0.45, oy + 3)], 0.8);
+      [[0.15, 0.5], [0.85, 0.5], [0.5, 0.12], [0.5, 0.88]].forEach(([u, v]) => { const p = P(u, v, oy); g.fillStyle(0x2e9e6b, 1).fillTriangle(p.x - 6, p.y, p.x + 6, p.y, p.x, p.y - 22); g.fillStyle(0x4fbf86, 1).fillTriangle(p.x - 2, p.y, p.x + 8, p.y, p.x + 6, p.y - 16); });
+    });
+    // sera: cam kutu, yeşil iç
+    make('greenhouse', W, 120, (g) => {
+      const oy = 54;
+      box(g, 0.12, 0.2, 0.88, 0.8, 34, 0xcfeee8, oy);
+      quad(g, 0x2e9e6b, [P(0.18, 0.28, oy - 8), P(0.82, 0.28, oy - 8), P(0.82, 0.72, oy - 8), P(0.18, 0.72, oy - 8)], 0.55);
+      g.lineStyle(2, 0xffffff, 0.9);
+      for (const u of [0.31, 0.5, 0.69]) { const a = P(u, 0.8, oy), b = P(u, 0.8, oy - 34); g.lineBetween(a.x, a.y, b.x, b.y); }
+    });
+    // kompost kutusu: ahşap kasa, toprak
+    make('compost', W, 96, (g) => {
+      const oy = 56;
+      box(g, 0.25, 0.3, 0.75, 0.75, 28, 0xb07a45, oy);
+      quad(g, 0x5b3a1e, [P(0.29, 0.34, oy - 28), P(0.71, 0.34, oy - 28), P(0.71, 0.71, oy - 28), P(0.29, 0.71, oy - 28)]);
+      g.fillStyle(0x4fbf86, 1).fillCircle(P(0.5, 0.5, oy - 30).x, P(0.5, 0.5, oy - 30).y, 5);
+    });
+    // kıyı sulak alanı: sığ su, sazlıklar, kuş
+    make('wetland', W, 92, (g) => {
+      const oy = 26;
+      quad(g, 0x9fd3e8, [P(0.05, 0.05, oy), P(0.95, 0.05, oy), P(0.95, 0.95, oy), P(0.05, 0.95, oy)]);
+      for (let k = 0; k < 9; k++) { const p = P(0.15 + (k % 3) * 0.33, 0.15 + Math.floor(k / 3) * 0.33, oy); g.fillStyle(0x2e9e6b, 1).fillRect(p.x - 1, p.y - 18, 3, 18); g.fillStyle(0x8a6a4a, 1).fillEllipse(p.x + 1, p.y - 19, 5, 9); }
+      const b = P(0.5, 0.55, oy); g.fillStyle(0xffffff, 1).fillEllipse(b.x, b.y - 4, 16, 9); g.fillStyle(0xffc93c, 1).fillTriangle(b.x + 7, b.y - 6, b.x + 13, b.y - 5, b.x + 7, b.y - 3);
+    });
     // bulut: yumuşak beyaz kümeler
     make('cloud', 220, 110, (g) => {
       g.fillStyle(0xffffff, 0.95);

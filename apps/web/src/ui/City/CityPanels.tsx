@@ -155,6 +155,7 @@ export function MainMenu({ onSettings, onTeacher, onSources }: { onSettings: () 
         <button onClick={() => gameStore.openOverlay('progress')}>🏅 Rozetlerim ve ilerlemem</button>
         <button onClick={() => gameStore.openOverlay('assessment')}>📝 Ön/son testler</button>
         <button onClick={onSettings}>⚙️ Ayarlar (ses, yazı, hareket)</button>
+        <button onClick={() => { gameStore.closeOverlay(); gameStore.closeIntro(); gameStore.openTask('food_001'); }}>🎬 90 saniyelik tanıtım (kantin görevi)</button>
         <button onClick={() => gameStore.openOverlay('help')}>❓ Yardım ve rehber</button>
         <button onClick={onSources}>📚 Bilimsel kaynaklar ve lisanslar</button>
         <RoadmapButton />

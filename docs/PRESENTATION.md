@@ -1,21 +1,20 @@
-> **Tarihsel kayıt (Creathon P0 dönemi, 31 Ekim 2026 sabahı).** Güncel durum için README.md, docs/ARCHITECTURE.md ve docs/KNOWN_ISSUES.md belgelerine bakın.
+# COP31 sunum planı (5 dk + 3 dk soru-cevap, kılavuz §25)
 
-# COP31 sunum planı (kılavuz §25) – 5 dk + 3 dk soru-cevap
-
-| Süre | İçerik | Jüriye kanıt |
+| Süre | İçerik | Ekranda kanıt |
 |---|---|---|
-| 0:00-0:40 | Sorun: iklim eğitimi davranışa dönüşmüyor | Gıda israfı ve eşitsel boşluk kaynakları |
-| 0:40-1:20 | Çözüm: bağlı karar simülasyonu | Yedi modül + P0 odaklı harita |
-| 1:20-2:50 | Canlı demo: kantin kararı | Harita → karar → sonuç → karşılaştırma |
-| 2:50-3:35 | AI ve öğretmen öğrenme ölçümü | Fallback + öğretmen görünümü |
-| 3:35-4:20 | Kullanıcı, iş modeli, yaygınlaştırma | İlk okul pilotu / lisans varsayımı |
-| 4:20-5:00 | Ekip, doğrulama, sonraki adım | Somut geliştirilenler ve etki planı |
+| 0:00-0:40 | Sorun: iklim eğitimi davranışa dönüşmüyor; gıda israfı okulda görünür bir örnek | 2040 çizgi roman girişi |
+| 0:40-1:20 | Çözüm: tek şehirde 7 modül, 35 görev; kararlar birbirini etkiler | Görev haritası, şehir kartları |
+| 1:20-2:50 | Canlı demo (menü → “90 saniyelik tanıtım”): kantin kararı → yıldızlı sonuç → iki gelecek → gün bitir | Karar ekranı, iki gelecek kapıları, gece geçişi |
+| 2:50-3:35 | Yapay zekâ ve öğrenme ölçümü: doğrulanmış AI/yedek, öğretmen paneli (rubrik, kavram yanılgısı, ön/son test, PDF) | Öğretmen paneli |
+| 3:35-4:20 | Kullanıcı, iş modeli, yaygınlaşma: okul lisansı hipotezi; KVKK uyumlu sınıf akışı | Okul özeti |
+| 4:20-5:00 | Doğrulama ve sonraki adım: testler, bilinen sınırlar, pilot planı | TEST_RESULTS.md, KNOWN_ISSUES.md |
 
-## Jüri soruları
-- "Bu sadece oyun mu?" → Gerçek karar ve öğretmen görev analitiği yapan etkileşimli eğitim teknolojisi.
-- "Yapay zekâ gerçekten nerede?" → Senaryo bazlı açıklama, ipucu ve öğretmen özeti; sayısal çekirdek doğrulanmış kurallarla.
-- "Karbonu nasıl azaltıyorsunuz?" → İlk kanıt öğrenme ve davranış; saha ölçümü olmadan doğrudan emisyon azalması iddia edilmiyor.
-- "Yedi modül çok geniş değil mi?" → Bir derin P0 modül, çapraz bağ, kalan modüller versiyonlanmış mimari.
-- "Okullar ödeme yapar mı?" → İş modeli hipotezi; saha görüşmesiyle doğrulanacak.
+## Jüri sorularına hazırlık
+- **“Bu sadece oyun mu?”** Karar simülasyonu + öğretmen analitiği (kazanım, rubrik, yanılgı raporu, saha ölçümü).
+- **“Yapay zekâ nerede?”** Üç rol: iklim öğretmeni, senaryo yönetmeni, öğretmen asistanı. Sayısal çekirdek kural motorunda; AI çıktısı doğrulanır.
+- **“Karbonu nasıl azaltıyorsunuz?”** İlk kanıt öğrenme ve davranış. kgCO₂e iddia edilmiyor; okul tartımı “Ölçülmüş” olarak ayrı raporlanır.
+- **“Yedi modül çok geniş değil mi?”** 35 görevin tamamı test edildi; içerik veri dosyalarıyla genişletilebilir.
+- **“Okullar ödeme yapar mı?”** İş modeli hipotezi, saha görüşmeleriyle doğrulanacak.
+- **“Çocuk verisi?”** Takma ad, izin akışı, silme hakkı, AI'ye kimlik gönderilmez.
 
-Kurallar: öğretmen paneli örnek kayıtları açıkça "DEMO VERİSİ"; gerçek öğrenci verisi varmış gibi sunulmaz; hayalî pilot iddiası yok.
+**Not:** 90 saniyelik insan provası ve saha görüşmeleri ekip tarafından yapılmalıdır (bu ortamda yapılamaz).
