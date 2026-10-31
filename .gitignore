@@ -9,3 +9,6 @@ dist/
 
 # Kenney: çıkarılmış paketler yerel kalır; ZIP'ler izlenir, lisanslar public/assets/kenney altında
 design/third_party/kenney/*/
+
+# Yerel arac ayarlari (repoya girmez)
+.claude/
