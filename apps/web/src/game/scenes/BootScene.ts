@@ -127,6 +127,18 @@ export class BootScene extends Phaser.Scene {
       g.fillStyle(0x2e9e6b, 1).fillCircle(c.x, c.y, 13);
       g.fillStyle(0xffffff, 1).fillRect(c.x - 7, c.y - 2, 14, 4).fillRect(c.x - 2, c.y - 7, 4, 14);
     });
+    // bulut: yumuşak beyaz kümeler
+    make('cloud', 220, 110, (g) => {
+      g.fillStyle(0xffffff, 0.95);
+      [[60, 70, 42], [105, 52, 52], [155, 68, 40], [120, 80, 46], [80, 84, 34]].forEach(([x, y, r]) => g.fillCircle(x, y, r));
+    });
+    // görev işareti: sarı daire, koyu kenar, ünlem
+    make('quest', 56, 64, (g) => {
+      g.fillStyle(0x1b2a41, 0.25).fillEllipse(28, 60, 26, 7);
+      g.fillStyle(0x1b2a41, 1).fillCircle(28, 26, 25);
+      g.fillStyle(0xffc93c, 1).fillCircle(28, 26, 21);
+      g.fillStyle(0x1b2a41, 1).fillRoundedRect(24, 11, 8, 20, 4).fillCircle(28, 38, 4.5);
+    });
     // yağmur damlası, küçük araç ve yürüyen kişi (Kenney izometrik stile uygun sade şekiller)
     make('drop', 4, 18, (g) => { g.fillStyle(0xdff2ff, 0.8).fillRect(1, 0, 2, 18); });
     make('car', 44, 34, (g) => {

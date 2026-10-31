@@ -10,27 +10,27 @@ test.describe('misafir oyuncu', () => {
     await page.getByRole('button', { name: /^Önerilen:/ }).click();
     await expect(page.getByRole('dialog')).toContainText('Enerji Adası 1');
     await decide(page, 1, 'Gece güneş yok çünkü depolama ve rüzgâr gerekir; bütçeyi de düşündüm.');
-    await expect(page.getByText(/Yapay zekâ iklim öğretmeni/)).toBeVisible();
-    await page.getByRole('button', { name: /^Sonraki görev/ }).click();
+    await expect(page.getByRole('region', { name: 'Yapay zekâ iklim öğretmeni' })).toBeVisible();
+    await page.getByRole('button', { name: /Sonraki görev/ }).click();
     await expect(page.getByRole('dialog')).toContainText('Enerji Adası 2');
     await page.keyboard.press('Escape');
 
     await page.getByRole('button', { name: 'Günü bitir' }).click();
     await expect(page.locator('.time-chip')).toContainText('Gün 2');
 
-    await page.getByRole('button', { name: 'İnşa', exact: true }).click();
+    await page.getByRole('button', { name: /İnşa$/ }).click();
     await page.getByRole('tab', { name: 'Enerji bölgesi' }).click();
     const kur = page.getByRole('dialog').getByRole('button', { name: 'Kur', exact: true }).first();
     await kur.click();
     await expect(page.getByRole('dialog')).toContainText('Bu bölgedeki yapılar');
     await page.keyboard.press('Escape');
 
-    const budget = await page.locator('.world-status .meter').first().textContent();
+    const budget = await page.locator('.pills .pill').first().textContent();
     await page.reload();
     await expect(page.locator('.loading.done')).toBeAttached({ timeout: 20_000 });
     await expect(page.getByRole('dialog')).toContainText('Devam et');
     await page.getByRole('button', { name: /Devam et/ }).click();
-    await expect(page.locator('.world-status .meter').first()).toHaveText(budget!);
+    await expect(page.locator('.pills .pill').first()).toHaveText(budget!);
     await expect(page.locator('.time-chip')).toContainText('Gün 2');
     expect(errors).toEqual([]);
   });

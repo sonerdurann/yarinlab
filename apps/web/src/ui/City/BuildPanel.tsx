@@ -9,6 +9,7 @@ const ZONE_TR: Record<ZoneId, string> = {
   city: 'Şehir merkezi ve mahalleler', farm: 'Tarım ve sera', ocean: 'Kıyı ve deniz',
 };
 const ZONES = Object.keys(ZONE_TR) as ZoneId[];
+const BUILDING_ICON: Record<string, string> = { solar: '☀️', wind: '🌬️', battery: '🔋', retrofit: '💡', climateLab: '🔬', compost: '🪱', sorting: '♻️', repair: '🛠️', park: '🌳', rainTank: '🌧️', bus: '🚌', waterPlant: '🚰', greenhouse: '🌱', wetland: '🦆', trap: '🕸️' };
 
 const effectText = (e: Record<string, number | undefined>) => {
   const L: Record<string, string> = {
@@ -54,7 +55,7 @@ export function BuildPanel() {
               const next = b.level < 3 ? d.cost[b.level] : null;
               return (
                 <li key={b.id}>
-                  <div><strong>{d.name}</strong> · seviye {b.level}/3<br /><span className="hint">{effectText(Object.fromEntries(Object.entries(d.perLevel).map(([k, v]) => [k, (v as number) * b.level])))}</span></div>
+                  <div><span className="bld-ico" aria-hidden="true">{BUILDING_ICON[d.type] ?? '🏠'}</span><strong>{d.name}</strong> · {'★'.repeat(b.level)}{'☆'.repeat(3 - b.level)}<br /><span className="hint">{effectText(Object.fromEntries(Object.entries(d.perLevel).map(([k, v]) => [k, (v as number) * b.level])))}</span></div>
                   <div className="actions">
                     {next !== null && <button onClick={() => gameStore.upgrade(b.id)} disabled={s.world.budget < next}>Yükselt ({next})</button>}
                     <button onClick={() => gameStore.demolish(b.id)}>Kaldır</button>
@@ -73,7 +74,7 @@ export function BuildPanel() {
           return (
             <li key={d.type} className={open ? '' : 'locked'}>
               <div>
-                <strong>{d.name}</strong> — {d.description}<br />
+                <span className="bld-ico" aria-hidden="true">{BUILDING_ICON[d.type] ?? '🏠'}</span><strong>{d.name}</strong> — {d.description}<br />
                 <span className="hint">Maliyet {d.cost[0]} · bakım {d.upkeep}/gün · etki/seviye: {effectText(d.perLevel)}</span>
                 {!open && <><br /><span className="hint">🔒 {unlockText(d)}</span></>}
               </div>

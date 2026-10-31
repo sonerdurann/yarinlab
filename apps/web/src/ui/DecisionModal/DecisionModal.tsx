@@ -1,6 +1,8 @@
 import { MODULES, nextTaskOf } from '@yarinlab/shared';
 import { cityOf, completedTaskIds } from '../../state/city';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
+import { Speech } from '../Mascot';
+import { starsFor, themeOf } from '../theme/modules';
 import { playableById, food } from '../../data/scenarios';
 import { ASSUMED_COLLECTION_CAPACITY_KG, CARBON_NOTE, CITY_FLOOD_NOTE, COUNCIL_NOTE, ENERGY_RISK_NOTE, OCEAN_NOTE, SIMULATION_NOTICE, WASTE_RULE_NOTE } from '../../data/constants';
 import { gameStore, useGameState } from '../../state/gameStore';
@@ -42,16 +44,22 @@ function DeltaBar({ before, after, max, tone }: { before: number; after: number;
   );
 }
 
-/** Puan dökümü: sonuç, gerekçe ve denge (öğrenciyi zorlamayan, açıklamalı puanlama). */
-function ScoreCard({ scenarioId }: { scenarioId: string }) {
+const CONFETTI = ['#ff7a59', '#ffc93c', '#4cc38a', '#4aa8d8', '#7a4fd6'];
+
+/** Yıldızlı sonuç: puan (sonuç, gerekçe, denge) yıldıza çevrilir; 3 yıldızda konfeti. Baskı yok: tekrar denemek serbest. */
+function StarResult({ scenarioId }: { scenarioId: string }) {
   const s = useGameState();
   const sc = [...s.scores].reverse().find((x) => x.scenarioId === scenarioId);
   if (!sc) return null;
+  const stars = starsFor(sc.total);
+  const mood = stars === 3 ? 'wow' : stars === 2 ? 'happy' : 'think';
+  const line = stars === 3 ? 'Harika denge! Hem sonuca hem gerekçene bayıldım.' : stars === 2 ? 'Güzel karar! Bir göstergeyi daha düşünürsen üç yıldız olabilir.' : 'İyi bir başlangıç. Başka bir yol deneyip iki geleceği karşılaştırmaya ne dersin?';
   return (
-    <div className="score-card" aria-label="Karar puanı">
-      <strong>Karar puanı: {sc.total}/100</strong>
-      <span>Sonuç {sc.outcome}</span><span>Gerekçe {sc.reasoning}</span><span>Denge {sc.balance}</span>
-      {sc.feedback.length > 0 && <ul>{sc.feedback.map((f) => <li key={f}>{f}</li>)}</ul>}
+    <div className="star-result" aria-label={`Karar puanı ${sc.total}, ${stars} yıldız`}>
+      {stars === 3 && <div className="confetti" aria-hidden="true">{Array.from({ length: 24 }, (_, k) => <i key={k} style={{ left: `${(k * 41) % 100}%`, background: CONFETTI[k % 5], animationDelay: `${(k % 8) * 60}ms` }} />)}</div>}
+      <div className="star-row" aria-hidden="true">{[0, 1, 2].map((k) => <span key={k} className={k < stars ? 's on' : 's'}>★</span>)}</div>
+      <div className="score-parts"><span>🎯 Sonuç {sc.outcome}</span><span>💬 Gerekçe {sc.reasoning}</span><span>⚖️ Denge {sc.balance}</span><span>Toplam {sc.total}</span></div>
+      <Speech mood={mood} size={64}>{line}{sc.feedback.length > 0 && <><br /><small>{sc.feedback.join(' ')}</small></>}</Speech>
     </div>
   );
 }
@@ -61,11 +69,11 @@ function NextTaskButton({ scenarioId }: { scenarioId: string }) {
   const s = useGameState();
   const done = completedTaskIds(s);
   if (!done.includes(scenarioId)) return null;
-  if (scenarioId === 'council_005') return <button className="primary" onClick={() => { gameStore.closeDecision(); gameStore.openOverlay('ending'); }}>2040’a bak</button>;
+  if (scenarioId === 'council_005') return <button className="primary" onClick={() => { gameStore.closeDecision(); gameStore.openOverlay('ending'); }}>🌅 2040’a bak</button>;
   const mod = scenarioId.split('_')[0];
   const next = nextTaskOf(mod, done);
   if (next.id === scenarioId || done.includes(next.id)) return null;
-  return <button className="primary" onClick={() => gameStore.openTask(next.id)}>Sonraki görev: {next.title.split('–')[1]?.trim() ?? next.title}</button>;
+  return <button className="primary" onClick={() => gameStore.openTask(next.id)}>➡️ Sonraki görev: {next.title.split('–')[1]?.trim() ?? next.title}</button>;
 }
 
 /** Meclis kanıt kartları: önceki modüllerdeki kararların ve şehir göstergelerinin özeti. */
@@ -91,137 +99,117 @@ function EvidenceCards() {
 
 const sign = (n: number) => (n > 0 ? `+${n.toLocaleString('tr-TR')}` : n.toLocaleString('tr-TR'));
 
-/** Senaryo karar ekranı (kılavuz §10). Kantin, enerji ve atık aynı akışı kullanır. */
+const ROW_ICON: Record<string, string> = { budget: '💰', foodWasteKg: '🍎', energyScore: '⚡', waterScore: '💧', wellbeing: '😊' };
+
+/** Görev ekranı: karakter durumu anlatır, büyük seçim kartları, fikir kartı gerekçeler, yıldızlı sonuç. */
 export function DecisionModal() {
   const s = useGameState();
   if (!s.decisionOpen) return null;
   const scenario = playableById(s.activeScenarioId);
+  const th = themeOf(scenario.id);
   const { result } = s;
   const chosen = scenario.choices.find((c) => c.id === (result?.choiceId ?? s.pendingChoiceId));
   const attempts = s.history.filter((h) => h.scenarioId === scenario.id);
   const transferValue = scenario.id === food.id ? s.transferAnswer : (s.transferByScenario[scenario.id] ?? '');
+  const ready = !!s.pendingChoiceId && !!(s.reasoningOption || s.reasoningText.trim());
+  const ideas = scenario.reasoningOptions.filter((o) => !/^Başka bir neden/.test(o));
 
   return (
-    <Modal titleId="dm-title" title={scenario.title} onClose={gameStore.closeDecision} active={!s.comparisonOpen}>
-      <p>{scenario.brief}</p>
-      <ul className="facts">
-        {scenario.facts.map((f) => (
-          <li key={f.label}>
-            {f.label}: {f.value}
-          </li>
-        ))}
-      </ul>
+    <Modal titleId="dm-title" title={scenario.title} onClose={gameStore.closeDecision} active={!s.comparisonOpen} wide>
+      <div style={{ '--mod': th.color, '--soft': th.soft } as CSSProperties}>
+        <div className="dm-hero">
+          <span className="avatar" aria-hidden="true">{th.avatar}</span>
+          <div className="bubble"><strong className="bubble-name" style={{ color: th.color }}>{th.character}</strong>{scenario.brief}</div>
+        </div>
+        {scenario.facts.length > 0 && (
+          <ul className="facts">{scenario.facts.map((f) => <li key={f.label}><b>{f.label}:</b> {f.value}</li>)}</ul>
+        )}
+        {scenario.module === 'council' && <EvidenceCards />}
 
-      {scenario.module === 'council' && <EvidenceCards />}
-      {!result ? (
-        <>
-          <fieldset className="choices">
-            <legend>Kararını ver</legend>
-            {scenario.choices.map((c) => (
-              <label key={c.id} className={s.pendingChoiceId === c.id ? 'choice on' : 'choice'}>
-                <input type="radio" name="choice" value={c.id} aria-label={`${c.id} ${c.label}`} checked={s.pendingChoiceId === c.id} onChange={() => gameStore.pickChoice(c.id)} />
-                <span className="badge" aria-hidden="true">{c.id}</span>
-                <span className="choice-text">
-                  <strong>{c.label}</strong>
-                  <small>{c.summary}</small>
-                </span>
+        {!result ? (
+          <>
+            <fieldset className="choices">
+              <legend>1. Ne yapalım?</legend>
+              <div className="cards">
+                {scenario.choices.map((c) => (
+                  <label key={c.id} className={s.pendingChoiceId === c.id ? 'choice on' : 'choice'}>
+                    <input type="radio" name="choice" value={c.id} aria-label={`${c.id} ${c.label}`} checked={s.pendingChoiceId === c.id} onChange={() => gameStore.pickChoice(c.id)} />
+                    <span className="badge" aria-hidden="true">{c.id}</span>
+                    <strong>{c.label}</strong>
+                    <small>{c.summary}</small>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+            <fieldset className="reasoning">
+              <legend>2. Neden bunu seçtin?</legend>
+              <div className="idea-chips" role="radiogroup" aria-label="Hazır fikirler">
+                {ideas.map((o) => (
+                  <label key={o} className={s.reasoningOption === o ? 'on' : ''}>
+                    <input type="radio" name="reason" value={o} aria-label={o} checked={s.reasoningOption === o} onChange={() => gameStore.setReasoningOption(o)} />
+                    <span aria-hidden="true">💡</span>{o}
+                  </label>
+                ))}
+              </div>
+              <label className="text-row">
+                <span>…ya da kendi cümlenle yaz (“çünkü” ile başlamayı dene!)</span>
+                <textarea value={s.reasoningText} rows={2} maxLength={280} onChange={(e) => gameStore.setReasoningText(e.target.value)} />
               </label>
-            ))}
-          </fieldset>
-          <fieldset className="reasoning">
-            <legend>Bu seçimi neden yaptın?</legend>
-            {scenario.reasoningOptions.map((o) => (
-              <label key={o} className="radio-row">
-                <input type="radio" name="reason" value={o} aria-label={o} checked={s.reasoningOption === o} onChange={() => gameStore.setReasoningOption(o)} />
-                {o}
-              </label>
-            ))}
-            <label className="text-row">
-              <span>Kendi gerekçen (en fazla 280 karakter)</span>
-              <textarea value={s.reasoningText} rows={2} onChange={(e) => gameStore.setReasoningText(e.target.value)} />
-            </label>
-          </fieldset>
-          <button className="primary" disabled={!s.pendingChoiceId || !(s.reasoningOption || s.reasoningText.trim())} onClick={gameStore.evaluate}>
-            Kararı değerlendir
-          </button>
-          {!s.pendingChoiceId ? <p className="hint">Simülasyonu başlatmak için bir seçenek seç.</p>
-            : !(s.reasoningOption || s.reasoningText.trim()) && <p className="hint">Bir gerekçe seç veya yaz: puanın yalnızca sonuca değil gerekçene de bakar.</p>}
-        </>
-      ) : (
-        <>
-          <h3 tabIndex={-1} ref={(el) => { if (el && document.activeElement === document.body) el.focus(); }}>
-            Sonuç – {chosen?.id} · {chosen?.label}
-          </h3>
-          <table className="result">
-            <thead>
-              <tr>
-                <th scope="col">Gösterge</th>
-                <th scope="col">Başlangıç</th>
-                <th scope="col">Sonra</th>
-                <th scope="col">Değişim</th>
-              </tr>
-            </thead>
-            <tbody>
+            </fieldset>
+            <div className="actions">
+              <button className="primary" disabled={!ready} onClick={gameStore.evaluate}>✨ Kararımı dene</button>
+            </div>
+            <p className="hint" role="status">{!s.pendingChoiceId ? 'Önce bir kart seç.' : !ready ? 'Şimdi nedenini seç ya da yaz: yıldızların gerekçene de bakar.' : 'Hazırsın!'}</p>
+          </>
+        ) : (
+          <>
+            <h3 tabIndex={-1} ref={(el) => { if (el && document.activeElement === document.body) el.focus(); }}>
+              Sonuç – {chosen?.id} · {chosen?.label}
+            </h3>
+            <StarResult scenarioId={scenario.id} />
+            <div className="change-cards">
               {scenario.rows.map((r) => {
                 const d = result.after[r.key] - result.before[r.key];
                 const good = r.lowerIsBetter ? d < 0 : d > 0;
+                const tone = d === 0 ? '' : good ? 'good' : 'bad';
                 return (
-                  <tr key={r.key}>
-                    <th scope="row">{r.label}</th>
-                    <td>{result.before[r.key].toLocaleString('tr-TR')}</td>
-                    <td>
-                      {result.after[r.key].toLocaleString('tr-TR')}
-                      <DeltaBar before={result.before[r.key]} after={result.after[r.key]} max={r.max} tone={d === 0 ? 'flat' : good ? 'good' : 'bad'} />
-                    </td>
-                    <td>
-                      <span className={`chip ${d === 0 ? 'flat' : good ? 'good' : 'bad'}`}>
-                        <span aria-hidden="true">{d === 0 ? '•' : d > 0 ? '▲' : '▼'}</span> {sign(d)} {r.unit}
-                        <span className="sr-only"> {d === 0 ? 'değişmedi' : good ? 'olumlu yönde' : 'olumsuz yönde'}</span>
-                      </span>
-                    </td>
-                  </tr>
+                  <div key={r.key} className={`change-card ${tone}`}>
+                    <div className="cc-label"><span aria-hidden="true">{ROW_ICON[r.key]} </span>{r.label}</div>
+                    <div className="cc-val">{result.after[r.key].toLocaleString('tr-TR')}</div>
+                    <div className="cc-delta"><span aria-hidden="true">{d === 0 ? '•' : d > 0 ? '▲' : '▼'}</span> {sign(d)} {r.unit}<span className="sr-only"> {d === 0 ? 'değişmedi' : good ? 'iyi yönde' : 'kötü yönde'}</span></div>
+                    <DeltaBar before={result.before[r.key]} after={result.after[r.key]} max={r.max} tone={d === 0 ? 'flat' : good ? 'good' : 'bad'} />
+                  </div>
                 );
               })}
-            </tbody>
-          </table>
-          <CrossNote />
-          <p className="tradeoff">
-            <strong>Ödünleşim:</strong> {chosen?.tradeoff}
-          </p>
-          {result.reasoning && (
-            <p>
-              <strong>Gerekçen:</strong> {result.reasoning}
-            </p>
-          )}
-          <ScoreCard scenarioId={scenario.id} />
-          <p className="notice">{SIMULATION_NOTICE}</p>
-          <TutorCard />
-          {attempts.length > 1 && (
-            <div>
-              <h3>Denediğin kararlar</h3>
-              <ul className="attempts">
-                {attempts.map((h, i) => (
-                  <li key={i}>
-                    {h.choiceId}: {scenario.rows.map((r) => `${r.label} ${h.after[r.key].toLocaleString('tr-TR')}`).join(' · ')}
-                  </li>
-                ))}
-              </ul>
             </div>
-          )}
-          <label className="text-row">
-            <span>{scenario.transferQuestion}</span>
-            <textarea value={transferValue} rows={2} onChange={(e) => gameStore.setTransferAnswer(e.target.value)} />
-          </label>
-          <div className="actions">
-            <button onClick={gameStore.retry}>Tekrar dene (aynı başlangıç)</button>
-            <button onClick={gameStore.openComparison}>İki geleceği karşılaştır</button>
-            <NextTaskButton scenarioId={scenario.id} />
-            <button className={scenario.id === 'council_005' ? '' : 'primary'} onClick={gameStore.closeDecision}>
-              Haritaya dön
-            </button>
-          </div>
-        </>
-      )}
+            <p className="tradeoff"><strong>⚖️ Her kararın bir bedeli var:</strong> {chosen?.tradeoff}</p>
+            {result.reasoning && <p><strong>💬 Senin gerekçen:</strong> {result.reasoning}</p>}
+            <TutorCard />
+            <label className="text-row">
+              <span>🔬 <b>Gerçek hayatta:</b> {scenario.transferQuestion}</span>
+              <textarea value={transferValue} rows={2} onChange={(e) => gameStore.setTransferAnswer(e.target.value)} />
+            </label>
+            <details className="more">
+              <summary>🔎 Ayrıntılar: şehre etkisi ve denemelerin</summary>
+              <CrossNote />
+              {attempts.length > 1 && (
+                <ul className="attempts">
+                  {attempts.map((h, i) => (
+                    <li key={i}>{h.choiceId}: {scenario.rows.map((r) => `${r.label} ${h.after[r.key].toLocaleString('tr-TR')}`).join(' · ')}</li>
+                  ))}
+                </ul>
+              )}
+              <p className="notice">{SIMULATION_NOTICE}</p>
+            </details>
+            <div className="actions">
+              <button onClick={gameStore.retry}>🔄 Başka yol dene</button>
+              <button onClick={gameStore.openComparison}>🔮 İki geleceği karşılaştır</button>
+              <NextTaskButton scenarioId={scenario.id} />
+              <button className={scenario.id === 'council_005' ? '' : 'primary'} onClick={gameStore.closeDecision}>🗺️ Haritaya dön</button>
+            </div>
+          </>
+        )}
+      </div>
     </Modal>
   );
 }

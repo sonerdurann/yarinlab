@@ -1,4 +1,5 @@
 import { useGameState } from '../../state/gameStore';
+import { levelForXp, xpForLevel } from '@yarinlab/shared';
 import { teacherStore } from '../../state/teacherStore';
 import { useCountUp } from '../useCountUp';
 import { Logo } from '../Logo';
@@ -25,26 +26,32 @@ import { TimeChip } from '../City/CityPanels';
 import { syncLabel, useSync } from '../../state/saveSync';
 
 export function TopBar() {
-  const { world } = useGameState();
+  const st = useGameState();
+  const { world } = st;
   const { user } = useAuth();
   const sync = useSync();
+  const lvl = levelForXp(st.xp), lo = xpForLevel(lvl), hi = xpForLevel(lvl + 1);
   return (
     <header className="topbar">
       <span className="brand">
         <Logo />
-        <strong>YARINLAB / 2040</strong>
+        <strong>YarınLab<span className="slogan-mini">Geleceği sen tasarla</span></strong>
       </span>
       <TimeChip />
-      <span className="topbar-stats" aria-label="Dünya durumu özeti">
-        <span>Bütçe <Num value={world.budget} /></span>
-        <span role="status" className="sync">{syncLabel(sync.status)}</span>
+      <span className="pills" aria-label="Kaynaklar">
+        <span className="pill" title="Kasa (oyun puanı, gerçek para değil)"><span className="ico" aria-hidden="true">💰</span><span className="sr-only">Bütçe </span><Num value={world.budget} /></span>
+        <span className="pill hide-sm" title="Mutluluk"><span className="ico" aria-hidden="true">😊</span><span className="sr-only">Refah </span><Num value={world.wellbeing} /></span>
+        <span className="pill level" title={`${st.xp} XP`}><span className="ico" aria-hidden="true">⭐</span>Seviye {lvl}
+          <span className="xpbar" aria-hidden="true"><span style={{ width: `${Math.round((100 * (st.xp - lo)) / Math.max(1, hi - lo))}%` }} /></span>
+        </span>
+        <span role="status" className="sync hide-sm">{syncLabel(sync.status)}</span>
       </span>
       <span className="topbar-actions">
-        <button onClick={() => gs.openOverlay('menu')} aria-label="Ana menü">☰</button>
-        <button onClick={() => gs.openOverlay('help')} aria-label="Yardım">?</button>
-        <button onClick={authStore.open}>{user ? user.displayName : 'Giriş'}</button>
+        <button onClick={() => gs.openOverlay('menu')} aria-label="Ana menü" title="Ana menü">☰</button>
+        <button onClick={() => gs.openOverlay('help')} aria-label="Yardım" title="Yardım">?</button>
+        <button onClick={authStore.open}>{user ? `👤 ${user.displayName}` : 'Giriş'}</button>
         <button onClick={teacherStore.openTeacher}>Öğretmen</button>
-        <button onClick={settingsStore.open} aria-label="Ayarlar">⚙</button>
+        <button onClick={settingsStore.open} aria-label="Ayarlar" title="Ayarlar">⚙</button>
       </span>
     </header>
   );

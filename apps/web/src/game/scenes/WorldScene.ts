@@ -4,7 +4,11 @@ import { hotspots, type Hotspot } from '../tiles/hotspots';
 import { DECOR } from '../tiles/decor';
 import { gameStore } from '../../state/gameStore';
 import { isReducedMotion as reducedMotion, settingsStore } from '../../state/settingsStore';
-import { BUILD_SLOTS, buildingDef, weatherFor, type PlacedBuilding, type Weather } from '@yarinlab/shared';
+import { BUILD_SLOTS, buildingDef, taskStatus, tasksOfModule, weatherFor, type PlacedBuilding, type Weather } from '@yarinlab/shared';
+
+/** Harita etiketlerinde modül simgesi. */
+const HOTSPOT_EMOJI: Record<string, string> = { school: '🏫', canteen: '🍎', energy: '⚡', waste: '♻️', city: '🏙️', farm: '🔍', ocean: '🐢' };
+const HOTSPOT_MODULE: Record<string, string> = { school: 'council', canteen: 'food', energy: 'energy', waste: 'waste', city: 'city', farm: 'carbon', ocean: 'ocean' };
 
 type TiledLayer = { name: string; type: string; data?: number[] };
 type TiledMap = { layers: TiledLayer[] };
@@ -40,6 +44,7 @@ export class WorldScene extends Phaser.Scene {
   private rainTweens: Phaser.Tweens.Tween[] = [];
   private lastDay = -1;
   private lastWeather?: Weather;
+  private quests = new Map<string, { img: Phaser.GameObjects.Image; tween?: Phaser.Tweens.Tween }>();
 
   constructor() {
     super('WorldScene');
@@ -53,12 +58,13 @@ export class WorldScene extends Phaser.Scene {
     this.drawBuildings();
     this.glow = this.add.graphics().setDepth(5000);
     this.tip = this.add
-      .text(0, 0, '', { fontFamily: 'Noto Sans, sans-serif', fontSize: '22px', color: '#12263a', backgroundColor: '#f7f5ef', padding: { x: 10, y: 6 } })
+      .text(0, 0, '', { fontFamily: "'Baloo 2', Nunito, sans-serif", fontSize: '22px', color: '#12263a', backgroundColor: '#f7f5ef', padding: { x: 10, y: 6 } })
       .setDepth(6000)
       .setVisible(false);
     this.addHotspots();
     this.setupCamera();
     this.addTraffic();
+    this.addClouds();
     this.setupSky();
     this.syncCity(true);
     const unsubCity = gameStore.subscribe(() => this.syncCity(false));
@@ -90,7 +96,7 @@ export class WorldScene extends Phaser.Scene {
   /** Yuvarlak köşeli etiket (arka plan + metin tek kapta). */
   private pill(x: number, y: number, text: string, locked: boolean) {
     const t = this.add
-      .text(0, 0, text, { fontFamily: 'Noto Sans, sans-serif', fontSize: '20px', color: locked ? '#4a5a6c' : '#12263a', fontStyle: '600' })
+      .text(0, 0, text, { fontFamily: "'Baloo 2', Nunito, sans-serif", fontSize: '20px', color: locked ? '#4a5a6c' : '#12263a', fontStyle: '600' })
       .setOrigin(0.5);
     const w = t.width + 24, h = t.height + 8;
     const g = this.add.graphics();
@@ -189,7 +195,7 @@ export class WorldScene extends Phaser.Scene {
       this.add.image(p.x, p.y + HH, 'shadow').setScale(scale * 1.1).setAlpha(h.locked ? 0.6 : 1).setDepth(5 + p.y);
       const img = this.add.image(p.x, top, def.atlas, def.frame).setOrigin(0.5, 0).setScale(scale).setDepth(10 + p.y);
       if (h.locked) img.setAlpha(0.6).setTint(0xcfd6e2);
-      const label = this.pill(p.x, top - 10, h.locked ? `${h.label} · Yakında` : h.label, h.locked);
+      const label = this.pill(p.x, top - 10, h.locked ? `${h.label} · Yakında` : `${HOTSPOT_EMOJI[h.id] ?? ''} ${h.label}`.trim(), h.locked);
       this.nodes.set(h.id, { img, label, imgY: top, labelY: top - 10, scale, x: p.x, baseY: p.y + HH });
     }
   }
@@ -229,12 +235,45 @@ export class WorldScene extends Phaser.Scene {
       }
       m.setVisible(!taken.has(s.id));
     }
+    this.syncQuests(st);
     const weather = weatherFor(st.sim.seed, st.sim.day);
     if (st.sim.day !== this.lastDay || weather !== this.lastWeather) {
       const changedDay = this.lastDay >= 0 && st.sim.day !== this.lastDay;
       this.lastDay = st.sim.day;
       this.lastWeather = weather;
       this.applyWeather(weather, changedDay);
+    }
+  }
+
+  /** Açık görevi olan bölgelerin üstünde zıplayan ❗ (oyuncuyu nazikçe yönlendirir; baskı yok). */
+  private syncQuests(st: ReturnType<typeof gameStore.get>) {
+    const done = [...new Set(st.history.filter((h) => !!h.reasoning).map((h) => h.scenarioId))];
+    for (const h of hotspots) {
+      const mod = HOTSPOT_MODULE[h.id];
+      const open = !!mod && tasksOfModule(mod).some((t) => taskStatus(t.id, done).status === 'available');
+      let q = this.quests.get(h.id);
+      const node = this.nodes.get(h.id);
+      if (!node) continue;
+      if (!q) {
+        const img = this.add.image(node.x, node.labelY - 46, 'quest').setDepth(5600).setScale(0.8);
+        const tween = this.tweens.add({ targets: img, y: img.y - 12, duration: 650, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+        this.ambient.push(tween);
+        if (reducedMotion()) tween.pause();
+        q = { img, tween };
+        this.quests.set(h.id, q);
+      }
+      q.img.setVisible(open);
+    }
+  }
+
+  /** Gökyüzünde yavaşça süzülen bulutlar (hareket azaltmada durur). */
+  private addClouds() {
+    const left = iso(0, 32).x - 300, right = iso(32, 0).x + 300;
+    for (let k = 0; k < 5; k++) {
+      const y = iso(0, 0).y - 60 + k * 260;
+      const img = this.add.image(left + ((k * 577) % (right - left)), y, 'cloud').setDepth(6500).setAlpha(0.55).setScale(0.8 + (k % 3) * 0.25);
+      const t = this.tweens.add({ targets: img, x: right, duration: 90000 + k * 15000, repeat: -1, onRepeat: () => img.setX(left) });
+      this.ambient.push(t);
     }
   }
 
@@ -272,7 +311,7 @@ export class WorldScene extends Phaser.Scene {
     }
     if (b.level > 1) {
       const c = iso(s.x + 0.5, s.y + 0.5);
-      objs.push(this.add.text(c.x + 30, c.y - 40, `★${b.level}`, { fontFamily: 'Noto Sans, sans-serif', fontSize: '18px', color: '#12263a', backgroundColor: '#e8b73a', padding: { x: 4, y: 1 } }).setDepth(5400));
+      objs.push(this.add.text(c.x + 30, c.y - 40, `★${b.level}`, { fontFamily: "'Baloo 2', Nunito, sans-serif", fontSize: '18px', color: '#12263a', backgroundColor: '#e8b73a', padding: { x: 4, y: 1 } }).setDepth(5400));
     }
     return objs;
   }

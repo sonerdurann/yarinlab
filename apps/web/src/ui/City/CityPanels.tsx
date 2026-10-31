@@ -4,62 +4,64 @@ import { cityOf, completedTaskIds, moduleOf } from '../../state/city';
 import { playableScenarios } from '../../data/scenarios';
 import { Modal } from '../Modal/Modal';
 import { RoadmapButton } from '../Roadmap/RoadmapPanel';
+import { Speech } from '../Mascot';
+
+const BADGE_ICON: Record<string, string> = { 'first-decision': '👣', reasoner: '💬', 'two-futures': '🔮', explorer: '🧭', builder: '🏗️', upgrader: '🚀', 'clean-grid': '⚡', seasons: '🍂', halfway: '🏔️', council: '🏛️', field: '🔬', reflect: '📝' };
 import { authStore, useAuth } from '../../state/authStore';
 
-/** Üst çubuk: tarih, mevsim, hava, seviye ve gün ilerletme. */
+/** Üst çubuk: tarih, mevsim, büyük hava simgesi ve gün ilerletme. */
 export function TimeChip() {
   const s = useGameState();
   const c = cityOf(s).indicators;
-  const lvl = levelForXp(s.xp);
   return (
     <span className="time-chip" aria-label="Zaman ve hava">
-      <span title="Oyun takvimi">{c.year} {c.seasonTr} · Gün {s.sim.day + 1}</span>
-      <span title="Hava">{WEATHER_ICON[c.weather]} {c.weatherTr}</span>
-      <span title={`${s.xp} XP`}>Seviye {lvl}</span>
-      <button className="primary" onClick={() => gameStore.endDay()}>Günü bitir</button>
+      <span className="weather" aria-hidden="true" title={c.weatherTr}>{WEATHER_ICON[c.weather]}</span>
+      <span className="date"><span>{c.seasonTr} · Gün {s.sim.day + 1}</span><small>{c.year} · {c.weatherTr}</small></span>
+      <button className="sun" onClick={() => gameStore.endDay()}>🌙 Günü bitir</button>
     </span>
   );
 }
 
 const pct = (n: number) => `${Math.max(0, Math.min(100, n))}%`;
-type Row = { label: string; value: string; bar?: number; tag: 'Simülasyon' | 'Varsayım'; title?: string; bad?: boolean };
+type Tile = { ico: string; label: string; value: string; bar?: number; tone: 'good' | 'ok' | 'bad'; tag?: 'Simülasyon' | 'Varsayım'; title?: string; wide?: boolean };
+const toneOf = (v: number, higherBetter = true) => { const x = higherBetter ? v : 100 - v; return x >= 70 ? 'good' : x >= 45 ? 'ok' : 'bad'; };
 
-/** Ortak şehir göstergeleri (promptun 10 göstergesi). Tüm sayılar oyun simülasyonudur. */
+/** Şehir durumu: 10 gösterge, simgeli ve renk tonlu kartlar. Tüm sayılar oyun simülasyonudur. */
 export function CityIndicators() {
   const s = useGameState();
   const { indicators: i } = cityOf(s);
-  const rows: Row[] = [
-    { label: 'Bütçe', value: `${i.budget.toLocaleString('tr-TR')} puan`, tag: 'Simülasyon', title: 'Oyun puanı; gerçek para değildir.' },
-    { label: 'Enerji üretim / talep', value: `${i.energy.prodKwh} / ${i.energy.demandKwh} kWh`, tag: 'Simülasyon', bar: i.energy.renewableSharePct, title: `Yenilenebilir pay %${i.energy.renewableSharePct}, kesinti ${i.energy.outageHours} sa` },
-    { label: 'Su kullanımı', value: `${i.waterUseM3} m³/gün`, tag: 'Varsayım' },
-    { label: 'Atık', value: `${i.wasteKg} kg/gün · ${i.collectionNeed} sefer`, tag: 'Varsayım' },
-    { label: 'Gıda kaybı', value: `${i.foodLossKg} kg/gün`, tag: 'Simülasyon' },
-    { label: 'Emisyon endeksi', value: `${i.emissionIndex} (başlangıç 100)`, tag: 'Varsayım', title: 'Birimsiz göreli endeks; kgCO₂e değildir.', bad: i.emissionIndex > 100 },
-    { label: 'Ekosistem sağlığı', value: `${i.ecosystem}/100`, bar: i.ecosystem, tag: 'Simülasyon' },
-    { label: 'İklim dayanıklılığı', value: `${i.resilience}/100`, bar: i.resilience, tag: 'Simülasyon', title: `Taşkın ${i.floodRisk}, sıcak ${i.heatRisk}, enerji riski ${i.energyRisk}` },
-    { label: 'Toplum refahı', value: `${i.wellbeing}/100`, bar: i.wellbeing, tag: 'Simülasyon' },
-    { label: 'İklim okuryazarlığı', value: `${i.literacy}/100`, bar: i.literacy, tag: 'Simülasyon', title: 'Görev çeşitliliği, gerekçe kalitesi ve karşılaştırmalardan hesaplanır.' },
+  const e = i.energy;
+  const tiles: Tile[] = [
+    { ico: '⚡', label: 'Elektrik', value: `${e.prodKwh}/${e.demandKwh} kWh`, bar: e.renewableSharePct, tone: e.outageHours > 0 ? 'bad' : toneOf(e.renewableSharePct * 1.4), title: `Temiz enerji payı %${e.renewableSharePct}${e.outageHours ? `, ${e.outageHours} saat kesinti` : ''}`, wide: true },
+    { ico: '😊', label: 'Mutluluk', value: `${i.wellbeing}`, bar: i.wellbeing, tone: toneOf(i.wellbeing) },
+    { ico: '🌿', label: 'Doğa', value: `${i.ecosystem}`, bar: i.ecosystem, tone: toneOf(i.ecosystem) },
+    { ico: '🛡️', label: 'Hazırlık', value: `${i.resilience}`, bar: i.resilience, tone: toneOf(i.resilience), title: `Sel ${i.floodRisk}, sıcak ${i.heatRisk}, enerji riski ${i.energyRisk}` },
+    { ico: '📚', label: 'İklim bilgisi', value: `${i.literacy}`, bar: i.literacy, tone: toneOf(i.literacy + 30) },
+    { ico: '💧', label: 'Su', value: `${i.waterUseM3} m³`, tone: i.waterUseM3 > 42 ? 'bad' : i.waterUseM3 > 36 ? 'ok' : 'good', tag: 'Varsayım' },
+    { ico: '🗑️', label: 'Çöp', value: `${i.wasteKg} kg`, tone: i.wasteKg > 45 ? 'bad' : i.wasteKg > 30 ? 'ok' : 'good', tag: 'Varsayım', title: `${i.collectionNeed} çöp kamyonu seferi` },
+    { ico: '🍎', label: 'Boşa giden yemek', value: `${i.foodLossKg} kg`, tone: i.foodLossKg > 25 ? 'bad' : i.foodLossKg > 15 ? 'ok' : 'good' },
+    { ico: '🌫️', label: 'Kirlilik endeksi', value: `${i.emissionIndex}`, tone: i.emissionIndex > 95 ? 'bad' : i.emissionIndex > 75 ? 'ok' : 'good', tag: 'Varsayım', title: 'Başlangıç 100. Birimsiz göreli endeks; kg CO₂e değildir.' },
   ];
   return (
-    <aside className="panel world-status" aria-label="Şehir göstergeleri">
-      <h2>Şehir durumu</h2>
-      {rows.map((r) => (
-        <div key={r.label} className="meter" title={r.title}>
-          <div className="meter-label">
-            <span>{r.label} <span className={r.tag === 'Varsayım' ? 'tag assume' : 'tag sim'}>{r.tag}</span></span>
-            <strong className={r.bad ? 'warn' : undefined}>{r.value}</strong>
+    <aside className="panel world-status" aria-label="Şehir durumu">
+      <h2>🏙️ Şehrim</h2>
+      <div className="stat-grid">
+        {tiles.map((t) => (
+          <div key={t.label} className={`stat-tile tone-${t.tone}${t.wide ? ' wide' : ''}`} title={t.title}>
+            <div className="st-top"><span className="st-ico" aria-hidden="true">{t.ico}</span>{t.label}</div>
+            <div className="st-val">{t.value}</div>
+            {t.bar !== undefined && (
+              <div className="st-bar" role="progressbar" aria-valuenow={t.bar} aria-valuemin={0} aria-valuemax={100} aria-label={t.label}><span style={{ width: pct(t.bar) }} /></div>
+            )}
+            {t.tag && <span className="tag assume">{t.tag}</span>}
           </div>
-          {r.bar !== undefined && (
-            <div className="meter-track" role="progressbar" aria-valuenow={r.bar} aria-valuemin={0} aria-valuemax={100} aria-label={r.label}>
-              <div className="meter-fill" style={{ width: pct(r.bar) }} />
-            </div>
-          )}
-        </div>
-      ))}
+        ))}
+      </div>
+      <p className="hint">Bu sayılar oyun içi simülasyondur, gerçek ölçüm değildir.</p>
       <div className="actions left">
-        <button onClick={() => gameStore.openOverlay('build')}>İnşa</button>
-        <button onClick={() => gameStore.openOverlay('log')}>Olay günlüğü</button>
-        <button onClick={() => gameStore.openOverlay('progress')}>İlerleme</button>
+        <button onClick={() => gameStore.openOverlay('build')}>🏗️ İnşa</button>
+        <button onClick={() => gameStore.openOverlay('log')}>📜 Günlük</button>
+        <button onClick={() => gameStore.openOverlay('progress')}>🏅 Rozetler</button>
       </div>
     </aside>
   );
@@ -101,7 +103,7 @@ export function ProgressPanel() {
   const all = Object.keys(playableScenarios);
   return (
     <Modal titleId="progress-title" title="İlerleme ve rozetler" onClose={gameStore.closeOverlay} wide>
-      <p>Seviye <strong>{lvl}</strong> · {s.xp} XP</p>
+      <Speech mood={s.badges.length ? 'wow' : 'happy'}>Seviye <b>{lvl}</b> oldun! {s.badges.length} rozet topladın. Rozetler yarış değil: her biri öğrendiğin bir şeyi kutlar.</Speech>
       <div className="meter-track" role="progressbar" aria-valuenow={s.xp - lo} aria-valuemin={0} aria-valuemax={hi - lo} aria-label="Sonraki seviye">
         <div className="meter-fill" style={{ width: pct(((s.xp - lo) / Math.max(1, hi - lo)) * 100) }} />
       </div>
@@ -118,7 +120,7 @@ export function ProgressPanel() {
       <ul className="badge-grid">
         {BADGES.map((b) => {
           const got = s.badges.includes(b.key);
-          return <li key={b.key} className={got ? 'got' : ''} aria-label={`${b.name}: ${got ? 'kazanıldı' : 'henüz değil'}`}><strong>{got ? '★' : '☆'} {b.name}</strong><br /><span className="hint">{b.description}</span></li>;
+          return <li key={b.key} className={got ? 'got' : ''} aria-label={`${b.name}: ${got ? 'kazanıldı' : 'henüz değil'}`}><span className="medal" aria-hidden="true">{got ? BADGE_ICON[b.key] ?? '🏅' : '🔒'}</span><strong>{b.name}</strong><br /><span className="hint">{b.description}</span></li>;
         })}
       </ul>
       <h3>Görev geçmişi</h3>
@@ -144,18 +146,17 @@ export function MainMenu({ onSettings, onTeacher, onSources }: { onSettings: () 
   const has = gameStore.hasSave();
   return (
     <Modal titleId="menu-title" title="YarınLab — Geleceği Sen Tasarla" onClose={gameStore.closeOverlay}>
-      <p className="slogan">Bugünün kararları, yarının dünyasını şekillendirir.</p>
-      {user && <p>Hoş geldin, <strong>{user.displayName}</strong>.</p>}
+      <Speech mood="wave">{user ? <>Tekrar hoş geldin <b>{user.displayName}</b>! Şehrin seni bekliyor.</> : <>Bugünün kararları, yarının dünyasını şekillendirir. Hadi başlayalım!</>}</Speech>
       <div className="menu-buttons">
-        {has && <button className="primary" onClick={gameStore.closeOverlay}>Devam et (Gün {s.sim.day + 1})</button>}
-        <button className={has ? '' : 'primary'} onClick={() => { if (!has || confirm('Mevcut şehir silinip yeni oyun başlasın mı?')) { gameStore.resetSession(); gameStore.closeOverlay(); } }}>Yeni oyun</button>
-        <button onClick={authStore.open}>{user ? 'Hesabım' : 'Giriş / kayıt'}</button>
-        {user?.role === 'TEACHER' && <button onClick={onTeacher}>Öğretmen paneli</button>}
-        <button onClick={() => gameStore.openOverlay('progress')}>İlerleme ve rozetler</button>
-        <button onClick={() => gameStore.openOverlay('assessment')}>Öğrenme değerlendirmesi</button>
-        <button onClick={onSettings}>Ayarlar</button>
-        <button onClick={() => gameStore.openOverlay('help')}>Yardım ve rehber</button>
-        <button onClick={onSources}>Kaynaklar ve lisanslar</button>
+        {has && <button className="primary" onClick={gameStore.closeOverlay}>▶️ Devam et (Gün {s.sim.day + 1})</button>}
+        <button className={has ? '' : 'primary'} onClick={() => { if (!has || confirm('Mevcut şehir silinip yeni oyun başlasın mı?')) { gameStore.resetSession(); gameStore.closeOverlay(); } }}>🌱 Yeni oyun</button>
+        <button onClick={authStore.open}>{user ? '👤 Hesabım' : '🔑 Giriş / sınıfa katıl'}</button>
+        {user?.role === 'TEACHER' && <button onClick={onTeacher}>🍎 Öğretmen paneli</button>}
+        <button onClick={() => gameStore.openOverlay('progress')}>🏅 Rozetlerim ve ilerlemem</button>
+        <button onClick={() => gameStore.openOverlay('assessment')}>📝 Ön/son testler</button>
+        <button onClick={onSettings}>⚙️ Ayarlar (ses, yazı, hareket)</button>
+        <button onClick={() => gameStore.openOverlay('help')}>❓ Yardım ve rehber</button>
+        <button onClick={onSources}>📚 Bilimsel kaynaklar ve lisanslar</button>
         <RoadmapButton />
       </div>
     </Modal>
@@ -172,7 +173,8 @@ export function EndingPanel() {
   return (
     <Modal titleId="end-title" title={e.title} onClose={gameStore.closeOverlay} wide>
       <div className={`ending ending-${e.key}`}>
-        <p className="ending-text">{e.text}</p>
+        <div className="ending-scene" aria-hidden="true">{e.key === 'thriving' ? '🌳🏙️☀️🐢' : e.key === 'transition' ? '🌱🏗️⛅' : '🌡️🏚️🌧️'}</div>
+        <Speech mood={e.key === 'thriving' ? 'wow' : e.key === 'transition' ? 'happy' : 'worried'}>{e.text}</Speech>
         <ul className="facts">
           <li>Dayanıklılık {ind.resilience}/100</li><li>Ekosistem {ind.ecosystem}/100</li><li>Refah {ind.wellbeing}/100</li>
           <li>Emisyon endeksi {ind.emissionIndex}</li><li>Okuryazarlık {ind.literacy}/100</li><li>Gelecek puanı {e.score}</li>

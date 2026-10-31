@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type Phaser from 'phaser';
-import { gameStore, taskSteps, useGameState } from './state/gameStore';
+import { gameStore, useGameState } from './state/gameStore';
 import { TopBar } from './ui/Hud/Hud';
 import { CityIndicators, EndingPanel, EventLogPanel, MainMenu, ProgressPanel } from './ui/City/CityPanels';
 import { BuildPanel } from './ui/City/BuildPanel';
@@ -15,7 +15,7 @@ import { TeacherPanel } from './ui/TeacherPanel/TeacherPanel';
 import { SourcesPanel } from './ui/Sources/SourcesPanel';
 import { FutureComparison } from './ui/FutureComparison/FutureComparison';
 import { Intro } from './ui/Intro/Intro';
-import { Logo } from './ui/Logo';
+import { Mascot } from './ui/Mascot';
 import { SettingsPanel } from './ui/Settings/SettingsPanel';
 import { PeriodSwitch, PeriodTint } from './ui/PeriodSwitch/PeriodSwitch';
 import { AuthPanel } from './ui/Auth/AuthPanel';
@@ -30,7 +30,6 @@ export function App() {
   const gs = useGameState();
   const { notice, decisionOpen } = gs;
   const [sheet, setSheet] = useState(false);
-  const next = taskSteps(gs).find((t) => !t.done);
 
   useEffect(() => {
     if (!host.current) return;
@@ -86,12 +85,7 @@ export function App() {
       <div className={sheet ? 'dock open' : 'dock'}>
         <div className="cta-bar">
           <button aria-expanded={sheet} onClick={() => setSheet(!sheet)}>{sheet ? 'Gizle' : 'Görevler'}</button>
-          <span className="cta-text">Görev: {next ? next.label : 'Tamamlandı'}</span>
-          {!decisionOpen && (
-            <button className="primary" onClick={gameStore.openDecision}>
-              {gs.canteenVisited ? 'Devam' : 'Göreve başla'}
-            </button>
-          )}
+          <span className="cta-text">🗺️ Görevler ve şehrim</span>
         </div>
         <TaskPanel onPick={pick} />
         <CityIndicators />
@@ -99,13 +93,14 @@ export function App() {
       {gs.schoolOpen && <SchoolPanel onPick={pick} />}
       {notice && !decisionOpen && (
         <aside role="status" className="panel toast">
+          <Mascot mood={/rozet|kuruldu|seviye/i.test(notice) ? 'wow' : /kesinti|baskın|kilitli|yetmiyor|Önce/i.test(notice) ? 'worried' : 'happy'} size={48} />
           <p>{notice}</p>
           <button onClick={gameStore.clearNotice}>Tamam</button>
         </aside>
       )}
       <div className={gs.worldReady ? 'loading done' : 'loading'} role="status" aria-hidden={gs.worldReady}>
-        <Logo size={56} />
-        <p>Harita yükleniyor…</p>
+        <Mascot mood="wave" size={110} />
+        <p>Şehrin hazırlanıyor…</p>
         <span className="spinner" aria-hidden="true" />
       </div>
       <MainMenu onSettings={settingsStore.open} onTeacher={teacherStore.openTeacher} onSources={teacherStore.openSources} />
