@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import type { Resources } from '../../state/types';
 
 export type DioramaParams = { score: number; after: Resources; flood?: number; label: string };
@@ -56,7 +56,8 @@ export function FutureDiorama({ p }: { p: DioramaParams }) {
   const water = Math.max(0, Math.min(1, (p.flood ?? 0) / 100));
   const sky = score >= 70 ? ['#8fd3f0', '#e9f8ff'] : score >= 50 ? ['#a9cfe0', '#eef4f2'] : ['#9aa3a8', '#d9d4c7'];
   const treeSpots: [number, number][] = [[0.1, 0.2], [0.12, 0.6], [0.3, 0.88], [0.55, 0.9], [0.85, 0.15], [0.9, 0.45], [0.2, 0.08], [0.7, 0.75], [0.48, 0.12]];
-  const id = `sky-${p.label}`;
+  // SVG kimliği boşluk/Türkçe karakter içermemeli (aksi hâlde degrade bulunamaz, gök siyah çizilir)
+  const id = `sky${useId().replace(/[^a-zA-Z0-9]/g, '')}`;
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="diorama" role="img" aria-label={`${p.label}: ${trees} ağaç, ${panels} güneş paneli, ${smoke ? 'duman var' : 'hava temiz'}, ${litter} çöp`}>
       <defs>

@@ -53,8 +53,10 @@ export class CoastScene extends Phaser.Scene {
     // Şehre dönüş (kamera solması)
     const unsubView = gameStore.subscribe(() => {
       if (gameStore.get().mapView === 'world' && this.scene.isActive()) {
-        const go = () => { this.scene.sleep(); this.scene.wake('WorldScene'); };
-        if (reducedMotion()) go(); else { this.cameras.main.fadeOut(260, 165, 221, 242); this.cameras.main.once('camerafadeoutcomplete', go); }
+        let done = false;
+        const go = () => { if (done || !this.scene.isActive()) return; done = true; this.scene.sleep(); this.scene.wake('WorldScene'); };
+        if (reducedMotion()) go();
+        else { this.cameras.main.fadeOut(260, 165, 221, 242); this.cameras.main.once('camerafadeoutcomplete', go); setTimeout(go, 420); }
       }
     });
     this.events.once('shutdown', unsubView);
