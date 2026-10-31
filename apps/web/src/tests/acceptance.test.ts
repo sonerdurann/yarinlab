@@ -3,6 +3,7 @@ import { food } from '../data/scenarios';
 import { hotspots } from '../game/tiles/hotspots';
 import { gameStore, isTaskComplete, taskSteps } from '../state/gameStore';
 import { AI_TIMEOUT_MS, getTutorFeedback } from '../ai/tutorClient';
+import { authStore } from '../state/authStore';
 import { runDecision } from '../game/systems/DecisionEngine';
 
 beforeEach(() => gameStore.resetSession());
@@ -33,13 +34,14 @@ describe('T02 hotspot yönlendirme', () => {
 describe('T06 API bağlantısı kesik', () => {
   it(`uç nokta yanıt vermezse ${AI_TIMEOUT_MS} ms sonra yedeğe düşer`, async () => {
     vi.useFakeTimers();
-    vi.stubEnv('VITE_AI_ENDPOINT', 'https://example.test/api/tutor');
+    authStore.setUser({ id: 'u', role: 'STUDENT', displayName: 'Deniz' });
     // İptal sinyaline duyarlı, asla yanıtlamayan sahte ağ
     const hang = ((_: string, init: RequestInit) =>
       new Promise((_res, rej) => init.signal?.addEventListener('abort', () => rej(new Error('abort'))))) as never;
     const p = getTutorFeedback(runDecision(food, 'B'), hang);
-    await vi.advanceTimersByTimeAsync(AI_TIMEOUT_MS + 10);
+    await vi.advanceTimersByTimeAsync(AI_TIMEOUT_MS + 1010);
     expect((await p).source).toBe('fallback');
+    authStore.setUser(null);
   });
 
   it('AI yokken görev uçtan uca tamamlanır', async () => {

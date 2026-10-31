@@ -2,6 +2,7 @@ import { chapterFor, MODULES, taskStatus, tasksOfModule } from '@yarinlab/shared
 import { hotspots } from '../../game/tiles/hotspots';
 import { gameStore, useGameState } from '../../state/gameStore';
 import { completedTaskIds } from '../../state/city';
+import { DirectorTip } from './DirectorTip';
 
 type Props = { onPick: (id: string) => void };
 
@@ -22,6 +23,7 @@ export function TaskPanel({ onPick }: Props) {
       {suggested && !s.decisionOpen && (
         <button className="primary" onClick={() => gameStore.openTask(suggested.id)}>Önerilen: {suggested.title.split('–')[1]?.trim() ?? suggested.title}</button>
       )}
+      <DirectorTip />
       <button className="link" onClick={() => gameStore.openOverlay('assessment')}>Ön/son değerlendirme</button>
       <div className="module-list">
         {MODULES.map((m) => {

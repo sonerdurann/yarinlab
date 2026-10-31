@@ -277,3 +277,4 @@ details.module summary { display: flex; justify-content: space-between; min-heig
 .ending-transition { background: #fff6dc; }
 .ending-fragile { background: #f3ece4; }
 .ending-text { font-size: 1.05rem; line-height: 1.5; }
+.director { margin: 8px 0; }

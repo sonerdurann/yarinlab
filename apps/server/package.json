@@ -13,6 +13,7 @@
     "prisma:dev": "prisma migrate dev"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0",
     "@fastify/cookie": "^11.0.2",
     "@fastify/helmet": "^13.0.1",
     "@fastify/rate-limit": "^10.3.0",

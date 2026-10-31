@@ -16,8 +16,8 @@ export function TutorCard() {
   const qs = [response.question1, response.question2];
   return (
     <section className="tutor" aria-live="polite" aria-label="Rehber geri bildirimi">
-      <h3>Rehber</h3>
-      <p className="source">{source === 'ai' ? 'Yapay zekâ rehberi (doğrulanmış çıktı)' : 'Hazır pedagojik geri bildirim (çevrimdışı çalışır)'}</p>
+      <h3>Yapay zekâ iklim öğretmeni</h3>
+      <p className="source">{source === 'ai' ? 'Dil modeli yanıtı (sayılar ve kaynaklar doğrulandı)' : 'Doğrulanmış hazır geri bildirim (model servisi yokken de çalışır)'}</p>
       <p>{response.summary}</p>
       <p>
         <strong>Ödünleşim:</strong> {response.tradeoff}

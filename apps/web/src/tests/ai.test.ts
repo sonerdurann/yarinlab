@@ -3,6 +3,7 @@ import { food } from '../data/scenarios';
 import { runDecision } from '../game/systems/DecisionEngine';
 import { fallbackForResult } from '../ai/fallbackResponses';
 import { getTutorFeedback, validateTutorResponse } from '../ai/tutorClient';
+import { authStore } from '../state/authStore';
 
 describe('AI yedeği (T06)', () => {
   it('her seçenek için hazır açıklama doğrulayıcıdan geçer', () => {
@@ -31,23 +32,25 @@ describe('AI yedeği (T06)', () => {
     expect(validateTutorResponse(null, r)).toBe(false);
   });
 
-  it('uç nokta tanımlı değilken ağa çıkmadan yedek döner', async () => {
+  it('misafir kullanıcıda ağa çıkmadan yedek döner', async () => {
     const spy = vi.fn();
     const out = await getTutorFeedback(runDecision(food, 'A'), spy as never);
     expect(out.source).toBe('fallback');
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('uç nokta hata verirse veya geçersiz yanıt dönerse yedeğe düşer', async () => {
-    vi.stubEnv('VITE_AI_ENDPOINT', 'https://example.test/api/tutor');
+  it('sunucu hata verirse veya geçersiz yanıt dönerse yedeğe düşer; geçerli yanıt istemcide de doğrulanır', async () => {
+    authStore.setUser({ id: 'u', role: 'STUDENT', displayName: 'Deniz' });
     const r = runDecision(food, 'C');
-    const bad = await getTutorFeedback(r, (async () => new Response(JSON.stringify({ summary: 'x' }), { status: 200 })) as never);
+    const bad = await getTutorFeedback(r, (async () => new Response(JSON.stringify({ source: 'ai', response: { summary: 'x' } }), { status: 200 })) as never);
     expect(bad.source).toBe('fallback');
     const down = await getTutorFeedback(r, (async () => { throw new Error('offline'); }) as never);
     expect(down.source).toBe('fallback');
     const good = fallbackForResult(r);
-    const ai = await getTutorFeedback(r, (async () => new Response(JSON.stringify(good), { status: 200 })) as never);
+    const ai = await getTutorFeedback(r, (async () => new Response(JSON.stringify({ source: 'ai', response: good }), { status: 200 })) as never);
     expect(ai.source).toBe('ai');
-    vi.unstubAllEnvs();
+    const fake = await getTutorFeedback(r, (async () => new Response(JSON.stringify({ source: 'ai', response: { ...good, summary: 'Atık 999 kg azaldı.' } }), { status: 200 })) as never);
+    expect(fake.source).toBe('fallback');
+    authStore.setUser(null);
   });
 });
