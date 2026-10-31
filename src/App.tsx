@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import type Phaser from 'phaser';
-import { createGame } from './game/createGame';
 import { hotspots } from './game/tiles/hotspots';
 import { gameStore, taskSteps, useGameState } from './state/gameStore';
 import { TopBar, WorldStatus } from './ui/Hud/Hud';
@@ -23,8 +22,14 @@ export function App() {
 
   useEffect(() => {
     if (!host.current) return;
-    game.current = createGame(host.current);
+    // Oyun motoru ayrı parça olarak geç yüklenir (ilk boyama hızlansın).
+    let cancelled = false;
+    const el = host.current;
+    void import('./game/createGame').then((m) => {
+      if (!cancelled) game.current = m.createGame(el);
+    });
     return () => {
+      cancelled = true;
       game.current?.destroy(true);
       game.current = null;
     };

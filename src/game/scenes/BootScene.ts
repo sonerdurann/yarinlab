@@ -10,6 +10,8 @@ export class BootScene extends Phaser.Scene {
     for (const a of ATLASES) this.load.atlasXML(a.key, a.png, a.xml);
   }
   create() {
+    // Ayrı çizilen zemin karolarında bilinear süzme komşu atlas karesinden piksel sızdırıp ince çizgi bırakıyordu.
+    this.textures.get('landscape').setFilter(Phaser.Textures.FilterMode.NEAREST);
     this.makeTreeTexture();
     this.makeCustomTextures();
     this.scene.start('WorldScene');
