@@ -12,6 +12,8 @@ import { Intro } from './ui/Intro/Intro';
 import { Logo } from './ui/Logo';
 import { SettingsPanel } from './ui/Settings/SettingsPanel';
 import { PeriodSwitch, PeriodTint } from './ui/PeriodSwitch/PeriodSwitch';
+import { AuthPanel } from './ui/Auth/AuthPanel';
+import { authStore } from './state/authStore';
 import { wasteCollection } from './game/systems/ClimateEngine';
 
 export function App() {
@@ -37,6 +39,8 @@ export function App() {
       game.current = null;
     };
   }, []);
+
+  useEffect(() => { void authStore.refresh(); }, []);
 
   const zoom = (delta: number) => game.current?.scene.getScene('WorldScene')?.events.emit('zoom', delta);
 
@@ -113,6 +117,7 @@ export function App() {
         <p>Harita yükleniyor…</p>
         <span className="spinner" aria-hidden="true" />
       </div>
+      <AuthPanel />
       <Intro />
       <DecisionModal />
       <FutureComparison />

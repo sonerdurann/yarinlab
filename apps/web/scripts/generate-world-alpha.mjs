@@ -1,4 +1,4 @@
-// Tiled uyumlu 32x32 izometrik harita üretir: public/assets/maps/world_alpha.json
+// Tiled uyumlu 32x32 izometrik harita üretir: apps/web/public/assets/maps/world_alpha.json
 // Kenney atlası eklenince Tiled'da açılıp düzenlenebilir (kılavuz §07, §17).
 import { writeFileSync } from 'node:fs';
 
@@ -82,5 +82,5 @@ const map = {
   ],
 };
 
-writeFileSync('public/assets/maps/world_alpha.json', JSON.stringify(map));
+writeFileSync('apps/web/public/assets/maps/world_alpha.json', JSON.stringify(map));
 console.log('world_alpha.json yazıldı');

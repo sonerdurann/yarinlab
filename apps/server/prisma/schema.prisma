@@ -1,0 +1,204 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+}
+
+// Veri minimizasyonu: öğrenci için e-posta/gerçek ad tutulmaz; yalnızca takma ad.
+model User {
+  id           String   @id @default(cuid())
+  role         Role
+  email        String?  @unique // yalnızca öğretmen
+  nickname     String?  // yalnızca öğrenci (sınıf içinde benzersiz)
+  displayName  String
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  sessions        Session[]
+  taughtClasses   Classroom[]    @relation("Teacher")
+  enrollment      Enrollment?
+  saves           SaveGame[]
+  attempts        TaskAttempt[]
+  decisions       DecisionLog[]
+  assessments     Assessment[]
+  badges          Badge[]
+  measurements    RealWorldMeasurement[]
+  aiInteractions  AiInteraction[]
+}
+
+model Session {
+  id        String   @id // SHA-256(token)
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Classroom {
+  id        String   @id @default(cuid())
+  name      String
+  joinCode  String   @unique
+  teacherId String
+  createdAt DateTime @default(now())
+  teacher   User     @relation("Teacher", fields: [teacherId], references: [id], onDelete: Cascade)
+
+  enrollments Enrollment[]
+  groups      StudentGroup[]
+  assignments Assignment[]
+  consents    ConsentRecord[]
+
+  @@index([teacherId])
+}
+
+model StudentGroup {
+  id          String  @id @default(cuid())
+  classroomId String
+  name        String
+  classroom   Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  members     Enrollment[]
+
+  @@index([classroomId])
+}
+
+model Enrollment {
+  id          String   @id @default(cuid())
+  classroomId String
+  userId      String   @unique // bir öğrenci tek sınıfta
+  groupId     String?
+  joinedAt    DateTime @default(now())
+  classroom   Classroom    @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group       StudentGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull)
+
+  @@index([classroomId])
+}
+
+// KVKK: okul/veli bilgilendirme ve izin akışı kaydı (hukuki metin ayrıca incelenmelidir).
+model ConsentRecord {
+  id          String   @id @default(cuid())
+  classroomId String
+  kind        String // SCHOOL_APPROVAL | PARENT_NOTICE
+  confirmedBy String // öğretmen kullanıcı kimliği
+  noticeVersion String
+  createdAt   DateTime @default(now())
+  classroom   Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+
+  @@index([classroomId])
+}
+
+model SaveGame {
+  id        String   @id @default(cuid())
+  userId    String
+  slot      String   @default("main")
+  version   Int      @default(1) // optimistik kilit / şema sürümü
+  seed      Int
+  state     Json
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, slot])
+}
+
+model TaskAttempt {
+  id         String   @id @default(cuid())
+  userId     String
+  moduleId   String
+  taskId     String
+  choiceId   String
+  reasoning  String?
+  before     Json
+  after      Json
+  score      Json?
+  attemptNo  Int      @default(1)
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, taskId])
+}
+
+model DecisionLog {
+  id        String   @id @default(cuid())
+  userId    String
+  day       Int
+  kind      String
+  message   String
+  data      Json?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+model Assessment {
+  id        String   @id @default(cuid())
+  userId    String
+  kind      String // PRE | POST
+  moduleId  String
+  answers   Json
+  score     Float
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, moduleId, kind])
+}
+
+model Assignment {
+  id          String   @id @default(cuid())
+  classroomId String
+  moduleId    String?
+  taskIds     String[]
+  realWorldTaskId String?
+  title       String
+  dueAt       DateTime?
+  createdAt   DateTime @default(now())
+  classroom   Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+
+  @@index([classroomId])
+}
+
+model RealWorldMeasurement {
+  id          String   @id @default(cuid())
+  userId      String
+  taskKey     String
+  phase       String // BASELINE | FOLLOWUP
+  value       Float
+  unit        String
+  note        String?
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, taskKey])
+}
+
+model Badge {
+  id        String   @id @default(cuid())
+  userId    String
+  badgeKey  String
+  earnedAt  DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeKey])
+}
+
+model AiInteraction {
+  id        String   @id @default(cuid())
+  userId    String
+  role      String // TUTOR | DIRECTOR | TEACHER_ASSISTANT
+  source    String // MODEL | FALLBACK
+  accepted  Boolean
+  reason    String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}

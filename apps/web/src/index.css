@@ -219,3 +219,11 @@ html[data-motion='reduce'] *, html[data-motion='reduce'] *::before, html[data-mo
 
 .actions.left { justify-content: flex-start; }
 button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* Giriş / hesap */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tabs button[aria-selected=true]{background:var(--accent,#1f7a5a);color:#fff}
+.auth-form{display:grid;gap:12px}
+.auth-form label{display:grid;gap:4px;font-weight:600}
+.auth-form input{min-height:44px;padding:8px 10px;font-size:1rem}
+.form-error{color:#b00020;font-weight:600}
