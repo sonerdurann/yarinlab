@@ -74,17 +74,17 @@ test.describe('misafir oyuncu', () => {
     await page.waitForTimeout(1500);
     const box = (await page.locator('.world canvas').boundingBox())!;
     const cx = box.x + box.width / 2, cy = box.y + box.height / 2;
-    // sürükleme: kart açılmamalı
+    if (info.project.use.hasTouch) await page.touchscreen.tap(cx, cy);
+    else await page.mouse.click(cx, cy);
+    await expect(page.locator('.inspect-card').getByRole('heading')).toHaveText('Okul kampüsü');
+    await page.locator('.inspect-card').getByRole('button', { name: 'Kartı kapat' }).click();
+    // sürükleme (kamera kaydırma) bilgi kartı açmaz
     await page.mouse.move(cx, cy);
     await page.mouse.down();
     await page.mouse.move(cx + 80, cy + 30, { steps: 6 });
     await page.mouse.up();
+    await page.waitForTimeout(300);
     await expect(page.locator('.inspect-card')).toHaveCount(0);
-    await page.getByRole('navigation', { name: 'Oyun menüsü' }).getByRole('button', { name: /Harita/ }).click();
-    await page.waitForTimeout(1500);
-    if (info.project.use.hasTouch) await page.touchscreen.tap(cx, cy);
-    else await page.mouse.click(cx, cy);
-    await expect(page.locator('.inspect-card').getByRole('heading')).toHaveText('Okul kampüsü');
   });
 
   test('karakter ve rehber: avatar kaydedilir, Yarı ipucu verir', async ({ page }) => {
