@@ -1,0 +1,67 @@
+{
+  "id": "energy_001",
+  "version": "0.1.0",
+  "title": "Enerji Adası / Görev 02",
+  "brief": "Okulun enerjisi bugün büyük ölçüde dışarıdan geliyor. Güneş veya rüzgâr payını artırabilirsin. Depolama (batarya) yokken yenilenebilir pay yükselince kesinti riski de yükselir. Amaç tek başına daha yüksek enerji göstergesi değil; güvenilir bir denge.",
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Yalnızca güneş",
+      "summary": "Depolama yok",
+      "deltas": { "energyScore": 12, "budget": -600, "wellbeing": -6 },
+      "tradeoff": "Enerji göstergesi yükselir; batarya olmadığı için kesinti riski de artar. Tek metrik yanıltabilir.",
+      "system": { "renewableShare": 50, "storageUnits": 0 }
+    },
+    {
+      "id": "B",
+      "label": "Rüzgâr ve batarya",
+      "summary": "Depolamayla denge",
+      "deltas": { "energyScore": 10, "budget": -1500, "wellbeing": 6 },
+      "tradeoff": "Yenilenebilir pay artar ve depolama riski düşürür; bütçe daha çok azalır.",
+      "system": { "renewableShare": 40, "storageUnits": 2 }
+    },
+    {
+      "id": "C",
+      "label": "Önce batarya",
+      "summary": "Az yenilenebilir",
+      "deltas": { "energyScore": 4, "budget": -900, "wellbeing": 4 },
+      "tradeoff": "Kesinti riski düşer; enerji göstergesi daha az yükselir. Güvenilirlik ile büyüme arasında seçim.",
+      "system": { "renewableShare": 25, "storageUnits": 3 }
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Mevcut düzen sürer",
+    "deltas": { "energyScore": -3, "budget": -200, "wellbeing": -4 },
+    "tradeoff": "Pay ve depolama aynı kalır; göstergeler yavaşça zayıflar. Risk kendiliğinden çözülmez.",
+    "system": { "renewableShare": 20, "storageUnits": 0 }
+  },
+  "learningOutcomeIds": ["L2", "L3", "L5"],
+  "evidenceRefs": ["R9"],
+  "disclaimer": "Simülasyon – gerçek saha sonucu değildir",
+  "reasoningOptions": [
+    "Enerji göstergesini en çok yükseltmek istedim.",
+    "Kesinti riskini düşük tutmak istedim.",
+    "Bütçeyi çok zorlamadan denge aradım.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyondaki kesinti riski ile okulun gerçekten yaşadığı elektrik kesintisi arasındaki fark nedir? Bunu nasıl gözlemlerdin?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Bir hafta boyunca kesinti olursa yalnızca gün ve süre notu tut (ad yazma). Güneş veya tasarruf denemesini bir sonraki haftayla karşılaştır.",
+    "measurementPlan": [
+      "Yalnızca gün, süre ve etkilenen ders sayısı",
+      "Ad, fotoğraf veya konum yok",
+      "Aynı saat aralığında önce/sonra bak",
+      "Sonucu simülasyon puanıyla bir tutma"
+    ]
+  }
+}

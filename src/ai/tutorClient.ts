@@ -1,6 +1,6 @@
 import { fallbackForResult, type TutorResponse } from './fallbackResponses';
 import type { DecisionResult } from '../state/types';
-import { food } from '../data/scenarios';
+import { playableById } from '../data/scenarios';
 
 /** Kılavuz §18: 5-8 sn ağ gecikmesinde fallback; burada 6 sn. */
 export const AI_TIMEOUT_MS = 6000;
@@ -30,7 +30,8 @@ export function validateTutorResponse(x: unknown, r: DecisionResult): x is Tutor
   const o = x as Record<string, unknown>;
   const text = ['summary', 'tradeoff', 'question1', 'question2'] as const;
   for (const k of text) if (typeof o[k] !== 'string' || !(o[k] as string).trim() || (o[k] as string).length > 400) return false;
-  if (!Array.isArray(o.sourceIds) || !o.sourceIds.every((s) => typeof s === 'string' && food.evidenceRefs.includes(s))) return false;
+  const evidence = playableById(r.scenarioId).evidenceRefs;
+  if (!Array.isArray(o.sourceIds) || !o.sourceIds.every((s) => typeof s === 'string' && evidence.includes(s))) return false;
   const joined = text.map((k) => o[k] as string).join(' ');
   if (/co2|co₂|karbon\s*(ayak|salım)|emisyon/i.test(joined)) return false;
   const allowed = allowedNumbers(r);

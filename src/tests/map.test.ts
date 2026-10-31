@@ -24,7 +24,7 @@ describe('world_alpha.json', () => {
       expect([get(o, 'tileX'), get(o, 'tileY')]).toEqual([h.tileX, h.tileY]);
     }
   });
-  it('aktif hotspotlar: okul, kantin, enerji, atık', () => {
-    expect(hotspots.filter((h) => !h.locked).map((h) => h.id).sort()).toEqual(['canteen', 'energy', 'school', 'waste']);
+  it('yedi bölge açıktır', () => {
+    expect(hotspots.filter((h) => !h.locked).map((h) => h.id).sort()).toEqual(['canteen', 'city', 'energy', 'farm', 'ocean', 'school', 'waste']);
   });
 });

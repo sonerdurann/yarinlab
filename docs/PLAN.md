@@ -11,8 +11,8 @@ Hikâye: 2040'tan gelen bir mesaj öğrenciyi bugünkü okulunun geleceğini de�
 | P1 | Enerji ve atık senaryosu; gelişmiş öğretmen paneli; AI rehberi (sunucu tarafı) |
 | P2 | 7 tam bölge; gelişmiş simülasyon; sınıf ve okul yönetimi |
 
-Aktif hotspotlar: Okul, Kantin, Enerji, Atık. Şehir, Tarım, Kıyı "Yakında" (görünür, "Henüz açılmadı" mesajı).
-"Tamamı çalışıyor" iddiası yalnızca test edilmiş işlevler için kullanılır.
+Aktif görevler: Kantin (P0), Enerji Adası ve Döngü Ustaları (P1), KrizKenti, Karbon Dedektifleri, Mavi Nöbet ve Gelecek Meclisi (P2) oynanabilir. Meclisin harita pini yoktur. Kurum kodu yalnızca bu cihazdaki anonim etikettir.
+Canlı model servisi anahtar tanımlanınca açılır; anahtar yokken yedek açıklama yeter. "Tamamı çalışıyor" iddiası yalnızca test edilmiş işlevler içindir.
 
 ## Kullanıcılar
 - Öğrenci (11-14): 8-12 dk görev, iki gelecek sahnesi, geri alma.

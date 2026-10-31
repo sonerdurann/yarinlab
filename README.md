@@ -5,17 +5,17 @@ COP31 / KLM Teknolojileri Creathonu için modern 2.5D izometrik iklim karar oyun
 
 **Teknoloji:** Phaser 4.2.1 + React + TypeScript + Vite · Tiled JSON harita · Kenney Isometric Tiles (CC0)
 
-## Durum (P0 – 31 Ekim 2026)
+## Durum (P2 senaryoları – 31 Ekim 2026)
 Çalışan prototip, tarayıcıda oynanır:
-- 32×32 izometrik ada haritası; Okul, Kantin, Enerji, Atık tıklanır (Şehir, Tarım, Kıyı "Yakında"); sürükle, tekerlek, +/− ile yakınlaştırma, klavyeyle Bölge Listesi.
+- 32×32 izometrik ada haritası; yedi bölge oynanır (Tarım karosu Karbon modülünü açar). Gelecek Meclisi pin değildir. Sürükle, tekerlek, +/− ile yakınlaştırma, klavyeyle Bölge Listesi.
 - **Kantin / Görev 01:** A/B/C kararı, gerekçe, sonuç (önce/sonra çubukları), tekrar dene, **iki gelecek karşılaştırması**, gıda atığı → **atık toplama** çapraz etkisi.
 - **Dönem görünümü:** Bugün / 2040 Kararsız / 2040 Kararlarınla (görsel yorum).
 - **AI yedeği:** doğrulanmış hazır pedagojik geri bildirim + iki soruluk yansıtma; model servisi olmadan da oyun biter (sunucu uç noktası taslağı `functions/`).
 - **Öğretmen paneli:** DEMO etiketli sınıf özeti ve grafikler, gerçek okul ölçümü girişi, anonim oturum raporu indirme (JSON/CSV).
 - **Erişilebilirlik ve mobil:** 360 px, ≥44 px hedefler, ortak odak yönetimli pencereler, Ayarlar (hareket, yazı boyutu), açılış mesajı, kaynak/lisans sayfası.
-- Test: 52 birim/akış testi (`npm run test`), üretim derlemesi (`npm run build`).
+- Test: 72 birim/akış testi (`npm run test`). Üretim derlemesi bu turda yeniden alınmadı.
 
-**Henüz yapılmadı / doğrulanmadı:** yayınlanmış URL (Cloudflare Pages), gerçek telefonda ve gerçek klavye turuyla deneme, 90 sn'lik insan provası, hedef cihazda performans ölçümü, saha görüşmeleri; P1/P2 modülleri ve gerçek model servisi. Ayrıntı: [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md).
+**Henüz yapılmadı / doğrulanmadı:** yayınlanmış URL (Cloudflare Pages), gerçek telefonda ve gerçek klavye turuyla deneme, 90 sn'lik insan provası, hedef cihazda performans ölçümü, saha görüşmeleri, canlı model servisi (anahtar yokken yedek açıklama), bulut sınıf eşitlemesi. Ayrıntı: [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md).
 
 ## Proje merkezi (docs/)
 | Belge | İçerik |

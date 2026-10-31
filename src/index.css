@@ -219,3 +219,5 @@ html[data-motion='reduce'] *, html[data-motion='reduce'] *::before, html[data-mo
 
 .actions.left { justify-content: flex-start; }
 button:disabled { opacity: 0.55; cursor: not-allowed; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 12px; }
+.tabs button[aria-selected='true'] { background: var(--night); color: #fff; }

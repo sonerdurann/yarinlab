@@ -1,13 +1,13 @@
 # Kabul testleri (kılavuz §23)
 
-Son çalıştırma: 2026-10-31 · temiz `HEAD` kopyasında (`1550cdb`) `npm run test` 52/52 · `tsc` 0 hata · `npm run build` başarılı · tarayıcı: yerleşik pane, Chromium, 1440×900 ve 360×640 emülasyon.
+Son çalıştırma: 2026-10-31 · `npm run test` 72/72 · `tsc` 0 hata. P2: şehir, karbon (tarım karosu), kıyı ve meclis oynanır; taşkın, kıyı, iddia ve meclis puanları simülasyon varsayımıdır. 360 px ve üretim derlemesi bu turda yeniden ölçülmedi.
 Son duman testi (üretim derlemesi, `vite preview`): yükleme → açılış → kantin kararı → sonuç/çapraz etki → rehber (hazır) → iki gelecek → dönem → öğretmen → kaynaklar → ayarlar; konsol hatasız, dev kancası pakette yok. 360 px'te 9 ekranda (harita, açılış, seçenekler, sonuç, karşılaştırma, öğretmen, kaynaklar, ayarlar, açık sheet) yatay taşma ve <44 px hedef yok.
 Durum: ☑ geçti · ◐ kısmen (açıklama) · ☐ yapılmadı.
 
 | ID | Test | Beklenen | Durum | Kanıt / yöntem |
 |---|---|---|---|---|
 | T01 | Oyun URL tarayıcıda açılır | Başlangıç, dünya ve görev yüklenir | ☑ | Dev (5173) ve `dist` (4173): canvas 1440×900, 5 görev adımı, konsol hatasız, 404 yok. Üretimde ilk yükleme 185 ms (yerel, ölçülmüş tek örnek) |
-| T02 | Tüm aktif hotspotlara tıkla | Doğru sahne açılır; kilitli sahne yönlendirilir | ☑ | Gerçek fare tıklaması: Okul/Enerji/Atık paneli, Kantin karar penceresi; Şehir/Tarım/Kıyı "Henüz açılmadı". + `acceptance.test.ts` |
+| T02 | Tüm aktif hotspotlara tıkla | Doğru sahne açılır; kilitli sahne yönlendirilir | ☑ | Okul özeti; Kantin, Enerji, Atık, Şehir, Karbon ve Kıyı karar penceresi. Meclis pin değildir. Kilitli bölge kalmadı |
 | T03 | Aynı karar aynı başlangıçta 3× çalışır | Aynı ölçülebilir sonuç | ☑ | `engine.test.ts` (otomatik) |
 | T04 | Karar A B C | Farklı sonuçlar; ilk state her seferinde korunur | ☑ | `scenario.test.ts`, `store.test.ts`; arayüzde A→Tekrar dene→B denendi |
 | T05 | Yüksek/negatif değer girdisi | 0 altı atık yok; 0-100 puan sınırı | ☑ | `engine.test.ts` (uç değerler), `teacher.test.ts` (ölçüm girişi doğrulama) |
