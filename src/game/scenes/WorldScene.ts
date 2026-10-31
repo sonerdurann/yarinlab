@@ -3,6 +3,7 @@ import { BUILDING_FRAMES, GROUND_FRAMES, GROUND_SPRITE_HEIGHT, MAP, ROAD_FRAMES,
 import { hotspots, type Hotspot } from '../tiles/hotspots';
 import { DECOR } from '../tiles/decor';
 import { gameStore } from '../../state/gameStore';
+import { isReducedMotion as reducedMotion, settingsStore } from '../../state/settingsStore';
 
 type TiledLayer = { name: string; type: string; data?: number[] };
 type TiledMap = { layers: TiledLayer[] };
@@ -20,7 +21,6 @@ const diamond = (x: number, y: number, w = 1, h = 1) => {
 };
 
 const area = (h: Hotspot) => (h.bounds[1] - h.bounds[0] + 1) * (h.bounds[3] - h.bounds[2] + 1);
-const reducedMotion = () => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 const clampZoom = (z: number) => Phaser.Math.Clamp(z, 0.8, 1.4);
 
 export class WorldScene extends Phaser.Scene {
@@ -29,6 +29,9 @@ export class WorldScene extends Phaser.Scene {
   private dragged = false;
   private nodes = new Map<string, { img: Phaser.GameObjects.Image; label: Phaser.GameObjects.Container; imgY: number; labelY: number; scale: number; x: number; baseY: number }>();
   private lastResult: unknown = null;
+  /** Sürekli ortam animasyonları (su parıltısı, türbin); hareket ayarına göre durdurulur/sürdürülür. */
+  private ambient: Phaser.Tweens.Tween[] = [];
+  private waterTiles: Phaser.GameObjects.Image[] = [];
 
   constructor() {
     super('WorldScene');
@@ -58,6 +61,15 @@ export class WorldScene extends Phaser.Scene {
       this.lastResult = r;
     });
     this.events.once('shutdown', unsub);
+    // Hareket ayarı (otomatik/azalt/tam): ortam animasyonlarını durdur veya sürdür.
+    const applyMotion = () => {
+      const reduced = reducedMotion();
+      this.ambient.forEach((t) => (reduced ? t.pause() : t.resume()));
+      if (reduced) this.waterTiles.forEach((w) => w.setAlpha(1));
+    };
+    applyMotion();
+    const unsubMotion = settingsStore.subscribe(applyMotion);
+    this.events.once('shutdown', unsubMotion);
     gameStore.setWorldReady();
   }
 
@@ -121,8 +133,9 @@ export class WorldScene extends Phaser.Scene {
           .setScale(def.flipX ? -1.015 : 1.015, 1.015)
           .setDepth(0);
         // su parıltısı: karo karo hafif gecikmeli (hareket azaltma açıksa çalışmaz)
-        if (isWater && !reducedMotion()) {
-          this.tweens.add({ targets: img, alpha: 0.93, duration: 1800, yoyo: true, repeat: -1, ease: 'Sine.easeInOut', delay: ((x + y) % 8) * 200 });
+        if (isWater) {
+          this.waterTiles.push(img);
+          this.ambient.push(this.tweens.add({ targets: img, alpha: 0.93, duration: 1800, yoyo: true, repeat: -1, ease: 'Sine.easeInOut', delay: ((x + y) % 8) * 200 }));
         }
         if (deco[i] === TREE_GID && !decorTiles.has(i)) {
           const c = iso(x + 0.5, y + 0.5);
@@ -143,7 +156,7 @@ export class WorldScene extends Phaser.Scene {
         const bottom = p.y + MAP.tileHeight * 0.75;
         this.add.image(p.x, bottom, d.kind).setOrigin(0.5, 1).setDepth(10 + p.y + 20);
         const hub = this.add.image(p.x, bottom - 150 + 38, 'blades').setDepth(10 + p.y + 21).setAngle((d.x * 37 + d.y * 53) % 120);
-        if (!reducedMotion()) this.tweens.add({ targets: hub, angle: hub.angle + 360, duration: 7000, repeat: -1 });
+        this.ambient.push(this.tweens.add({ targets: hub, angle: hub.angle + 360, duration: 7000, repeat: -1 }));
       } else {
         // zemin karosunun elmasına oturur (üst köşe hizası); kutu parçaları yukarı taşar
         this.add.image(p.x, p.y, d.kind).setOrigin(0.5, 0).setDepth(d.kind === 'crop' ? 1 : 10 + p.y + 10);

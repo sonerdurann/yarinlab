@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-const reduced = () => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+import { isReducedMotion as reduced } from '../state/settingsStore';
 
 /** Değer değişince sayıyı kısa sürede ilerletir (kaynak sayaçları); hareket azaltma açıksa anında. */
 export function useCountUp(target: number, ms = 700): number {

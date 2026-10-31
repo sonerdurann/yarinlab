@@ -10,6 +10,7 @@ import { SourcesPanel } from './ui/Sources/SourcesPanel';
 import { FutureComparison } from './ui/FutureComparison/FutureComparison';
 import { Intro } from './ui/Intro/Intro';
 import { Logo } from './ui/Logo';
+import { SettingsPanel } from './ui/Settings/SettingsPanel';
 import { PeriodSwitch, PeriodTint } from './ui/PeriodSwitch/PeriodSwitch';
 import { wasteCollection } from './game/systems/ClimateEngine';
 
@@ -117,6 +118,7 @@ export function App() {
       <FutureComparison />
       <TeacherPanel />
       <SourcesPanel />
+      <SettingsPanel />
     </div>
   );
 }

@@ -62,9 +62,8 @@ legend { font-weight: 600; padding: 0 6px; }
 .attempts { font-size: 0.8125rem; padding-left: 18px; }
 .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; margin-top: 12px; }
 
-@media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; transition: none !important; }
-}
+/* Hareket azaltma: ayarlardan (otomatik = cihaz tercihi) <html data-motion> ile yönetilir */
+html[data-motion='reduce'] *, html[data-motion='reduce'] *::before, html[data-motion='reduce'] *::after { animation: none !important; transition: none !important; }
 
 .modal.wide { width: min(900px, 100%); }
 .future-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -208,3 +207,12 @@ legend { font-weight: 600; padding: 0 6px; }
 .period-caption small { display: block; opacity: 0.8; }
 @media (max-width: 1180px) { .period { max-width: calc(100% - 24px); top: 64px; } }
 @media (max-width: 760px) { .period { top: 62px; } .period-btns button { padding: 4px 8px; font-size: 0.75rem; } .period-caption { font-size: 0.6875rem; padding: 3px 10px; } }
+
+/* Ayarlar */
+.setting { margin: 0 0 12px; }
+.size-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.size { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 88px; padding: 4px 14px; border: 2px solid #12263a33; border-radius: 12px; background: #fff; cursor: pointer; font-weight: 600; position: relative; }
+.size.on { border-color: var(--climate-green); background: var(--mint); }
+.size input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.size:focus-within { outline: 3px solid var(--water); outline-offset: 2px; }
+@media (max-width: 760px) { .brand strong { display: none; } }

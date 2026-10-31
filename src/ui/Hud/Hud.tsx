@@ -2,6 +2,7 @@ import { useGameState } from '../../state/gameStore';
 import { teacherStore } from '../../state/teacherStore';
 import { useCountUp } from '../useCountUp';
 import { Logo } from '../Logo';
+import { settingsStore } from '../../state/settingsStore';
 import { wasteCollection } from '../../game/systems/ClimateEngine';
 import { gameStore as gs } from '../../state/gameStore';
 
@@ -36,6 +37,7 @@ export function TopBar() {
         <button onClick={gs.openIntro} aria-label="Nasıl oynanır?">?</button>
         <button onClick={teacherStore.openTeacher}>Öğretmen</button>
         <button onClick={teacherStore.openSources}>Kaynaklar</button>
+        <button onClick={settingsStore.open} aria-label="Ayarlar">⚙</button>
       </span>
     </header>
   );
