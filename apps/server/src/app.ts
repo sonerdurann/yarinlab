@@ -7,6 +7,7 @@ import { ZodError } from 'zod';
 declare module 'fastify' { interface FastifyInstance { ai: import('./ai/service.js').AiService } }
 import { authRoutes } from './routes/auth.js';
 import { gameRoutes } from './routes/game.js';
+import { teacherRoutes } from './routes/teacher.js';
 import { aiRoutes, prismaAiLog, prismaUserCallsToday } from './routes/ai.js';
 import { AiService, DEFAULT_LIMITS, type AiLimits } from './ai/service.js';
 import { providerFromEnv, type LlmProvider } from './ai/provider.js';
@@ -40,5 +41,6 @@ export async function buildApp(opts: { logger?: boolean; authRateMax?: number; a
   const ai = new AiService(opts.aiProvider ?? providerFromEnv(), prismaAiLog, prismaUserCallsToday, { ...DEFAULT_LIMITS, ...envLimits(), ...opts.aiLimits });
   app.decorate('ai', ai);
   await app.register(aiRoutes, { ai });
+  await app.register(teacherRoutes, { ai });
   return app;
 }

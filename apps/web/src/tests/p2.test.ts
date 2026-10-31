@@ -6,11 +6,9 @@ import { carbon, city, council, ocean, playableOrder, waste } from '../data/scen
 import { runDecision } from '../game/systems/DecisionEngine';
 import { coastalRisk, councilScore, floodRisk, wasteCollection } from '../game/systems/ClimateEngine';
 import { gameStore, isTaskComplete, taskSteps } from '../state/gameStore';
-import { teacherStore } from '../state/teacherStore';
 
 beforeEach(() => gameStore.resetSession());
 afterEach(() => {
-  teacherStore.setClassCode('');
   vi.unstubAllGlobals();
 });
 
@@ -140,14 +138,5 @@ describe('P2 senaryolar', () => {
     gameStore.reloadSession();
     expect(gameStore.get().citySystem.sealedShare).toBe(55);
     expect(gameStore.get().world.waterScore).toBe(85);
-  });
-});
-
-describe('yerel kurum kodu', () => {
-  it('kodu harf ve rakama indirir, en fazla 12 karakter', () => {
-    teacherStore.setClassCode('6-a okul!');
-    expect(teacherStore.get().classCode).toBe('6AOKUL');
-    teacherStore.setClassCode('ABCDEFGHIJKLMNOP');
-    expect(teacherStore.get().classCode).toBe('ABCDEFGHIJKL');
   });
 });

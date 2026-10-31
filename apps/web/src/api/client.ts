@@ -21,6 +21,7 @@ const MESSAGES: Record<string, string> = {
   email_taken: 'Bu e-posta zaten kayıtlı.',
   nickname_taken: 'Bu takma ad sınıfta kullanılıyor; başka bir tane seç.',
   class_not_found: 'Bu sınıf kodu bulunamadı.',
+  consent_required: 'Bu sınıf henüz öğrenci kabul etmiyor: öğretmenin okul ve veli izin adımlarını tamamlaması gerekiyor.',
   invalid_input: 'Girdileri kontrol et (parola en az 6/8 karakter, takma ad 3-20 karakter).',
   unauthorized: 'Önce giriş yapmalısın.',
   forbidden: 'Bu işlem için yetkin yok.',

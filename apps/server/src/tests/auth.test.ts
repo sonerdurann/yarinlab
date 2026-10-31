@@ -26,6 +26,9 @@ describe('auth ve yetki', () => {
     const c = await post('/api/classrooms', { name: '7-A' }, tCookie);
     expect(c.statusCode).toBe(201);
     code = c.json().classroom.joinCode; classId = c.json().classroom.id;
+    // izin akışı tamamlanmadan öğrenci katılamaz
+    expect((await post('/api/auth/student/register', { classCode: code, nickname: `Erken${tag}`, password: 'abc123' })).statusCode).toBe(403);
+    for (const kind of ['SCHOOL_APPROVAL', 'PARENT_NOTICE']) expect((await post(`/api/classrooms/${classId}/consent`, { kind, confirm: true }, tCookie)).statusCode).toBe(201);
     expect(code).toMatch(/^[A-Z0-9]{6}$/);
   });
 

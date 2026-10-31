@@ -6,6 +6,7 @@ import { CityIndicators, EndingPanel, EventLogPanel, MainMenu, ProgressPanel } f
 import { BuildPanel } from './ui/City/BuildPanel';
 import { HelpPanel } from './ui/City/HelpPanel';
 import { AssessmentPanel } from './ui/City/AssessmentPanel';
+import { AssignmentsPanel } from './ui/City/AssignmentsPanel';
 import { settingsStore } from './state/settingsStore';
 import { teacherStore } from './state/teacherStore';
 import { TaskPanel } from './ui/TaskPanel/TaskPanel';
@@ -113,6 +114,7 @@ export function App() {
       <HelpPanel />
       <EndingPanel />
       <AssessmentPanel />
+      <AssignmentsPanel />
       <AuthPanel />
       <Intro />
       <DecisionModal />

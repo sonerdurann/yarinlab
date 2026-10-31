@@ -36,6 +36,9 @@ export async function authRoutes(app: FastifyInstance, opts: { authRateMax?: num
     const b = studentRegisterSchema.parse(req.body);
     const cls = await prisma.classroom.findUnique({ where: { joinCode: b.classCode } });
     if (!cls) return reply.code(404).send({ error: 'class_not_found' });
+    const consents = await prisma.consentRecord.findMany({ where: { classroomId: cls.id } });
+    if (!consents.some((c) => c.kind === 'SCHOOL_APPROVAL') || !consents.some((c) => c.kind === 'PARENT_NOTICE'))
+      return reply.code(403).send({ error: 'consent_required' });
     const taken = await prisma.enrollment.findFirst({
       where: { classroomId: cls.id, user: { nickname: { equals: b.nickname, mode: 'insensitive' } } },
     });

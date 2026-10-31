@@ -24,6 +24,7 @@ export function TaskPanel({ onPick }: Props) {
         <button className="primary" onClick={() => gameStore.openTask(suggested.id)}>Önerilen: {suggested.title.split('–')[1]?.trim() ?? suggested.title}</button>
       )}
       <DirectorTip />
+      <button className="link" onClick={() => gameStore.openOverlay('tasks')}>Ödevlerim ve saha görevleri</button>
       <button className="link" onClick={() => gameStore.openOverlay('assessment')}>Ön/son değerlendirme</button>
       <div className="module-list">
         {MODULES.map((m) => {

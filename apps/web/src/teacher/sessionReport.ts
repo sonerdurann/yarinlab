@@ -1,5 +1,6 @@
 import type { DecisionResult } from '../state/types';
-import type { SchoolMeasure } from './report';
+/** Sınıf düzeyi okul ölçümü (kişisel veri yok). Sunucuda RealWorldMeasurement olarak tutulur. */
+export type SchoolMeasure = { totalKg: number; students: number; days: number };
 
 /** Bu cihazdaki tek oturumun anonim raporu (kılavuz §12, §16). Ad, e-posta, konum, fotoğraf içermez. */
 export type SessionReport = {

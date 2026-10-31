@@ -19,7 +19,9 @@ export function client(app: App) {
     },
     async classroom(cookie: string, name = '7-A') {
       const r = await req('POST', '/api/classrooms', { name }, cookie);
-      return r.json().classroom as { id: string; joinCode: string };
+      const c = r.json().classroom as { id: string; joinCode: string };
+      for (const kind of ['SCHOOL_APPROVAL', 'PARENT_NOTICE']) await req('POST', `/api/classrooms/${c.id}/consent`, { kind, confirm: true }, cookie);
+      return c;
     },
     async student(code: string, nickname: string) {
       const r = await req('POST', '/api/auth/student/register', { classCode: code, nickname, password: 'abc123' });

@@ -158,6 +158,7 @@ model Assignment {
   moduleId    String?
   taskIds     String[]
   realWorldTaskId String?
+  groupId     String?
   title       String
   dueAt       DateTime?
   createdAt   DateTime @default(now())
@@ -169,6 +170,7 @@ model Assignment {
 model RealWorldMeasurement {
   id          String   @id @default(cuid())
   userId      String
+  classroomId String?  // öğretmenin sınıf düzeyi ölçümü
   taskKey     String
   phase       String // BASELINE | FOLLOWUP
   value       Float
@@ -178,6 +180,7 @@ model RealWorldMeasurement {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, taskKey])
+  @@index([classroomId, taskKey])
 }
 
 model Badge {
