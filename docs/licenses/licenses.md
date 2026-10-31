@@ -20,4 +20,4 @@ Kenney paketleri CC0 (ticari kullanım serbest, atıf zorunlu değil; oyunda kay
 - Zemin karoları 132 px genişlik; en yaygın doku boyutu 132×99 (City 132×101) = ~132×66 elmas + kalınlık. Yani 2:1 oran korunuyor ama taban 128 değil ~132.
 - Binalar çoğunlukla 132×127 (büyük) ve 99×54-85 (küçük).
 
-Ekip yapımı özel asset'ler: `license: team-owned`, `source: custom-compatible-art`.
+Ekip yapımı özel asset'ler (`license: team-owned`, `source: custom-compatible-art`): `BootScene` içinde kodla üretilen ağaç, güneş paneli, batarya, rüzgâr türbini, ayrıştırma kutusu ve ekin sırası dokuları. Kenney sanatından kopya değildir; aynı 2:1 elmas, palet ve yumuşak gölge dilini izler.

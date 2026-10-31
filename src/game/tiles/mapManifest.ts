@@ -22,7 +22,7 @@ export const GROUND_FRAMES: Record<number, Frame> = {
   3: { atlas: 'landscape', frame: 'landscapeTiles_035.png' }, // su
   4: { atlas: 'landscape', frame: 'landscapeTiles_083.png' }, // tarım toprağı
   5: { atlas: 'landscape', frame: 'landscapeTiles_059.png' }, // kıyı kumu
-  6: { atlas: 'landscape', frame: 'landscapeTiles_081.png', tint: 0xdfe6f2 }, // meydan
+  6: { atlas: 'landscape', frame: 'landscapeTiles_059.png', tint: 0xe3e8f1 }, // meydan / kaldırım (açık)
 };
 
 /** Hotspot id -> bina sprite'ı (132x127 sınıfı, 1 karo taban). */

@@ -24,7 +24,9 @@ for (let y = 0; y < N; y++) {
     const i = y * N + x;
     if (inBox(x, y, zones.ocean.box)) ground[i] = x + y >= 52 ? T.water : T.sand;
     else if (inBox(x, y, zones.farm.box)) ground[i] = T.farm;
-    else if (inBox(x, y, zones.city.box)) ground[i] = T.plaza;
+    else if (inBox(x, y, zones.city.box) || inBox(x, y, zones.waste.box)) ground[i] = T.plaza;
+    // ada kenarı: dış halka kum (çevresi su)
+    if ((x === 0 || y === 0 || x === N - 1 || y === N - 1) && ground[i] === T.grass) ground[i] = T.sand;
     // yollar: ana eksenler
     if ((y === 15 && x >= 3 && x <= 27) || (x === 14 && y >= 4 && y <= 26) || (y === 15 && x < 3)) roads[i] = T.road;
     if (x === 5 && y >= 6 && y <= 19) roads[i] = T.road;

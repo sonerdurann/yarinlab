@@ -22,5 +22,5 @@ export const assetLicenses: AssetLicense[] = [
   { name: 'Kenney Isometric Tiles Buildings', url: 'https://kenney.nl/assets/isometric-tiles-buildings', license: 'CC0', downloaded: '2026-10-31', used: true },
   { name: 'Kenney Isometric Tiles Landscape', url: 'https://kenney.nl/assets/isometric-tiles-landscape', license: 'CC0', downloaded: '2026-10-31', used: true },
   { name: 'Kenney UI Pack', url: 'https://kenney.nl/assets/ui-pack', license: 'CC0', downloaded: '2026-10-31', used: false },
-  { name: 'Ekip yapımı ağaç dokusu (BootScene)', url: '', license: 'team-owned', downloaded: '-', used: true },
+  { name: 'Ekip yapımı özel parçalar: ağaç, güneş paneli, batarya, türbin, ayrıştırma kutusu, ekin sırası (BootScene)', url: '', license: 'team-owned', downloaded: '-', used: true },
 ];

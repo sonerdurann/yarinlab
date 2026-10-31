@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { BUILDING_FRAMES, GROUND_FRAMES, GROUND_SPRITE_HEIGHT, MAP, ROAD_FRAMES, TREE_GID } from '../tiles/mapManifest';
 import { hotspots, type Hotspot } from '../tiles/hotspots';
+import { DECOR } from '../tiles/decor';
 import { gameStore } from '../../state/gameStore';
 
 type TiledLayer = { name: string; type: string; data?: number[] };
@@ -32,8 +33,9 @@ export class WorldScene extends Phaser.Scene {
 
   create() {
     const map = this.cache.json.get(MAP.key) as TiledMap;
-    this.cameras.main.setBackgroundColor(0xeaf3f7);
+    this.cameras.main.setBackgroundColor(0x9fd3e8); // ada çevresi: açık deniz
     this.drawTiles(map);
+    this.drawDecor();
     this.drawBuildings();
     this.glow = this.add.graphics().setDepth(5000);
     this.tip = this.add
@@ -52,6 +54,7 @@ export class WorldScene extends Phaser.Scene {
     const layer = (n: string) => map.layers.find((l) => l.name === n)?.data ?? [];
     const ground = layer('ground'), roads = layer('roads'), deco = layer('decoration');
     const isRoad = (x: number, y: number) => x >= 0 && y >= 0 && x < MAP.size && y < MAP.size && !!roads[y * MAP.size + x];
+    const decorTiles = new Set(DECOR.map((d) => d.y * MAP.size + d.x));
     // Satır-sütun sırası (right-down) düz karolar için doğru ressam sırasını verir.
     for (let y = 0; y < MAP.size; y++) {
       for (let x = 0; x < MAP.size; x++) {
@@ -65,10 +68,26 @@ export class WorldScene extends Phaser.Scene {
         if (!def) continue;
         // 1.015 ölçek: karolar arası dikişi kapatır
         this.add.image(p.x, p.y, def.atlas, def.frame).setOrigin(0.5, 0).setScale(def.flipX ? -1.015 : 1.015, 1.015).setDepth(0);
-        if (deco[i] === TREE_GID) {
+        if (deco[i] === TREE_GID && !decorTiles.has(i)) {
           const c = iso(x + 0.5, y + 0.5);
           this.add.image(c.x, c.y + 6, 'tree').setOrigin(0.5, 1).setDepth(10 + c.y);
         }
+      }
+    }
+  }
+
+  /** Etkileşimsiz dekor: üretilmiş özel parçalar ve Kenney dekor binaları. */
+  private drawDecor() {
+    for (const d of DECOR) {
+      const p = iso(d.x, d.y);
+      if (d.kind === 'building') {
+        const f = this.textures.getFrame('buildings', d.frame!);
+        this.add.image(p.x, p.y - (f.height - GROUND_SPRITE_HEIGHT), 'buildings', d.frame).setOrigin(0.5, 0).setDepth(10 + p.y);
+      } else if (d.kind === 'turbine') {
+        this.add.image(p.x, p.y + MAP.tileHeight * 0.75, d.kind).setOrigin(0.5, 1).setDepth(10 + p.y + 20);
+      } else {
+        // zemin karosunun elmasına oturur (üst köşe hizası); kutu parçaları yukarı taşar
+        this.add.image(p.x, p.y, d.kind).setOrigin(0.5, 0).setDepth(d.kind === 'crop' ? 1 : 10 + p.y + 10);
       }
     }
   }
