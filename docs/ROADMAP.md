@@ -2,7 +2,7 @@
 
 | Tarih | Yapılacak | Çıkış kontrolü | Durum |
 |---|---|---|---|
-| 31 Eki | Repo + şablon; Kenney asset; Tiled 32×32; temel harita | Ana dünya açılır, ≥1 hotspot tıklanır | devam |
+| 31 Eki | Repo + şablon; Kenney asset; Tiled 32×32; temel harita | Ana dünya açılır, ≥1 hotspot tıklanır | tamamlandı (Kenney indirmesi bekliyor, geçici zemin) |
 | 1 Kas | Kantin senaryosu; 3 karar; kaynak paneli; 2 gelecek | Karar değişince sonuç doğru güncellenir | – |
 | 2 Kas | PDF başvuru; oyun tasarım görselleri; iddia doğrulama | Başvuru tamam (son: 23.59); hayalî pilot iddiası yok | – |
 | 3-5 Kas | Karar motoru testleri; harita temizliği; responsive | Temel testler geçer, mobil açılır | – |
@@ -15,12 +15,12 @@ Final: 15-16 Kas, 24 saat geliştirme, 5 dk sunum + 3 dk soru-cevap. Finalde 3 k
 
 ## Başlangıç kontrol listesi (§27)
 - [x] 01 Proje ana klasörü `yarinlab`
-- [ ] 02 Phaser + React + TypeScript şablonu
+- [x] 02 Phaser + React + TypeScript şablonu
 - [ ] 03 Kenney City, Buildings, Landscape, UI Pack indir + lisanslar
-- [ ] 04 Tiled 32×32 izometrik harita, tile metadata
-- [ ] 05 Okul ve kantin binaları haritada
+- [~] 04 Tiled 32×32 izometrik harita (JSON üretildi; tile metadata Kenney ile)
+- [x] 05 Okul ve kantin binaları haritada (geçici)
 - [ ] 06 Kantin hotspot + React görev paneli
-- [ ] 07 3 seçenekli saf karar motoru
+- [x] 07 3 seçenekli saf karar motoru
 - [ ] 08 İki gelecek karşılaştırması
 - [ ] 09 Fallback AI açıklaması + gerekçe alanı
 - [ ] 10 Öğretmen özeti + kaynak/lisans sayfası
