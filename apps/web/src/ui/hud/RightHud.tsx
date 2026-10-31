@@ -55,7 +55,10 @@ function Minimap({ game }: { game: Props['game'] }) {
     <div className="minimap panel">
       <canvas ref={ref} width={MW} height={MH} onClick={go} aria-label="Mini harita: tıklayarak o bölgeye git" role="img" />
       {view && <span className="cam-rect" aria-hidden="true" style={{ left: `${(view.x / MW) * 100}%`, top: `${(view.y / MH) * 100}%`, width: `${(view.w / MW) * 100}%`, height: `${(view.h / MH) * 100}%` }} />}
-      <ul className="sr-only">{hotspots.map((h) => <li key={h.id}><button onClick={() => game.current?.scene.getScene('WorldScene')?.events.emit('focus-hotspot', h.id)}>{h.label}</button></li>)}</ul>
+      {/* Klavye ve ekran okuyucu: bölgeye git ve bilgi kartını aç */}
+      <ul className="sr-only" aria-label="Haritadaki bölgeler">{hotspots.map((h) => (
+        <li key={h.id}><button onClick={() => { game.current?.scene.getScene('WorldScene')?.events.emit('focus-hotspot', h.id); gameStore.inspectTarget({ kind: 'zone', id: h.id }); }}>{h.label} bilgi kartı</button></li>
+      ))}</ul>
     </div>
   );
 }

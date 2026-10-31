@@ -6,6 +6,11 @@ packages/shared   TypeScript ortak çekirdek (istemci + sunucu)
   src/content/    35 görev (JSON), 7 modül, kazanımlar, bilimsel kaynaklar, ön/son test, gerçek dünya etkinlikleri, final sonları
   src/ai/         doğrulanmış kural tabanlı geri bildirim + yapay zekâ yanıt doğrulayıcı
 apps/web          Vite + React 19 (arayüz) + Phaser 4 (izometrik dünya)
+  src/game/art/   kod sanatı: parametrik izometrik bina üretici, doğa, durum rozetleri (isoArt.ts)
+  src/game/scenes BootScene (doku), WorldScene (Yarın Şehri 40x40), CoastScene (kıyı 24x24), iso.ts (geometri, kamera, pinch)
+  src/ui/hud/     üst/sol/sağ HUD, alt dock ve çekmeceler; ui/menu: başlık ekranı, karakter oluşturucu
+  src/ui/         görev ekranı + modül sahneleri (scenes/), iki gelecek dioraması, rehber Yarı (guide/), karakterler, öğretmen paneli
+  src/design/     tasarım belirteçleri ve oyun arayüzü stilleri (docs/DESIGN_SYSTEM.md)
 apps/server       Fastify 5 + Prisma 6 + PostgreSQL 16 (hesaplar, kayıt, öğretmen, rapor, AI)
 ```
 
@@ -21,7 +26,7 @@ Simülasyon saf fonksiyonlardan oluşur; rastgelelik yalnızca `rngFor(seed, day
 
 ## Yapay zekâ
 - `LlmProvider` arayüzü: `NullProvider` (varsayılan), `AnthropicProvider` (resmî SDK, yapılandırılmış JSON çıktı, sunucu taraflı ret yedeği), `MockProvider` (test).
-- `AiService` üç rol sunar: **İklim Öğretmeni** (sokratik ipucu, kavram yanılgısı), **Senaryo Yönetmeni** (yalnızca açık görevler arasından seçim, sayı/kural değiştiremez), **Öğretmen Asistanı** (anonim sınıf özeti).
+- `AiService` üç rol sunar: **İklim Öğretmeni / Rehber Yarı** (sokratik ipucu, kavram yanılgısı; 7 niyet modu: geri bildirim, ipucu, neden, alternatif, açıkla, tekrar öğren, değerlendir), **Senaryo Yönetmeni** (yalnızca açık görevler arasından seçim, sayı/kural değiştiremez), **Öğretmen Asistanı** (anonim sınıf özeti).
 - Her yanıt şema, sayı (yalnızca motor sonucu), kaynak (görevin kanıtları), çocuk güvenliği ve sayısal karbon iddiası yasağı açısından doğrulanır; geçmezse doğrulanmış yedek döner. Zaman aşımı, kullanıcı başına günlük kota, günlük token bütçesi, önbellek ve hız sınırı vardır. Öğrenci metni kişisel veriden temizlenir; istem enjeksiyonu için sistem kuralı vardır.
 - Hesaplama motoru ile dil modeli ayrıdır: model şehir durumunu değiştiremez.
 

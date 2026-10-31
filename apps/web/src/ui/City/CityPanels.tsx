@@ -4,6 +4,7 @@ import { cityOf, completedTaskIds, moduleOf } from '../../state/city';
 import { playableScenarios } from '../../data/scenarios';
 import { Modal } from '../Modal/Modal';
 import { Speech } from '../Mascot';
+import { Ada } from '../characters/Avatar';
 
 const BADGE_ICON: Record<string, string> = { 'first-decision': '👣', reasoner: '💬', 'two-futures': '🔮', explorer: '🧭', builder: '🏗️', upgrader: '🚀', 'clean-grid': '⚡', seasons: '🍂', halfway: '🏔️', council: '🏛️', field: '🔬', reflect: '📝' };
 
@@ -146,7 +147,10 @@ export function EndingPanel() {
     <Modal titleId="end-title" title={e.title} onClose={gameStore.closeOverlay} wide>
       <div className={`ending ending-${e.key}`}>
         <div className="ending-scene" aria-hidden="true">{e.key === 'thriving' ? '🌳🏙️☀️🐢' : e.key === 'transition' ? '🌱🏗️⛅' : '🌡️🏚️🌧️'}</div>
-        <Speech mood={e.key === 'thriving' ? 'wow' : e.key === 'transition' ? 'happy' : 'worried'}>{e.text}</Speech>
+        <div className="ending-ada">
+          <Ada size={84} expr={e.key === 'thriving' ? 'joy' : e.key === 'transition' ? 'talk' : 'worried'} />
+          <div className="bubble"><strong className="bubble-name">Ada · 2040'tan hologram mesajı</strong>{e.text}</div>
+        </div>
         <ul className="facts">
           <li>Dayanıklılık {ind.resilience}/100</li><li>Ekosistem {ind.ecosystem}/100</li><li>Refah {ind.wellbeing}/100</li>
           <li>Emisyon endeksi {ind.emissionIndex}</li><li>Okuryazarlık {ind.literacy}/100</li><li>Gelecek puanı {e.score}</li>

@@ -10,6 +10,7 @@ import { BuildingCard } from './ui/City/BuildingCard';
 import { GuidePanel } from './ui/guide/GuidePanel';
 import { TitleScreen } from './ui/menu/TitleScreen';
 import { CharacterCreator } from './ui/menu/CharacterCreator';
+import { AdaMessage } from './ui/characters/AdaMessage';
 import { BuildPanel } from './ui/City/BuildPanel';
 import { HelpPanel } from './ui/City/HelpPanel';
 import { AssessmentPanel } from './ui/City/AssessmentPanel';
@@ -97,6 +98,7 @@ export function App() {
       <BuildingCard />
       <Dock onMap={() => { gameStore.setMapView('world'); game.current?.scene.getScene('WorldScene')?.events.emit('focus-hotspot', 'school'); }} />
       <GuidePanel />
+      <AdaMessage />
       <p className="rotate-hint" aria-hidden="true">📱↻ Daha geniş görünüm için cihazını yan çevir</p>
       {gs.schoolOpen && <SchoolPanel onPick={pick} />}
       {notice && !decisionOpen && (

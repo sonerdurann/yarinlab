@@ -43,11 +43,12 @@ test.describe('misafir oyuncu', () => {
     await page.locator('#zones').getByRole('button', { name: 'Kıyı kapısı', exact: true }).click();
     await expect(page.getByRole('dialog')).toContainText('Mavi Nöbet 1');
     await page.keyboard.press('Escape');
-    // bilgi kartı klavyeyle de açılabilsin diye mini harita listesi yerine store üzerinden değil, kanvas ortasına tıklanır
+    // Bilgi kartı: önce kanvasta kampüse tıklanır; dokunmatikte/ekran boyutuna göre isabet etmezse klavye listesiyle açılır.
     await page.getByRole('navigation', { name: 'Oyun menüsü' }).getByRole('button', { name: /Harita/ }).click();
-    const box = (await page.locator('.world canvas').boundingBox())!;
-    await page.mouse.click(box.x + box.width / 2 + 40, box.y + box.height / 2 - 40);
     const card = page.locator('.inspect-card');
+    const zoneBtn = page.getByRole('button', { name: 'Okul kampüsü bilgi kartı' });
+    await zoneBtn.focus();
+    await page.keyboard.press('Enter');
     await expect(card).toBeVisible();
     await expect(card.getByRole('heading')).toHaveText('Okul kampüsü');
     await card.getByRole('button', { name: /Geliştir/ }).click();
@@ -55,6 +56,14 @@ test.describe('misafir oyuncu', () => {
     await card.getByRole('button', { name: 'Kartı kapat' }).click();
     await page.getByRole('button', { name: /Sel riski/ }).click();
     await expect(page.getByRole('button', { name: /Sel riski/ })).toHaveAttribute('aria-pressed', 'true');
+    // kıyı haritasına geçiş ve dönüş
+    await page.getByRole('button', { name: 'Kıyı kapısı bilgi kartı' }).focus();
+    await page.keyboard.press('Enter');
+    await card.getByRole('button', { name: /Kıyıya git/ }).click();
+    await page.getByRole('button', { name: /Su altı/ }).click();
+    await expect(page.getByRole('button', { name: /Su altı/ })).toHaveAttribute('aria-pressed', 'true');
+    await page.getByRole('button', { name: /Şehre dön/ }).click();
+    await expect(page.locator('.minimap')).toBeVisible();
   });
 
   test('karakter ve rehber: avatar kaydedilir, Yarı ipucu verir', async ({ page }) => {

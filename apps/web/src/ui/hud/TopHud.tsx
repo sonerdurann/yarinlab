@@ -79,9 +79,9 @@ export function TopHud() {
         </span>
         <span role="status" className="sync hide-sm">{syncLabel(sync.status)}</span>
         <button className="me" onClick={authStore.open} aria-label={user ? `Hesabım: ${user.displayName}` : 'Giriş'}>
-          <AvatarFace look={profile.avatar} size={30} />{user ? <span className="hide-sm">{user.displayName}</span> : <span>Giriş</span>}
+          <AvatarFace look={profile.avatar} size={30} />{user ? <span className="lbl" aria-hidden="true">{user.displayName}</span> : <span className="lbl" aria-hidden="true">Giriş</span>}
         </button>
-        <button onClick={teacherStore.openTeacher}>Öğretmen</button>
+        <button onClick={teacherStore.openTeacher} aria-label="Öğretmen" title="Öğretmen paneli"><span aria-hidden="true" className="ico-only">🍎</span><span className="lbl" aria-hidden="true">Öğretmen</span></button>
         <button onClick={settingsStore.open} aria-label="Ayarlar" title="Ayarlar">⚙</button>
         <button onClick={() => gameStore.openOverlay('help')} aria-label="Yardım" title="Yardım">?</button>
         <button onClick={() => gameStore.openOverlay('menu')} aria-label="Ana menü" title="Ana menü">☰</button>

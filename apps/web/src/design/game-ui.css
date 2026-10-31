@@ -292,3 +292,26 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 }
 /* Başlık ekranından açılan pencereler (öğretmen, ayarlar, giriş, karakter) başlığın üstünde görünür */
 .app:has(.title-screen) .modal-backdrop { z-index: calc(var(--yl-z-title) + 2); }
+
+/* Üst çubuk tablet sıkılaştırma (eski theme.css gizleme kuralını geçersiz kılar) */
+.hud-top .pills .pill { display: inline-flex; }
+.hud-top .pills .pill.hide-sm { display: inline-flex; }
+.hud-top .ico-only { display: none; }
+@media (max-width: 1400px) { .hud-top .pills .pill.hide-sm { display: none; } }
+@media (max-width: 1250px) {
+  .hud-top .pills { gap: 4px; }
+  .hud-top .pill-btn { padding: 2px 9px; }
+  .hud-top .topbar-actions > button:not(.me) .lbl { display: none; }
+  .hud-top .ico-only { display: inline; }
+}
+@media (max-width: 1100px) {
+  .hud-top .topbar-actions > button.me .lbl { display: none; }
+  .hud-top .topbar-actions > button.me { padding: 2px 4px; }
+  .hud-top .time-chip .weather { display: none; }
+  .hud-top .time-chip .date { font-size: 0.85rem; }
+  .hud-top.topbar { padding: 0 8px; gap: 6px; }
+}
+.ending-ada { display: flex; gap: 14px; align-items: center; margin: 8px 0; }
+.ending-ada .bubble { flex: 1; }
+.ada-message { position: absolute; top: 150px; left: 50%; transform: translateX(-50%); width: min(460px, calc(100% - 32px)); display: flex; gap: 12px; align-items: center; padding: 10px 14px; z-index: var(--yl-z-card); border: 3px solid var(--yl-teal); background: linear-gradient(135deg, #ffffffee, #e3f8f9ee); }
+.ada-message p { margin: 2px 0 0; font-size: var(--yl-fs-sm); }

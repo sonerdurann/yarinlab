@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { GROUND_FRAMES, MAP, ROAD_FRAMES, TREE_GID, WATER_DROP, WATER_GID } from '../tiles/mapManifest';
+import { GROUND_FRAMES, GROUND_SPRITE_HEIGHT, MAP, ROAD_FRAMES, TREE_GID, WATER_DROP, WATER_GID } from '../tiles/mapManifest';
 import { footprintTiles, hotspotCenter, hotspots, type Hotspot } from '../tiles/hotspots';
 import { DECOR } from '../tiles/decor';
 import { gameStore, type MapLayer } from '../../state/gameStore';
@@ -83,6 +83,18 @@ export class WorldScene extends Phaser.Scene {
     this.scale.on('resize', () => this.scale.updateBounds());
     this.events.on('focus-hotspot', (id: string) => this.focusHotspot(id));
     this.events.on('focus-tile', (x: number, y: number) => this.cameras.main.pan(iso(x, y).x, iso(x, y).y, 400, 'Sine.easeInOut'));
+    // Karar penceresi kapanınca kamera ilgili bölgeye gider ve değişim vurgulanır (prompt §7 "dünyada etki").
+    let wasOpen = gameStore.get().decisionOpen;
+    const unsubFocus = gameStore.subscribe(() => {
+      const st = gameStore.get();
+      if (wasOpen && !st.decisionOpen && st.history.length && st.mapView === 'world') {
+        const mod = st.activeScenarioId.split('_')[0];
+        const zone = Object.entries(HOTSPOT_MODULE).find(([, m]) => m === mod)?.[0];
+        if (zone) { this.focusHotspot(zone); this.time.delayedCall(reducedMotion() ? 0 : 450, () => this.pulse(zone)); }
+      }
+      wasOpen = st.decisionOpen;
+    });
+    this.events.once('shutdown', unsubFocus);
     const unsub = gameStore.subscribe(() => {
       const r = gameStore.get().result;
       if (r && r !== this.lastResult) {
@@ -139,31 +151,45 @@ export class WorldScene extends Phaser.Scene {
     }
     for (const h of hotspots) for (const [x, y] of footprintTiles(h)) for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) blocked.add((y + dy) * N + x + dx);
     for (const s of BUILD_SLOTS) if (!s.map || s.map === 'world') blocked.add(s.y * N + s.x);
+    // Performans: durağan zemin ve yollar 10x10 karoluk parçalar hâlinde dokuya "pişirilir" (≈1600 nesne yerine 16).
+    // Parçalar satır-sütun sırasıyla eklenir; karo kalınlığı bir sonraki parçanın karolarıyla örtülür.
+    const B = 10;
+    for (let by = 0; by < N; by += B) {
+      for (let bx = 0; bx < N; bx += B) {
+        const left = iso(bx, by + B).x - 2, top = iso(bx, by).y - 2;
+        const w = 2 * B * (MAP.tileWidth / 2) + 4, h = 2 * B * HH + GROUND_SPRITE_HEIGHT + 4;
+        const rt = this.add.renderTexture(left, top, w, h).setOrigin(0, 0).setDepth(0);
+        for (let y = by; y < by + B; y++) {
+          for (let x = bx; x < bx + B; x++) {
+            const i = y * N + x;
+            const p = iso(x, y);
+            let def: { atlas: string; frame: string; tint?: number; flipX?: boolean } | undefined = GROUND_FRAMES[ground[i]];
+            if (roads[i]) {
+              const ax = isRoad(x - 1, y) || isRoad(x + 1, y), ay = isRoad(x, y - 1) || isRoad(x, y + 1);
+              def = ax && ay ? ROAD_FRAMES.cross : ay ? ROAD_FRAMES.alongY : ROAD_FRAMES.alongX;
+            }
+            if (!def) continue;
+            const isWater = !roads[i] && ground[i] === WATER_GID;
+            if (isWater) {
+              // su karoları ayrı kalır (parıltı animasyonu)
+              const img = this.add.image(p.x, p.y + WATER_DROP, def.atlas, def.frame).setOrigin(0.5, 0).setScale(1.015).setDepth(0.5);
+              this.waterTiles.push(img);
+              this.ambient.push(this.tweens.add({ targets: img, alpha: 0.9, duration: 1800, yoyo: true, repeat: -1, ease: 'Sine.easeInOut', delay: ((x + y) % 8) * 200 }));
+              continue;
+            }
+            rt.stamp(def.atlas, def.frame, p.x - left, p.y - top, { originX: 0.5, originY: 0, scaleX: def.flipX ? -1.015 : 1.015, scaleY: 1.015, tint: def.tint ?? 0xffffff });
+          }
+        }
+        rt.render();
+      }
+    }
     for (let y = 0; y < N; y++) {
       for (let x = 0; x < N; x++) {
         const i = y * N + x;
-        const p = iso(x, y);
-        let def: { atlas: string; frame: string; tint?: number; flipX?: boolean } | undefined = GROUND_FRAMES[ground[i]];
-        if (roads[i]) {
-          const ax = isRoad(x - 1, y) || isRoad(x + 1, y), ay = isRoad(x, y - 1) || isRoad(x, y + 1);
-          def = ax && ay ? ROAD_FRAMES.cross : ay ? ROAD_FRAMES.alongY : ROAD_FRAMES.alongX;
-        }
-        if (!def) continue;
-        const isWater = !roads[i] && ground[i] === WATER_GID;
-        const img = this.add
-          .image(p.x, p.y + (isWater ? WATER_DROP : 0), def.atlas, def.frame)
-          .setOrigin(0.5, 0)
-          .setScale(def.flipX ? -1.015 : 1.015, 1.015)
-          .setDepth(0);
-        if (def.tint) img.setTint(def.tint);
-        if (isWater) {
-          this.waterTiles.push(img);
-          this.ambient.push(this.tweens.add({ targets: img, alpha: 0.9, duration: 1800, yoyo: true, repeat: -1, ease: 'Sine.easeInOut', delay: ((x + y) % 8) * 200 }));
-        }
         if (deco[i] === TREE_GID && !blocked.has(i)) {
           const key = (x * 7 + y * 3) % 5 === 0 ? 'tree-b' : x < 13 && y > 14 && y < 27 ? 'fruit' : 'tree';
           const t = placeUpright(this, key, x, y);
-          if ((x + y) % 4 === 0) this.ambient.push(this.tweens.add({ targets: t, angle: { from: -1.5, to: 1.5 }, duration: 2400 + ((x * y) % 7) * 200, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' }));
+          if ((x + y) % 6 === 0) this.ambient.push(this.tweens.add({ targets: t, angle: { from: -1.5, to: 1.5 }, duration: 2400 + ((x * y) % 7) * 200, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' }));
         } else if (ground[i] === 1 && !roads[i] && !blocked.has(i) && (x * 31 + y * 17) % 23 === 0 && !deco[i]) {
           // yeşil alan arttıkça açılan ek ağaç adayları (kararlar dünyada görünür)
           this.extraTrees.push(placeUpright(this, 'tree-b', x, y).setVisible(false));
