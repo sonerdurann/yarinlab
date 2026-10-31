@@ -41,3 +41,25 @@ describe('wasteCollection çapraz kural', () => {
     expect(wasteCollection(0, 0, 25).collectionNeed).toBe(0);
   });
 });
+
+import { scenarioImpactScore } from '../game/systems/ClimateEngine';
+import { food } from '../data/scenarios';
+
+describe('scenarioImpactScore', () => {
+  const score = (c: Choice) => scenarioImpactScore(applyChoice(food.baseline, c), food.baseline);
+  it('0-100 aralığında, deterministik ve karar yok durumundan yüksek', () => {
+    const none = score(food.noDecision);
+    for (const c of food.choices) {
+      const s = score(c);
+      expect(s).toBeGreaterThanOrEqual(0);
+      expect(s).toBeLessThanOrEqual(100);
+      expect(score(c)).toBe(s);
+    }
+    expect(score(food.choices[1])).toBeGreaterThan(none);
+  });
+  it('uç değerlerde sınırlı kalır', () => {
+    const extreme = { ...food.baseline, foodWasteKg: 9999, budget: -5000, wellbeing: 500 };
+    expect(scenarioImpactScore(extreme, food.baseline)).toBeLessThanOrEqual(100);
+    expect(scenarioImpactScore(extreme, food.baseline)).toBeGreaterThanOrEqual(0);
+  });
+});

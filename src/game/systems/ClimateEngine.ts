@@ -25,3 +25,14 @@ export function isValidState(r: Resources): boolean {
     inRange(r.wellbeing)
   );
 }
+
+/**
+ * Senaryo etki puanı (0-100): oyun içi denge göstergesi; kg CO2e DEĞİLDİR.
+ * Atık azalması, bütçenin korunması ve memnuniyetin ortalaması. Kılavuz §11: "atık kg" ile ayrı gösterilir.
+ */
+export function scenarioImpactScore(r: Resources, baseline: Resources): number {
+  const clamp = (n: number) => Math.max(0, Math.min(100, n));
+  const wastePts = clamp(100 * (1 - r.foodWasteKg / (baseline.foodWasteKg * 1.5)));
+  const budgetPts = clamp((100 * r.budget) / baseline.budget);
+  return Math.round((wastePts + budgetPts + clamp(r.wellbeing)) / 3);
+}

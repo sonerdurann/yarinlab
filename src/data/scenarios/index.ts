@@ -6,6 +6,8 @@ export type FoodScenario = Omit<Scenario, 'choices'> & {
   brief: string;
   context: { students: number; mealDemand: number; budgetLabel: string; goal: string };
   choices: (Choice & { summary: string })[];
+  noDecision: Choice & { summary: string };
+  realWorldAction: { title: string; action: string; measurementPlan: string[] };
   disclaimer: string;
   reasoningOptions: string[];
   transferQuestion: string;

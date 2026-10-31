@@ -20,7 +20,7 @@ export function DecisionModal() {
   useEffect(() => {
     if (!s.decisionOpen) return;
     ref.current?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && gameStore.closeDecision();
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && !gameStore.get().comparisonOpen && gameStore.closeDecision();
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [s.decisionOpen]);
@@ -145,6 +145,7 @@ export function DecisionModal() {
 
             <div className="actions">
               <button onClick={gameStore.retry}>Tekrar dene (aynı başlangıç)</button>
+              <button onClick={gameStore.openComparison}>İki geleceği karşılaştır</button>
               <button className="primary" onClick={gameStore.closeDecision}>
                 Haritaya dön
               </button>

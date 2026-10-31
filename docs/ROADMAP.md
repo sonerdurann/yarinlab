@@ -21,7 +21,7 @@ Final: 15-16 Kas, 24 saat geliştirme, 5 dk sunum + 3 dk soru-cevap. Finalde 3 k
 - [x] 05 Okul ve kantin binaları haritada (Kenney sprite)
 - [x] 06 Kantin hotspot + React görev paneli
 - [x] 07 3 seçenekli saf karar motoru
-- [ ] 08 İki gelecek karşılaştırması
+- [x] 08 İki gelecek karşılaştırması
 - [ ] 09 Fallback AI açıklaması + gerekçe alanı
 - [ ] 10 Öğretmen özeti + kaynak/lisans sayfası
 - [ ] 11 12 kabul testi + production build

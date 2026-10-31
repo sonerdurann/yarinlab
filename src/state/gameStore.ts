@@ -21,6 +21,10 @@ export type GameState = {
   result: DecisionResult | null;
   /** Aynı başlangıç koşullarında denenen tüm kararlar */
   history: DecisionResult[];
+  /** İki gelecek karşılaştırması: 'N' = kararlar yok, aksi halde seçenek id'si */
+  comparisonOpen: boolean;
+  compareA: string;
+  compareB: string;
   /** Ortak dünya durumu: değerlendirmeden sonra `after`, tekrar denemede baseline */
   world: Resources;
 };
@@ -36,6 +40,9 @@ const initial = (): GameState => ({
   transferAnswer: '',
   result: null,
   history: [],
+  comparisonOpen: false,
+  compareA: 'N',
+  compareB: 'B',
   world: { ...food.baseline },
 });
 
@@ -94,6 +101,12 @@ export const gameStore = {
   },
   /** "Tekrar dene": aynı başlangıç koşullarına dön, başka karar dene. */
   retry: () => set({ result: null, pendingChoiceId: null, reasoningOption: null, reasoningText: '', world: { ...food.baseline } }),
+  openComparison() {
+    const last = state.history[state.history.length - 1]?.choiceId ?? state.compareB;
+    set({ comparisonOpen: true, compareA: 'N', compareB: last, canteenVisited: true });
+  },
+  closeComparison: () => set({ comparisonOpen: false }),
+  setCompare: (slot: 'A' | 'B', id: string) => set(slot === 'A' ? { compareA: id } : { compareB: id }),
   /** Yeni oturum: örnek öğrenci verisi sıfırlanır (T09). */
   resetSession: () => {
     state = initial();
