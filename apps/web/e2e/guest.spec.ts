@@ -25,12 +25,14 @@ test.describe('misafir oyuncu', () => {
     await expect(page.getByRole('dialog')).toContainText('Bu bölgedeki yapılar');
     await page.keyboard.press('Escape');
 
-    const budget = await page.locator('.pills .pill').first().textContent();
+    // Sayaç animasyonundan etkilenmemek için ekran okuyucunun okuduğu gerçek değer karşılaştırılır.
+    const budgetValue = page.locator('.pills .pill').first().locator('.sr-only').last();
+    const budget = await budgetValue.textContent();
     await page.reload();
     await expect(page.locator('.loading.done')).toBeAttached({ timeout: 20_000 });
     await expect(page.getByRole('dialog')).toContainText('Devam et');
     await page.getByRole('button', { name: /Devam et/ }).click();
-    await expect(page.locator('.pills .pill').first()).toHaveText(budget!);
+    await expect(budgetValue).toHaveText(budget!);
     await expect(page.locator('.time-chip')).toContainText('Gün 2');
     expect(errors).toEqual([]);
   });
