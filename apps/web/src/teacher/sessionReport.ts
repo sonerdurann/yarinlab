@@ -11,6 +11,7 @@ export type SessionReport = {
   taskComplete: boolean;
   attempts: {
     order: number;
+    scenarioId: string;
     choiceId: string;
     before: DecisionResult['before'];
     after: DecisionResult['after'];
@@ -43,7 +44,7 @@ export function buildSessionReport(i: ReportInput): SessionReport {
     generatedAt: i.generatedAt,
     scenario: { id: i.scenario.id, version: i.scenario.version, modelVersion: i.history[0]?.modelVersion ?? null },
     taskComplete: i.taskComplete,
-    attempts: i.history.map((h, k) => ({ order: k + 1, choiceId: h.choiceId, before: h.before, after: h.after, reasoning: h.reasoning ?? null })),
+    attempts: i.history.map((h, k) => ({ order: k + 1, scenarioId: h.scenarioId, choiceId: h.choiceId, before: h.before, after: h.after, reasoning: h.reasoning ?? null })),
     reflection: i.reflection,
     transferAnswer: i.transferAnswer,
     guideSource: i.guideSource,
@@ -51,6 +52,7 @@ export function buildSessionReport(i: ReportInput): SessionReport {
     notes: [
       'Değerler simülasyon göstergeleridir; gerçek saha ölçümü değildir.',
       'Gerekçe ve cevaplar öğrencinin yazdığı serbest metindir; paylaşmadan önce öğretmen incelemesi gerekir.',
+      'Enerji ve atık denemeleri aynı listede scenarioId ile durur.',
     ],
   };
 }
@@ -64,9 +66,9 @@ export function csvCell(v: string | number | null): string {
 
 /** Her deneme bir satır; Türkçe Excel için `;` ayırıcılı değil, standart `,` + BOM indirme tarafında eklenir. */
 export function reportToCsv(r: SessionReport): string {
-  const head = ['oturum', 'deneme', 'secenek', 'atik_once_kg', 'atik_sonra_kg', 'butce_once', 'butce_sonra', 'memnuniyet_once', 'memnuniyet_sonra', 'gerekce', 'gorev_tamam'];
+  const head = ['oturum', 'senaryo', 'deneme', 'secenek', 'atik_once_kg', 'atik_sonra_kg', 'butce_once', 'butce_sonra', 'memnuniyet_once', 'memnuniyet_sonra', 'gerekce', 'gorev_tamam'];
   const rows = r.attempts.map((a) =>
-    [r.sessionId, a.order, a.choiceId, a.before.foodWasteKg, a.after.foodWasteKg, a.before.budget, a.after.budget, a.before.wellbeing, a.after.wellbeing, a.reasoning, r.taskComplete ? 'evet' : 'hayır'].map(csvCell).join(','),
+    [r.sessionId, a.scenarioId, a.order, a.choiceId, a.before.foodWasteKg, a.after.foodWasteKg, a.before.budget, a.after.budget, a.before.wellbeing, a.after.wellbeing, a.reasoning, r.taskComplete ? 'evet' : 'hayır'].map(csvCell).join(','),
   );
   return [head.join(','), ...rows].join('\r\n') + '\r\n';
 }

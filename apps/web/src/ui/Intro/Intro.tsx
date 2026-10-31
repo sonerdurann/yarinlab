@@ -28,6 +28,9 @@ export function Intro() {
           <strong>Okulu ve kantini bul:</strong> Kantin'e tıkla ya da “Göreve başla” düğmesini ve Bölge listesini kullan (klavyeyle de çalışır).
         </li>
         <li>
+          <strong>Şehir, Karbon ve Kıyı:</strong> haritadan açılır. Gelecek Meclisi okul panelinden ve görev listesinden açılır.
+        </li>
+        <li>
           <strong>Karar ver:</strong> üç seçenekten birini seç, nedenini yaz, sonucu gör; sonra başka bir kararı dene ve iki geleceği karşılaştır.
         </li>
         <li>

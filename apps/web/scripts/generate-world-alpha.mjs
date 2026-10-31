@@ -9,11 +9,11 @@ const inBox = (x, y, [x0, x1, y0, y1]) => x >= x0 && x <= x1 && y >= y0 && y <= 
 const zones = {
   school: { box: [11, 17, 11, 17], center: [14, 14], scene: 'school.overview', label: 'Okul', locked: false },
   canteen: { box: [15, 20, 16, 19], center: [17, 18], scene: 'food.intro', label: 'Kantin', locked: false },
-  energy: { box: [2, 8, 3, 9], center: [5, 6], scene: 'energy.preview', label: 'Enerji', locked: false },
-  city: { box: [22, 29, 6, 14], center: [25, 10], scene: 'city.locked', label: 'Şehir', locked: true },
-  waste: { box: [2, 9, 16, 23], center: [5, 19], scene: 'waste.preview', label: 'Atık', locked: false },
-  farm: { box: [8, 17, 22, 29], center: [12, 25], scene: 'farm.locked', label: 'Tarım', locked: true },
-  ocean: { box: [24, 31, 24, 31], center: [27, 27], scene: 'ocean.locked', label: 'Kıyı', locked: true },
+  energy: { box: [2, 8, 3, 9], center: [5, 6], scene: 'energy.decision', label: 'Enerji', locked: false },
+  city: { box: [22, 29, 6, 14], center: [25, 10], scene: 'city.decision', label: 'Şehir', locked: false },
+  waste: { box: [2, 9, 16, 23], center: [5, 19], scene: 'waste.decision', label: 'Atık', locked: false },
+  farm: { box: [8, 17, 22, 29], center: [12, 25], scene: 'carbon.decision', label: 'Karbon', locked: false },
+  ocean: { box: [24, 31, 24, 31], center: [27, 27], scene: 'ocean.decision', label: 'Kıyı', locked: false },
 };
 
 const ground = new Array(N * N).fill(T.grass);
