@@ -1,0 +1,109 @@
+{
+  "id": "ocean_002",
+  "module": "ocean",
+  "order": 2,
+  "version": "1.0.0",
+  "title": "Mavi Nöbet 2 – Plastik Nereden Geliyor?",
+  "brief": "Kumsalda plastik şişe kapakları, poşetler ve izmarit bulunuyor. UNEP’e göre deniz plastiğinin önemli bir kısmı karadan, derelerden ve kötü atık yönetiminden gelir. Ekibin neyi araştırsın?",
+  "facts": [
+    {
+      "label": "Bulunanlar",
+      "value": "kapak, poşet, izmarit"
+    },
+    {
+      "label": "Dere ağzı",
+      "value": "kumsalın 300 m doğusu"
+    },
+    {
+      "label": "Hedef",
+      "value": "kaynağı bul"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Yalnızca kumsalı temizle",
+      "summary": "Belirtiyi gider",
+      "deltas": {
+        "wellbeing": 3,
+        "budget": -200,
+        "waterScore": 1
+      },
+      "tradeoff": "Kumsal kısa sürede temizlenir; kaynak sürdükçe atık geri gelir.",
+      "systemAdd": {
+        "habitatCare": 3
+      }
+    },
+    {
+      "id": "B",
+      "label": "Dere ağzında kaynak araştırması",
+      "summary": "Nedeni bul",
+      "deltas": {
+        "wellbeing": 2,
+        "budget": -300,
+        "waterScore": 3
+      },
+      "tradeoff": "Atığın nereden geldiği bulunur ve önlenebilir; araştırma zaman alır.",
+      "systemAdd": {
+        "habitatCare": 8,
+        "otherWasteKg": -1
+      }
+    },
+    {
+      "id": "C",
+      "label": "Gemileri suçla",
+      "summary": "Tahmin et",
+      "deltas": {
+        "wellbeing": -2,
+        "budget": 0,
+        "waterScore": 0
+      },
+      "tradeoff": "Kanıt toplanmadan karar verilir; kara kaynaklı atık sürer.",
+      "misconception": "Denizdeki plastiğin büyük kısmı gemilerden gelir."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "İnceleme yapılmaz",
+    "deltas": {
+      "wellbeing": -2,
+      "budget": 0,
+      "waterScore": -1
+    },
+    "tradeoff": "Atık birikmeye devam eder."
+  },
+  "learningOutcomeIds": [
+    "OC1",
+    "L2"
+  ],
+  "evidenceRefs": [
+    "R-UNEP-PLASTIC"
+  ],
+  "disclaimer": "Kıyı ve habitat değerleri simülasyon varsayımıdır; saha sayımı değildir.",
+  "reasoningOptions": [
+    "Kaynağı bulmadan sorun çözülmez.",
+    "Kumsalın hemen temiz olması önemliydi.",
+    "Tahminim bana yeterli geldi.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyonda kıyı riski değişti. Gerçek bir kıyı temizliğinde hangi verileri kaydederdin?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Öğretmen ve veli izniyle okul çevresindeki bir dere veya park kenarında 10 m’lik alanda atık türlerini sayın (dokunmadan veya eldivenle).",
+    "measurementPlan": [
+      "Kıyıya yalnızca öğretmen ve veli izniyle git",
+      "Yalnızca atık türü ve sayısı; kişi fotoğrafı yok",
+      "Aynı kıyı parçasında önce/sonra say",
+      "Canlılara dokunma, yuvaları rahatsız etme"
+    ]
+  },
+  "requires": "ocean_001"
+}

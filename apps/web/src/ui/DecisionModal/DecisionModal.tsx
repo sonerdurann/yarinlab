@@ -1,3 +1,5 @@
+import { MODULES, nextTaskOf } from '@yarinlab/shared';
+import { cityOf, completedTaskIds } from '../../state/city';
 import { useEffect, useState } from 'react';
 import { playableById, food } from '../../data/scenarios';
 import { ASSUMED_COLLECTION_CAPACITY_KG, CARBON_NOTE, CITY_FLOOD_NOTE, COUNCIL_NOTE, ENERGY_RISK_NOTE, OCEAN_NOTE, SIMULATION_NOTICE, WASTE_RULE_NOTE } from '../../data/constants';
@@ -40,6 +42,53 @@ function DeltaBar({ before, after, max, tone }: { before: number; after: number;
   );
 }
 
+/** Puan dökümü: sonuç, gerekçe ve denge (öğrenciyi zorlamayan, açıklamalı puanlama). */
+function ScoreCard({ scenarioId }: { scenarioId: string }) {
+  const s = useGameState();
+  const sc = [...s.scores].reverse().find((x) => x.scenarioId === scenarioId);
+  if (!sc) return null;
+  return (
+    <div className="score-card" aria-label="Karar puanı">
+      <strong>Karar puanı: {sc.total}/100</strong>
+      <span>Sonuç {sc.outcome}</span><span>Gerekçe {sc.reasoning}</span><span>Denge {sc.balance}</span>
+      {sc.feedback.length > 0 && <ul>{sc.feedback.map((f) => <li key={f}>{f}</li>)}</ul>}
+    </div>
+  );
+}
+
+/** Görev tamamlanınca sıradaki görev; final görevinde 2040 sonu. */
+function NextTaskButton({ scenarioId }: { scenarioId: string }) {
+  const s = useGameState();
+  const done = completedTaskIds(s);
+  if (!done.includes(scenarioId)) return null;
+  if (scenarioId === 'council_005') return <button className="primary" onClick={() => { gameStore.closeDecision(); gameStore.openOverlay('ending'); }}>2040’a bak</button>;
+  const mod = scenarioId.split('_')[0];
+  const next = nextTaskOf(mod, done);
+  if (next.id === scenarioId || done.includes(next.id)) return null;
+  return <button className="primary" onClick={() => gameStore.openTask(next.id)}>Sonraki görev: {next.title.split('–')[1]?.trim() ?? next.title}</button>;
+}
+
+/** Meclis kanıt kartları: önceki modüllerdeki kararların ve şehir göstergelerinin özeti. */
+function EvidenceCards() {
+  const s = useGameState();
+  const ind = cityOf(s).indicators;
+  const cards = MODULES.filter((m) => m.id !== 'council').map((m) => {
+    const last = [...s.history].reverse().find((h) => h.scenarioId.startsWith(m.id + '_'));
+    const sc = last && playableById(last.scenarioId);
+    const ch = sc?.choices.find((c) => c.id === last!.choiceId);
+    return { m, text: ch ? `${sc!.shortTitle}: “${ch.label}”` : 'Henüz karar yok' };
+  });
+  return (
+    <section className="evidence" aria-label="Kanıt kartların">
+      <h3>Kanıt kartların</h3>
+      <ul className="evidence-grid">
+        {cards.map((c) => <li key={c.m.id}><strong>{c.m.name}</strong><br />{c.text}</li>)}
+        <li><strong>Şehir göstergeleri</strong><br />Dayanıklılık {ind.resilience} · Ekosistem {ind.ecosystem} · Refah {ind.wellbeing} · Emisyon endeksi {ind.emissionIndex}</li>
+      </ul>
+    </section>
+  );
+}
+
 const sign = (n: number) => (n > 0 ? `+${n.toLocaleString('tr-TR')}` : n.toLocaleString('tr-TR'));
 
 /** Senaryo karar ekranı (kılavuz §10). Kantin, enerji ve atık aynı akışı kullanır. */
@@ -63,6 +112,7 @@ export function DecisionModal() {
         ))}
       </ul>
 
+      {scenario.module === 'council' && <EvidenceCards />}
       {!result ? (
         <>
           <fieldset className="choices">
@@ -91,10 +141,11 @@ export function DecisionModal() {
               <textarea value={s.reasoningText} rows={2} onChange={(e) => gameStore.setReasoningText(e.target.value)} />
             </label>
           </fieldset>
-          <button className="primary" disabled={!s.pendingChoiceId} onClick={gameStore.evaluate}>
+          <button className="primary" disabled={!s.pendingChoiceId || !(s.reasoningOption || s.reasoningText.trim())} onClick={gameStore.evaluate}>
             Kararı değerlendir
           </button>
-          {!s.pendingChoiceId && <p className="hint">Simülasyonu başlatmak için bir seçenek seç.</p>}
+          {!s.pendingChoiceId ? <p className="hint">Simülasyonu başlatmak için bir seçenek seç.</p>
+            : !(s.reasoningOption || s.reasoningText.trim()) && <p className="hint">Bir gerekçe seç veya yaz: puanın yalnızca sonuca değil gerekçene de bakar.</p>}
         </>
       ) : (
         <>
@@ -142,6 +193,7 @@ export function DecisionModal() {
               <strong>Gerekçen:</strong> {result.reasoning}
             </p>
           )}
+          <ScoreCard scenarioId={scenario.id} />
           <p className="notice">{SIMULATION_NOTICE}</p>
           <TutorCard />
           {attempts.length > 1 && (
@@ -163,7 +215,8 @@ export function DecisionModal() {
           <div className="actions">
             <button onClick={gameStore.retry}>Tekrar dene (aynı başlangıç)</button>
             <button onClick={gameStore.openComparison}>İki geleceği karşılaştır</button>
-            <button className="primary" onClick={gameStore.closeDecision}>
+            <NextTaskButton scenarioId={scenario.id} />
+            <button className={scenario.id === 'council_005' ? '' : 'primary'} onClick={gameStore.closeDecision}>
               Haritaya dön
             </button>
           </div>

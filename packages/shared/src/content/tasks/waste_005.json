@@ -1,0 +1,108 @@
+{
+  "id": "waste_005",
+  "module": "waste",
+  "order": 5,
+  "version": "1.0.0",
+  "title": "Döngü Ustaları 5 – Atık Bütçesi",
+  "brief": "Belediye atık yönetimi için yılda sınırlı bütçe ayırıyor. Toplama seferleri, ayrıştırma tesisi ve önleme kampanyaları aynı bütçeden pay istiyor. Nasıl dengelersin?",
+  "facts": [
+    {
+      "label": "Bütçe",
+      "value": "sınırlı (kurgu)"
+    },
+    {
+      "label": "Seferler",
+      "value": "atık yüküne bağlı"
+    },
+    {
+      "label": "Hedef",
+      "value": "hiyerarşiye uygun harcama"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Önleme ve yeniden kullanıma öncelik",
+      "summary": "Kaynağında azalt",
+      "deltas": {
+        "budget": -300,
+        "wellbeing": 2,
+        "waterScore": 1
+      },
+      "tradeoff": "Atık yükü ve sefer ihtiyacı uzun vadede düşer; sonuç zaman alır.",
+      "systemAdd": {
+        "otherWasteKg": -3
+      }
+    },
+    {
+      "id": "B",
+      "label": "Yalnızca sefer sayısını artır",
+      "summary": "Toplama",
+      "deltas": {
+        "budget": -600,
+        "wellbeing": 2,
+        "waterScore": 0
+      },
+      "tradeoff": "Sokaklar temiz kalır; atık miktarı azalmaz, maliyet her yıl artar.",
+      "misconception": "Atık sorununu çözmenin en iyi yolu daha sık toplamaktır."
+    },
+    {
+      "id": "C",
+      "label": "Bütçeyi kes",
+      "summary": "Tasarruf",
+      "deltas": {
+        "budget": 300,
+        "wellbeing": -5,
+        "waterScore": -1
+      },
+      "tradeoff": "Bütçe rahatlar; atık birikir, kıyıya ve dereye ulaşma riski artar.",
+      "systemAdd": {
+        "otherWasteKg": 3
+      }
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Bütçe aynı dağılır",
+    "deltas": {
+      "budget": -100,
+      "wellbeing": 0,
+      "waterScore": 0
+    },
+    "tradeoff": "Sistem değişmez."
+  },
+  "learningOutcomeIds": [
+    "WA3",
+    "WA1"
+  ],
+  "evidenceRefs": [
+    "R-UNEP-WASTE"
+  ],
+  "disclaimer": "Atık miktarları simülasyon varsayımıdır; tartılmış saha verisi değildir.",
+  "reasoningOptions": [
+    "Önlemek uzun vadede en ucuz yoldur.",
+    "Temiz sokaklar önceliğimdi.",
+    "Bütçeyi korumak istedim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyonda sefer sayısı atık yüküne göre hesaplanıyor. Gerçekte belediye bu bilgiyi nereden alır?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Sınıfta bir gün boyunca oluşan atığı türüne göre (kâğıt, plastik, organik, diğer) tartın; önleme adımından sonra tekrarlayın.",
+    "measurementPlan": [
+      "Ad yazma; yalnızca sınıf ve gün",
+      "Aynı kutuları aynı saatte say",
+      "Önce ve sonra ayrı kaydet",
+      "Sonucu simülasyon değeriyle bir tutma"
+    ]
+  },
+  "requires": "waste_004"
+}

@@ -1,0 +1,112 @@
+{
+  "id": "energy_004",
+  "module": "energy",
+  "order": 4,
+  "version": "1.0.0",
+  "title": "Enerji Adası 4 – En Ucuz Enerji",
+  "brief": "Okul elektrik faturası yükseldi. Bir grup “daha çok üretelim” diyor, diğeri “önce israfı azaltalım”. Uluslararası Enerji Ajansı verimliliği en hızlı ve ucuz adımlardan biri olarak görür.",
+  "facts": [
+    {
+      "label": "Eski aydınlatma",
+      "value": "floresan (varsayım)"
+    },
+    {
+      "label": "Isı kaybı",
+      "value": "yalıtımsız pencere"
+    },
+    {
+      "label": "Hedef",
+      "value": "talebi ve üretimi birlikte düşün"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "LED ve yalıtım",
+      "summary": "Talebi azalt",
+      "deltas": {
+        "energyScore": 7,
+        "budget": -500,
+        "wellbeing": 3
+      },
+      "tradeoff": "Daha az enerji gerekir; yatırımı geri döner. Üretim artmaz, ama ihtiyaç azalır.",
+      "systemAdd": {
+        "efficiency": 0.1
+      }
+    },
+    {
+      "id": "B",
+      "label": "Yeni güneş tarlası",
+      "summary": "Üretimi artır",
+      "deltas": {
+        "energyScore": 5,
+        "budget": -900,
+        "wellbeing": 1
+      },
+      "tradeoff": "Üretim artar; israf sürerse büyük kısmı boşa gider. Maliyet daha yüksek.",
+      "systemAdd": {
+        "solarKw": 60
+      }
+    },
+    {
+      "id": "C",
+      "label": "Konfor için her şey açık",
+      "summary": "Hiç kısma",
+      "deltas": {
+        "energyScore": -5,
+        "budget": -200,
+        "wellbeing": 3
+      },
+      "tradeoff": "Kısa vadede rahat; talep ve fatura yükselir, kesinti riski artar.",
+      "systemAdd": {
+        "efficiency": -0.05
+      },
+      "misconception": "Daha çok enerji üretmek her zaman tasarruf etmekten iyidir."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Fatura yüksek kalır",
+    "deltas": {
+      "energyScore": -2,
+      "budget": -300,
+      "wellbeing": 0
+    },
+    "tradeoff": "Hiçbir şey değişmez; fatura her ay bütçeden düşer."
+  },
+  "learningOutcomeIds": [
+    "EN2",
+    "EN3",
+    "L3"
+  ],
+  "evidenceRefs": [
+    "R-IEA-EFF"
+  ],
+  "disclaimer": "Enerji ölçümü değil, oyun göstergesidir. Üretim ve talep saatlik simülasyonla hesaplanır.",
+  "reasoningOptions": [
+    "Kullanılmayan enerji en ucuz enerjidir.",
+    "Üretimi artırmak daha güvenli geldi.",
+    "Öğrencilerin konforu önceliğimdi.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyondaki verimlilik yüzdesi ile okulunun gerçek faturası aynı şey mi? Gerçek tasarrufu nasıl ölçersin?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Sınıfta boş kalan ışık ve cihazları bir hafta gözlemleyin; “boşken açık” sayısını önce ve hatırlatma kartlarından sonra karşılaştırın.",
+    "measurementPlan": [
+      "Yalnızca okul ve sınıf kodu kullan; ad yazma",
+      "Aynı saatlerde ve aynı hava koşulunda gözlem yap",
+      "Önce ve sonra sonuçlarını ayrı kaydet",
+      "Sonucu simülasyon puanıyla bir tutma"
+    ]
+  },
+  "requires": "energy_003"
+}

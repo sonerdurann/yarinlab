@@ -66,3 +66,14 @@ describe('görev denemeleri', () => {
     expect((await c.get('/api/attempts/mine', s2)).json().attempts).toHaveLength(0);
   });
 });
+
+describe('ön/son değerlendirme', () => {
+  it('puan sunucuda hesaplanır; geçersiz modül reddedilir', async () => {
+    const r = await c.post('/api/assessments', { moduleId: 'energy', kind: 'PRE', answers: { 'en-q1': 1, 'en-q2': 0, 'en-q3': 1, 'en-q4': 0 } }, s1);
+    expect(r.statusCode).toBe(201);
+    expect(r.json()).toMatchObject({ correct: 3, pct: 75 });
+    expect((await c.post('/api/assessments', { moduleId: 'uzay', kind: 'PRE', answers: {} }, s1)).statusCode).toBe(400);
+    expect((await c.get('/api/assessments/mine', s1)).json().assessments).toHaveLength(1);
+    expect((await c.get('/api/assessments/mine', s2)).json().assessments).toHaveLength(0);
+  });
+});

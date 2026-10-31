@@ -1,7 +1,9 @@
 {
   "id": "food_001",
-  "version": "0.1.0",
-  "title": "Kantin / Görev 01 – Kaybolan Öğünler",
+  "module": "food",
+  "order": 1,
+  "version": "1.0.0",
+  "title": "Son Tabak 1 – Kaybolan Öğünler",
   "brief": "Bugün okulumuzun yemekhanesinde 280 öğrenci için öğün hazırlanıyor. Son bir haftadan alınmış örnek olayda tabak artıkları ve hazırlık fazlası önemli bir sorun. Tek hedefin atığı sıfırlamak değil; öğrencilerin ihtiyacını karşılayarak kaynakları daha akıllıca kullanmak.",
   "context": {
     "students": 280,

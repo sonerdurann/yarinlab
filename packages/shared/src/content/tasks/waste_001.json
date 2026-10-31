@@ -1,7 +1,9 @@
 {
   "id": "waste_001",
-  "version": "0.1.0",
-  "title": "Döngü Ustaları / Görev 03",
+  "module": "waste",
+  "order": 1,
+  "version": "1.0.0",
+  "title": "Döngü Ustaları 1 – Okulun Atık Yükü",
   "brief": "Kantin dışındaki okul atığı da toplanır. Önleme, yeniden kullanım veya ayırma bu yükü farklı değiştirir. Kantinde gıda atığını azalttıysan toplama ihtiyacı burada da değişir. Kapasite ve ayırma oranı simülasyon varsayımıdır.",
   "baseline": {
     "budget": 12000,
@@ -15,37 +17,73 @@
       "id": "A",
       "label": "Önleme",
       "summary": "Daha az malzeme",
-      "deltas": { "budget": -180, "wellbeing": 6, "waterScore": 3 },
+      "deltas": {
+        "budget": -180,
+        "wellbeing": 6,
+        "waterScore": 3
+      },
       "tradeoff": "Kullanılmayan malzeme azalınca yük ve su ihtiyacı düşebilir; alışkanlık değiştirmek zaman ister.",
-      "system": { "otherWasteKg": 8, "sortingRecovery": 0 }
+      "system": {
+        "otherWasteKg": 8,
+        "sortingRecovery": 0
+      }
     },
     {
       "id": "B",
       "label": "Yeniden kullanım",
       "summary": "İkinci kez kullan",
-      "deltas": { "budget": -400, "wellbeing": 12, "waterScore": -2 },
+      "deltas": {
+        "budget": -400,
+        "wellbeing": 12,
+        "waterScore": -2
+      },
       "tradeoff": "Eşya ikinci kez işe yarar ve memnuniyet artabilir; toplama yükü önleme kadar düşmeyebilir.",
-      "system": { "otherWasteKg": 14, "sortingRecovery": 0 }
+      "system": {
+        "otherWasteKg": 14,
+        "sortingRecovery": 0
+      }
     },
     {
       "id": "C",
       "label": "Ayırma",
       "summary": "Geri kazanım",
-      "deltas": { "budget": -550, "wellbeing": 4, "waterScore": -8 },
+      "deltas": {
+        "budget": -550,
+        "wellbeing": 4,
+        "waterScore": -8
+      },
       "tradeoff": "Ayrılan kısım toplama yükünden düşer; yıkama suyu artabilir ve düzen maliyetlidir.",
-      "system": { "otherWasteKg": 20, "sortingRecovery": 0.5 }
+      "system": {
+        "otherWasteKg": 20,
+        "sortingRecovery": 0.5
+      }
     }
   ],
   "noDecision": {
     "id": "N",
     "label": "Kararlar yok",
     "summary": "Atık birikir",
-    "deltas": { "budget": -200, "wellbeing": -5, "waterScore": -2 },
+    "deltas": {
+      "budget": -200,
+      "wellbeing": -5,
+      "waterScore": -2
+    },
     "tradeoff": "Önleme yoksa diğer okul atığı artar; toplama ihtiyacı kendiliğinden azalmaz.",
-    "system": { "otherWasteKg": 24, "sortingRecovery": 0 }
+    "system": {
+      "otherWasteKg": 24,
+      "sortingRecovery": 0
+    }
   },
-  "learningOutcomeIds": ["L2", "L3", "L4", "L5"],
-  "evidenceRefs": ["R9", "R11"],
+  "learningOutcomeIds": [
+    "WA1",
+    "WA2",
+    "L4",
+    "L5"
+  ],
+  "evidenceRefs": [
+    "R-UNEP-WASTE",
+    "R11"
+  ],
   "disclaimer": "Simülasyon – gerçek saha sonucu değildir",
   "reasoningOptions": [
     "Toplama yükünü en çok azaltmak istedim.",

@@ -1,0 +1,107 @@
+{
+  "id": "energy_005",
+  "module": "energy",
+  "order": 5,
+  "version": "1.0.0",
+  "title": "Enerji Adası 5 – Fırtına Gecesi",
+  "brief": "Fırtına uyarısı var: şebekeden çekilebilecek güç düşecek. Okul spor salonu acil durumda mahalleye sığınak oluyor. Sınırlı enerjiyi nasıl yönetirsin?",
+  "facts": [
+    {
+      "label": "Fırtınada şebeke",
+      "value": "~50 kW sınır (varsayım)"
+    },
+    {
+      "label": "Sığınak",
+      "value": "okul spor salonu"
+    },
+    {
+      "label": "Hedef",
+      "value": "kritik ihtiyaçları koru"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Kritik yük önceliği",
+      "summary": "Sığınak + soğutucular",
+      "deltas": {
+        "energyScore": 4,
+        "budget": -400,
+        "wellbeing": 7
+      },
+      "tradeoff": "Sığınağın ışığı, ilk yardım ve buzdolapları korunur; diğer alanlar kısılır. Acil batarya maliyetlidir.",
+      "systemAdd": {
+        "storageKwh": 120
+      }
+    },
+    {
+      "id": "B",
+      "label": "Herkese eşit kısıntı",
+      "summary": "Plan yok, eşit kes",
+      "deltas": {
+        "energyScore": 1,
+        "budget": 0,
+        "wellbeing": -2
+      },
+      "tradeoff": "Basit ama sığınak da kısıntıdan etkilenir; ihtiyaçlar eşit değildir.",
+      "misconception": "Kriz anında herkese eşit kısıntı her zaman en adil çözümdür."
+    },
+    {
+      "id": "C",
+      "label": "Jeneratör kirala",
+      "summary": "Dizel yedek",
+      "deltas": {
+        "energyScore": 3,
+        "budget": -600,
+        "wellbeing": 4
+      },
+      "tradeoff": "Kesinti azalır; yakıt maliyeti ve emisyon artar, gürültü olur."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Fırtına beklenir",
+    "deltas": {
+      "energyScore": -4,
+      "budget": 0,
+      "wellbeing": -6
+    },
+    "tradeoff": "Kesinti olursa sığınak da karanlıkta kalabilir."
+  },
+  "learningOutcomeIds": [
+    "EN2",
+    "EN3",
+    "CO1"
+  ],
+  "evidenceRefs": [
+    "R-IEA-RENEW",
+    "R-AFAD"
+  ],
+  "disclaimer": "Enerji ölçümü değil, oyun göstergesidir. Üretim ve talep saatlik simülasyonla hesaplanır.",
+  "reasoningOptions": [
+    "Önce en kırılgan ihtiyaçları korumak istedim.",
+    "Kimseyi ayırmamak istedim.",
+    "Kesintiyi en çok azaltanı seçtim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Gerçek bir kesintide okulunda hangi cihazlar kritik olurdu? Bu listeyi kimlerle doğrulardın?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Öğretmeninizle okulun acil durum planına bakın; elektrik kesildiğinde hangi alanların öncelikli olduğunu listeleyin (kişisel bilgi yazmadan).",
+    "measurementPlan": [
+      "Yalnızca okul ve sınıf kodu kullan; ad yazma",
+      "Aynı saatlerde ve aynı hava koşulunda gözlem yap",
+      "Önce ve sonra sonuçlarını ayrı kaydet",
+      "Sonucu simülasyon puanıyla bir tutma"
+    ]
+  },
+  "requires": "energy_004"
+}

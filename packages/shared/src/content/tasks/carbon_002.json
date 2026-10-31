@@ -1,0 +1,113 @@
+{
+  "id": "carbon_002",
+  "module": "carbon",
+  "order": 2,
+  "version": "1.0.0",
+  "title": "Karbon Dedektifleri 2 – Tişörtün Yolculuğu",
+  "brief": "Bir tişörtün çevresel etkisini araştırıyorsun. Yaşam döngüsü analizi; hammadde, üretim, taşıma, kullanım (yıkama, kurutma) ve atık aşamalarına birlikte bakar (ISO 14040). Nereden başlarsın?",
+  "facts": [
+    {
+      "label": "Aşamalar",
+      "value": "hammadde → üretim → taşıma → kullanım → atık"
+    },
+    {
+      "label": "Kullanım",
+      "value": "yıkama ve kurutma da sayılır"
+    },
+    {
+      "label": "Hedef",
+      "value": "resmin tamamını gör"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Yalnızca taşımaya bak",
+      "summary": "Kaç km geldi?",
+      "deltas": {
+        "wellbeing": -2,
+        "budget": 0,
+        "waterScore": 0
+      },
+      "tradeoff": "Taşıma görünür ama çoğu üründe tek başına en büyük pay olmayabilir; diğer aşamalar gözden kaçar.",
+      "systemAdd": {
+        "claimScore": -5
+      },
+      "misconception": "Bir ürünün çevresel etkisinin en büyük kısmı her zaman taşımadan gelir."
+    },
+    {
+      "id": "B",
+      "label": "Tüm yaşam döngüsü",
+      "summary": "Beş aşamayı karşılaştır",
+      "deltas": {
+        "wellbeing": 4,
+        "budget": -100,
+        "waterScore": 2
+      },
+      "tradeoff": "Daha çok zaman ister; hangi aşamanın önemli olduğunu kanıtla görürsün (pamukta su, kullanımda enerji).",
+      "systemAdd": {
+        "claimScore": 15
+      }
+    },
+    {
+      "id": "C",
+      "label": "Etiketteki “doğal” yazısı",
+      "summary": "Etikete güven",
+      "deltas": {
+        "wellbeing": 0,
+        "budget": 0,
+        "waterScore": -1
+      },
+      "tradeoff": "“Doğal” sözcüğü tek başına üretim veya su kullanımı hakkında bilgi vermez.",
+      "systemAdd": {
+        "claimScore": -8
+      },
+      "misconception": "Doğal malzemeden yapılan ürünlerin çevresel etkisi yoktur."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Araştırma yapılmaz",
+    "deltas": {
+      "wellbeing": -1,
+      "budget": 0,
+      "waterScore": 0
+    },
+    "tradeoff": "Ürün hakkında bilgi edinilmez."
+  },
+  "learningOutcomeIds": [
+    "CA1",
+    "L2"
+  ],
+  "evidenceRefs": [
+    "R-ISO14040",
+    "R-UNEP-LCI"
+  ],
+  "disclaimer": "İnceleme puanı oyun göstergesidir; ürünlerin gerçek sera gazı miktarı hesaplanmaz.",
+  "reasoningOptions": [
+    "Tüm aşamaları görmeden karar vermek istemedim.",
+    "Taşıma en kolay ölçülen aşama.",
+    "Etiket bana yeterli geldi.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyonda puan verdik ama kg CO₂e hesaplamadık. Gerçek bir yaşam döngüsü hesabı için hangi bilgilere ihtiyaç olurdu?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Kendi kıyafetinizden birinin etiketini inceleyin: malzeme, üretim yeri ve yıkama talimatını tabloya yazın; hangi aşama hakkında bilgi eksik, işaretleyin.",
+    "measurementPlan": [
+      "Ürün adı yerine ürün türünü yaz",
+      "İddiayı ve kaynağını aynen not et",
+      "Kaynak yoksa 'kanıt yok' diye işaretle",
+      "Kendi tahminini ölçüm gibi sunma"
+    ]
+  },
+  "requires": "carbon_001"
+}

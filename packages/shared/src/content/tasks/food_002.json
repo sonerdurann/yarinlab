@@ -1,0 +1,104 @@
+{
+  "id": "food_002",
+  "module": "food",
+  "order": 2,
+  "version": "1.0.0",
+  "title": "Son Tabak 2 – Stok Odası",
+  "brief": "Kantin deposunda son kullanma tarihi geçen ürünler bulundu. FAO’ya göre gıda kaybı ve israfı üretimden tüketime her aşamada oluşur. Depoyu nasıl yönetirsin?",
+  "facts": [
+    {
+      "label": "Bozulan ürün",
+      "value": "haftada ~4 kg (örnek)"
+    },
+    {
+      "label": "Depo",
+      "value": "raf sırası yok"
+    },
+    {
+      "label": "Hedef",
+      "value": "stok ve porsiyonu planla"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "İlk giren ilk çıkar + sayım",
+      "summary": "Düzenli stok",
+      "deltas": {
+        "foodWasteKg": -4,
+        "budget": 100,
+        "wellbeing": 1
+      },
+      "tradeoff": "Bozulma azalır, gereksiz alım düşer; haftalık sayım emek ister."
+    },
+    {
+      "id": "B",
+      "label": "Toplu indirimle çok al",
+      "summary": "Ucuza fazla stok",
+      "deltas": {
+        "foodWasteKg": 5,
+        "budget": 200,
+        "wellbeing": 0
+      },
+      "tradeoff": "Birim fiyat düşer; tüketilemeyen ürün bozulur ve israf artar.",
+      "misconception": "Toplu ve ucuz almak her zaman tasarruf sağlar."
+    },
+    {
+      "id": "C",
+      "label": "Menüyü tamamen sabitle",
+      "summary": "Az çeşit",
+      "deltas": {
+        "foodWasteKg": -2,
+        "budget": 100,
+        "wellbeing": -5
+      },
+      "tradeoff": "Stok kolaylaşır; tercihler karşılanmazsa tabak artığı artabilir."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Depo aynı kalır",
+    "deltas": {
+      "foodWasteKg": 2,
+      "budget": -100,
+      "wellbeing": 0
+    },
+    "tradeoff": "Bozulma sürer."
+  },
+  "learningOutcomeIds": [
+    "L1",
+    "FO3",
+    "L2"
+  ],
+  "evidenceRefs": [
+    "R-FAO-SOFA",
+    "R11"
+  ],
+  "disclaimer": "Simülasyon – gerçek saha sonucu değildir",
+  "reasoningOptions": [
+    "Bozulmayı önlemek israfı azaltır.",
+    "Bütçeden tasarruf istedim.",
+    "İşi kolaylaştırmak istedim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyondaki bozulma miktarı ile kantin deposunda gerçekten atılan ürün nasıl ölçülür?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Kantin görevlisiyle birlikte bir hafta boyunca atılan ürünleri tür ve kg olarak kaydedin; FIFO raf düzeninden sonra tekrarlayın.",
+    "measurementPlan": [
+      "Ad yazma; yalnızca gün ve öğün",
+      "Aynı terazi ve aynı saat",
+      "En az üç gün önce, üç gün sonra",
+      "Sonucu simülasyon değeriyle bir tutma"
+    ]
+  },
+  "requires": "food_001"
+}

@@ -45,8 +45,11 @@ describe('P2 formüller', () => {
 });
 
 describe('P2 senaryolar', () => {
-  it('yedi modül kayıtlıdır', () => {
-    expect(playableOrder.map((s) => s.id)).toEqual(['food_001', 'energy_001', 'waste_001', 'city_001', 'carbon_001', 'ocean_001', 'council_001']);
+  it('yedi modül kayıtlıdır; her modülde en az 5 görev, toplam ≥35', () => {
+    const ids = playableOrder.map((s) => s.id);
+    for (const first of ['food_001', 'energy_001', 'waste_001', 'city_001', 'carbon_001', 'ocean_001', 'council_001']) expect(ids).toContain(first);
+    expect(ids.length).toBeGreaterThanOrEqual(35);
+    for (const m of ['food', 'energy', 'waste', 'city', 'carbon', 'ocean', 'council']) expect(ids.filter((i) => i.startsWith(m + '_')).length).toBeGreaterThanOrEqual(5);
   });
 
   it('dört modül üç farklı sonuç ve doğrulanmış yedek metin üretir', () => {

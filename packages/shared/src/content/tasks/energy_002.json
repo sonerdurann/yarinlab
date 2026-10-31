@@ -1,0 +1,115 @@
+{
+  "id": "energy_002",
+  "module": "energy",
+  "order": 2,
+  "version": "1.0.0",
+  "title": "Enerji Adası 2 – Gece Gelince",
+  "brief": "Güneş panellerin gündüz iyi üretiyor; ama akşam spor salonu ve sokak lambaları açılınca şebekeden çok elektrik çekiliyor. Akşam ihtiyacını nasıl karşılarsın?",
+  "facts": [
+    {
+      "label": "Akşam talebi",
+      "value": "günün ~%22’si (varsayım)"
+    },
+    {
+      "label": "Güneş gece",
+      "value": "0 kWh"
+    },
+    {
+      "label": "Hedef",
+      "value": "gece ve gündüzü birlikte düşün"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Daha çok güneş paneli",
+      "summary": "Gündüz üretimi artar",
+      "deltas": {
+        "energyScore": 3,
+        "budget": -600,
+        "wellbeing": 0
+      },
+      "tradeoff": "Gündüz fazlası artar ama gece yine şebekeye bağlısın; depolama olmadan fazla üretim boşa gidebilir.",
+      "systemAdd": {
+        "solarKw": 60
+      },
+      "misconception": "Daha fazla güneş paneli gece üretimini de artırır."
+    },
+    {
+      "id": "B",
+      "label": "Batarya kur",
+      "summary": "Gündüz fazlasını sakla",
+      "deltas": {
+        "energyScore": 6,
+        "budget": -700,
+        "wellbeing": 3
+      },
+      "tradeoff": "Gündüz fazlası akşam kullanılır, şebeke çekişi düşer; batarya maliyetli ve kapasitesi sınırlı.",
+      "systemAdd": {
+        "storageKwh": 200,
+        "storageUnits": 1
+      }
+    },
+    {
+      "id": "C",
+      "label": "Rüzgâr + akşam tasarrufu",
+      "summary": "Kaynak çeşitliliği",
+      "deltas": {
+        "energyScore": 5,
+        "budget": -500,
+        "wellbeing": 1
+      },
+      "tradeoff": "Rüzgâr gece de üretebilir, akşam ışıkları kısmak talebi azaltır; rüzgâr her gün esmez.",
+      "systemAdd": {
+        "windKw": 30,
+        "efficiency": 0.03
+      }
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Akşam şebekeye bağlı kalır",
+    "deltas": {
+      "energyScore": -2,
+      "budget": -100,
+      "wellbeing": -1
+    },
+    "tradeoff": "Akşam talebi şebekeden karşılanır; kesinti riski ve emisyon endeksi değişmez."
+  },
+  "learningOutcomeIds": [
+    "EN1",
+    "EN2",
+    "L3"
+  ],
+  "evidenceRefs": [
+    "R-IEA-RENEW",
+    "R-IPCC-AR6-WG3"
+  ],
+  "disclaimer": "Enerji ölçümü değil, oyun göstergesidir. Üretim ve talep saatlik simülasyonla hesaplanır.",
+  "reasoningOptions": [
+    "Gece güneş üretmediği için depolama gerekir.",
+    "Kaynakları çeşitlendirmek riski düşürür.",
+    "Bütçeyi en az zorlayan seçeneği seçtim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyonda güneş gece 0 üretiyor. Okulunda güneş paneli olsaydı, hangi saatlerde elektriğe en çok ihtiyaç olurdu? Bunu nasıl gözlemlerdin?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Bir gün boyunca okulda hangi saatlerde ışıkların ve cihazların en çok açık olduğunu sınıf olarak gözlemleyip tabloya yazın.",
+    "measurementPlan": [
+      "Yalnızca okul ve sınıf kodu kullan; ad yazma",
+      "Aynı saatlerde ve aynı hava koşulunda gözlem yap",
+      "Önce ve sonra sonuçlarını ayrı kaydet",
+      "Sonucu simülasyon puanıyla bir tutma"
+    ]
+  },
+  "requires": "energy_001"
+}

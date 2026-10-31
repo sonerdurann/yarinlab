@@ -1,0 +1,116 @@
+{
+  "id": "council_003",
+  "module": "council",
+  "order": 3,
+  "version": "1.0.0",
+  "title": "Gelecek Meclisi 3 – Kaynak Paylaşımı",
+  "brief": "Şehrin 3.000 puanlık iklim fonu var. Enerji, su, atık, kıyı ve ulaşım projeleri başvurdu. Önceki modüllerde topladığın kanıtlara bak: en büyük riskler nerede?",
+  "facts": [
+    {
+      "label": "Fon",
+      "value": "3.000 puan (kurgu)"
+    },
+    {
+      "label": "Başvuru",
+      "value": "5 sektör"
+    },
+    {
+      "label": "İpucu",
+      "value": "şehir göstergelerine bak"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Hepsini tek sektöre",
+      "summary": "Odak",
+      "deltas": {
+        "wellbeing": 1,
+        "budget": -500,
+        "energyScore": 6
+      },
+      "tradeoff": "Bir alanda büyük ilerleme; diğer riskler sürer.",
+      "systemAdd": {
+        "evidenceBias": -3,
+        "solarKw": 40
+      }
+    },
+    {
+      "id": "B",
+      "label": "Riske göre karma dağıtım",
+      "summary": "Kanıta dayalı",
+      "deltas": {
+        "wellbeing": 5,
+        "budget": -500,
+        "waterScore": 3
+      },
+      "tradeoff": "Birden çok risk azalır; her alanda ilerleme daha küçüktür.",
+      "systemAdd": {
+        "evidenceBias": 8,
+        "rainShare": 4,
+        "habitatCare": 4,
+        "storageKwh": 60
+      }
+    },
+    {
+      "id": "C",
+      "label": "Göz alıcı festival",
+      "summary": "Kısa vadeli",
+      "deltas": {
+        "wellbeing": 4,
+        "budget": -500,
+        "waterScore": 0
+      },
+      "tradeoff": "Herkes eğlenir; iklim risklerine etkisi yok.",
+      "systemAdd": {
+        "evidenceBias": -6
+      },
+      "misconception": "Farkındalık etkinliği tek başına iklim riskini azaltır."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Fon bekletilir",
+    "deltas": {
+      "wellbeing": -1,
+      "budget": 0,
+      "waterScore": 0
+    },
+    "tradeoff": "Fırsat kaçar."
+  },
+  "learningOutcomeIds": [
+    "CO2",
+    "CO3",
+    "L3"
+  ],
+  "evidenceRefs": [
+    "R-IPCC-AR6-SYR"
+  ],
+  "disclaimer": "Meclis puanı oyun göstergesidir.",
+  "reasoningOptions": [
+    "Göstergelerde en zayıf alanlara öncelik verdim.",
+    "Bir alanda büyük başarı istedim.",
+    "İnsanların mutlu olması önemli.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyon göstergeleri sana hangi sektörün en riskli olduğunu söyledi? Gerçek bir şehirde bu bilgiyi hangi kurumlar toplar?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Belediyenizin veya ilinizin iklim eylem planı varsa öğretmeninizle inceleyin; hangi sektörlere öncelik verdiğini listeleyin.",
+    "measurementPlan": [
+      "Kişisel bilgi toplama; yalnızca görüş özetle",
+      "Her grubun görüşünü aynı soruyla al",
+      "Kanıtı ve kaynağı birlikte yaz",
+      "Oy sonucunu ölçülmüş etki gibi sunma"
+    ]
+  },
+  "requires": "council_002"
+}

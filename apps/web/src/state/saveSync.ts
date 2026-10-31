@@ -14,10 +14,11 @@ const ls = new Set<() => void>();
 const setS = (p: Partial<S>) => { st = { ...st, ...p }; ls.forEach((l) => l()); };
 export const useSync = () => useSyncExternalStore((l) => { ls.add(l); return () => ls.delete(l); }, () => st);
 
-const QKEY = 'yarinlab.attemptQueue.v1';
+const QKEY = 'yarinlab.syncQueue.v2';
+type QItem = { url: string; body: unknown };
 const store = () => (globalThis as { localStorage?: Storage }).localStorage;
-const readQ = (): AttemptEvent[] => { try { return JSON.parse(store()?.getItem(QKEY) ?? '[]'); } catch { return []; } };
-const writeQ = (q: AttemptEvent[]) => { try { store()?.setItem(QKEY, JSON.stringify(q.slice(-300))); } catch { /* dolu */ } };
+const readQ = (): QItem[] => { try { return JSON.parse(store()?.getItem(QKEY) ?? '[]'); } catch { return []; } };
+const writeQ = (q: QItem[]) => { try { store()?.setItem(QKEY, JSON.stringify(q.slice(-300))); } catch { /* dolu */ } };
 
 let timer: ReturnType<typeof setTimeout> | null = null;
 let dirty = false;
@@ -51,7 +52,7 @@ async function flushAttempts() {
   let q = readQ();
   while (q.length) {
     try {
-      await api('/api/attempts', { method: 'POST', body: q[0] });
+      await api(q[0].url, { method: 'POST', body: q[0].body });
     } catch (e) {
       if (e instanceof ApiError && e.status === 400) { /* geçersiz kayıt: at */ } else return;
     }
@@ -86,12 +87,18 @@ async function onLogin() {
   }
 }
 
+/** Sunucuya gidecek kaydı kuyruğa ekler; çevrim dışıysa bağlantı gelince gönderilir. */
+export function enqueue(url: string, body: unknown) {
+  writeQ([...readQ(), { url, body }]);
+  void flushAttempts();
+}
+
 let started = false;
 export function startSaveSync() {
   if (started) return;
   started = true;
   gameStore.onPersist(schedule);
-  gameStore.onAttempt((a) => { writeQ([...readQ(), a]); void flushAttempts(); });
+  gameStore.onAttempt((a: AttemptEvent) => enqueue('/api/attempts', a));
   let prevUser = authStore.get().user?.id;
   authStore.subscribe(() => {
     const u = authStore.get().user?.id;

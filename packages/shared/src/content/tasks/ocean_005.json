@@ -1,0 +1,113 @@
+{
+  "id": "ocean_005",
+  "module": "ocean",
+  "order": 5,
+  "version": "1.0.0",
+  "title": "Mavi Nöbet 5 – Beş Yıl Sonra",
+  "brief": "Koruma çalışmalarının ikinci yılında balık sayısında büyük artış görülmedi. Bazıları “işe yaramıyor, kaldıralım” diyor. Ekosistemlerin iyileşmesi çoğu zaman yıllar alır. Ne önerirsin?",
+  "facts": [
+    {
+      "label": "Yıl",
+      "value": "2 (kurgu)"
+    },
+    {
+      "label": "Gözlem",
+      "value": "deniz çayırı yavaş genişliyor"
+    },
+    {
+      "label": "Hedef",
+      "value": "uzun vadeli izleme"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Sürdür ve düzenli izle",
+      "summary": "Sabır + veri",
+      "deltas": {
+        "wellbeing": 2,
+        "budget": -300,
+        "waterScore": 2
+      },
+      "tradeoff": "İyileşme zamanla ölçülür; sonuçlar gelene kadar destek sürdürülmelidir.",
+      "systemAdd": {
+        "habitatCare": 8,
+        "evidenceBias": 2
+      }
+    },
+    {
+      "id": "B",
+      "label": "Korumayı kaldır",
+      "summary": "Hemen sonuç yok",
+      "deltas": {
+        "wellbeing": 1,
+        "budget": 200,
+        "waterScore": -3
+      },
+      "tradeoff": "Kısa vadede kısıtlar kalkar; başlayan iyileşme geri döner.",
+      "systemAdd": {
+        "habitatCare": -12
+      },
+      "misconception": "Bir koruma önlemi işe yarıyorsa sonuç hemen görülür."
+    },
+    {
+      "id": "C",
+      "label": "Gönüllü temizlik ve eğitim ekle",
+      "summary": "Toplumla birlikte",
+      "deltas": {
+        "wellbeing": 5,
+        "budget": -200,
+        "waterScore": 1
+      },
+      "tradeoff": "Farkındalık ve sahiplenme artar; tek başına koruma kurallarının yerini tutmaz.",
+      "systemAdd": {
+        "habitatCare": 5
+      }
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Karar ertelenir",
+    "deltas": {
+      "wellbeing": 0,
+      "budget": 0,
+      "waterScore": -1
+    },
+    "tradeoff": "Belirsizlik sürer."
+  },
+  "learningOutcomeIds": [
+    "OC3",
+    "L3",
+    "CO3"
+  ],
+  "evidenceRefs": [
+    "R-IPCC-SROCC"
+  ],
+  "disclaimer": "Kıyı ve habitat değerleri simülasyon varsayımıdır; saha sayımı değildir.",
+  "reasoningOptions": [
+    "Doğanın iyileşmesi zaman alır, veriye bakarak sürdürmek gerekir.",
+    "Kısa vadeli sonuç önemliydi.",
+    "Toplumu katmak istedim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyonda yıllar birkaç tıklamada geçiyor. Gerçekte bir ekosistemin iyileşmesini kim, ne kadar süre izler?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Okul bahçesinde küçük bir alanı (1 m²) bir ay boyunca haftada bir gözlemleyip bitki ve böcek çeşitliliğini kaydedin.",
+    "measurementPlan": [
+      "Kıyıya yalnızca öğretmen ve veli izniyle git",
+      "Yalnızca atık türü ve sayısı; kişi fotoğrafı yok",
+      "Aynı kıyı parçasında önce/sonra say",
+      "Canlılara dokunma, yuvaları rahatsız etme"
+    ]
+  },
+  "requires": "ocean_004"
+}

@@ -1,0 +1,111 @@
+{
+  "id": "ocean_004",
+  "module": "ocean",
+  "order": 4,
+  "version": "1.0.0",
+  "title": "Mavi Nöbet 4 – Koruma Alanı Haritası",
+  "brief": "Koyda bir deniz koruma alanı planlanıyor. Balıkçılar geçim kaygısında, dalış okulları destekliyor, bilim insanları üreme alanlarının korunmasını öneriyor. Haritayı nasıl çizersin?",
+  "facts": [
+    {
+      "label": "Üreme alanı",
+      "value": "koyun batısı"
+    },
+    {
+      "label": "Balıkçılık",
+      "value": "koyun doğusu"
+    },
+    {
+      "label": "Hedef",
+      "value": "koruma + geçim dengesi"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Paydaşlarla kısmi koruma",
+      "summary": "Üreme alanı tam, diğer yerde kurallı",
+      "deltas": {
+        "wellbeing": 3,
+        "budget": -300,
+        "waterScore": 2
+      },
+      "tradeoff": "Üreme alanı korunur, balıkçılık kurallı sürer; uzlaşma zaman alır, denetim gerekir.",
+      "systemAdd": {
+        "habitatCare": 12
+      }
+    },
+    {
+      "id": "B",
+      "label": "Tüm koyu aniden kapat",
+      "summary": "En sıkı koruma",
+      "deltas": {
+        "wellbeing": -8,
+        "budget": -200,
+        "waterScore": 2
+      },
+      "tradeoff": "Ekosistem için güçlü koruma; balıkçıların geçimi zorlanır, kurallara uyum düşebilir.",
+      "systemAdd": {
+        "habitatCare": 14
+      }
+    },
+    {
+      "id": "C",
+      "label": "Sadece tabela koy",
+      "summary": "Kâğıt üstünde koruma",
+      "deltas": {
+        "wellbeing": 0,
+        "budget": -50,
+        "waterScore": 0
+      },
+      "tradeoff": "Ucuz; denetim ve plan olmadan koruma etkisi sınırlı.",
+      "systemAdd": {
+        "habitatCare": 1
+      },
+      "misconception": "Bir alanı koruma alanı ilan etmek tek başına yeterlidir."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Plan yok",
+    "deltas": {
+      "wellbeing": -1,
+      "budget": 0,
+      "waterScore": -1
+    },
+    "tradeoff": "Üreme alanı baskı altında kalır."
+  },
+  "learningOutcomeIds": [
+    "OC3",
+    "CO1"
+  ],
+  "evidenceRefs": [
+    "R-IPCC-SROCC"
+  ],
+  "disclaimer": "Kıyı ve habitat değerleri simülasyon varsayımıdır; saha sayımı değildir.",
+  "reasoningOptions": [
+    "Hem doğayı hem insanların geçimini düşündüm.",
+    "Ekosistem her şeyden önce gelir.",
+    "Masrafı düşük tutmak istedim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Koruma alanının işe yaradığını gerçek hayatta hangi göstergelerle anlarsın?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Sınıfta yakın bir korunan alan (park, sulak alan, kıyı) hakkında resmî bilgi bulun; hangi kuralların neden konduğunu tartışın.",
+    "measurementPlan": [
+      "Kıyıya yalnızca öğretmen ve veli izniyle git",
+      "Yalnızca atık türü ve sayısı; kişi fotoğrafı yok",
+      "Aynı kıyı parçasında önce/sonra say",
+      "Canlılara dokunma, yuvaları rahatsız etme"
+    ]
+  },
+  "requires": "ocean_003"
+}

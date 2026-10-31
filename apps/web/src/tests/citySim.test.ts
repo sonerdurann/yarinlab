@@ -95,3 +95,37 @@ describe('yapı alanları haritayla çakışmaz', () => {
     expect(hotspots.some((h) => Math.abs(h.tileX - slot.x) <= 1 && Math.abs(h.tileY - slot.y) <= 1)).toBe(false);
   });
 });
+
+import { deriveFlatSystems } from '../state/city';
+describe('görev zinciri ve birikimli modül sistemleri', () => {
+  it('modülde görev tamamlanınca hotspot sıradaki görevi açar; kilitli görev açılmaz', () => {
+    gameStore.openTask('energy_002');
+    expect(gameStore.get().decisionOpen).toBe(false);
+    expect(gameStore.get().notice).toMatch(/Önce/);
+    decide('energy', 'A');
+    gameStore.closeDecision();
+    gameStore.selectHotspot('energy');
+    expect(gameStore.get().activeScenarioId).toBe('energy_002');
+  });
+  it('sonraki görev önceki görevin sistem etkisini silmez; geri alma yalnızca o görevi kaldırır', () => {
+    decide('energy', 'A'); // 80 kW güneş
+    gameStore.openTask('energy_002');
+    gameStore.pickChoice('B'); gameStore.setReasoningText('Gece güneş yok çünkü depolama gerekir.'); gameStore.evaluate();
+    let f = deriveFlatSystems(gameStore.get().applied);
+    expect(f.solarKw).toBe(80);
+    expect(f.storageKwh).toBe(200);
+    expect(gameStore.get().energySystem.storageKwh).toBe(200);
+    gameStore.retry();
+    f = deriveFlatSystems(gameStore.get().applied);
+    expect(f.solarKw).toBe(80);
+    expect(f.storageKwh).toBe(0);
+  });
+  it('bir modüldeki karar başka modülün göstergesini değiştirir (onarım → atık yükü)', () => {
+    const w0 = cityOf(gameStore.get()).indicators.wasteKg;
+    decide('farm', 'B'); // karbon_001
+    gameStore.openTask('carbon_002'); gameStore.pickChoice('B'); gameStore.setReasoningText('Tüm yaşam döngüsü çünkü kanıt gerekir.'); gameStore.evaluate();
+    gameStore.openTask('carbon_003'); gameStore.pickChoice('B'); gameStore.setReasoningText('Bağımsız kaynak çünkü doğrulanabilir.'); gameStore.evaluate();
+    gameStore.openTask('carbon_004'); gameStore.pickChoice('A'); gameStore.setReasoningText('Onarım atığı önler çünkü yeni üretim olmaz.'); gameStore.evaluate();
+    expect(cityOf(gameStore.get()).indicators.wasteKg).toBeLessThan(w0);
+  });
+});

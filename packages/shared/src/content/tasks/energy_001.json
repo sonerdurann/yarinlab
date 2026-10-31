@@ -1,7 +1,9 @@
 {
   "id": "energy_001",
-  "version": "0.1.0",
-  "title": "Enerji Adası / Görev 02",
+  "module": "energy",
+  "order": 1,
+  "version": "1.0.0",
+  "title": "Enerji Adası 1 – Güneş mi Rüzgâr mı?",
   "brief": "Okulun enerjisi bugün büyük ölçüde dışarıdan geliyor. Güneş veya rüzgâr payını artırabilirsin. Depolama (batarya) yokken yenilenebilir pay yükselince kesinti riski de yükselir. Amaç tek başına daha yüksek enerji göstergesi değil; güvenilir bir denge.",
   "baseline": {
     "budget": 12000,
@@ -25,7 +27,8 @@
         "renewableShare": 50,
         "storageUnits": 0,
         "solarKw": 80
-      }
+      },
+      "misconception": "Yenilenebilir pay arttıkça sistem kendiliğinden daha güvenilir olur."
     },
     {
       "id": "B",
@@ -78,11 +81,13 @@
     }
   },
   "learningOutcomeIds": [
-    "L2",
+    "EN1",
+    "EN2",
     "L3",
     "L5"
   ],
   "evidenceRefs": [
+    "R-IEA-RENEW",
     "R9"
   ],
   "disclaimer": "Simülasyon – gerçek saha sonucu değildir",

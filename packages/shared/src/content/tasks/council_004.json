@@ -1,0 +1,113 @@
+{
+  "id": "council_004",
+  "module": "council",
+  "order": 4,
+  "version": "1.0.0",
+  "title": "Gelecek Meclisi 4 – Müzakere Masası",
+  "brief": "Esnaf temsilcisi Ayten Hanım otobüs ve bisiklet yolunun dükkânlarının önündeki park yerlerini kaldıracağından endişeli. Onunla nasıl uzlaşırsın?",
+  "facts": [
+    {
+      "label": "Endişe",
+      "value": "müşteri ve teslimat kaybı"
+    },
+    {
+      "label": "Kanıt",
+      "value": "yürüyen ve bisikletli müşteri de alışveriş yapar"
+    },
+    {
+      "label": "Hedef",
+      "value": "kanıtla uzlaşma"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Kanıt + uzlaşma planı",
+      "summary": "Teslimat saatleri, deneme dönemi",
+      "deltas": {
+        "wellbeing": 5,
+        "budget": -200,
+        "energyScore": 1
+      },
+      "tradeoff": "Endişe dinlenir, veriyle deneme yapılır; uzlaşma zaman alır ama kalıcıdır.",
+      "systemAdd": {
+        "evidenceBias": 8,
+        "transitShare": 5
+      }
+    },
+    {
+      "id": "B",
+      "label": "Talebi reddet",
+      "summary": "Proje aynen sürer",
+      "deltas": {
+        "wellbeing": -4,
+        "budget": 0,
+        "energyScore": 1
+      },
+      "tradeoff": "Proje hızlı ilerler; güven kaybı ve itiraz riski doğar.",
+      "systemAdd": {
+        "evidenceBias": -2,
+        "transitShare": 5
+      }
+    },
+    {
+      "id": "C",
+      "label": "Projeyi iptal et",
+      "summary": "Çatışmadan kaç",
+      "deltas": {
+        "wellbeing": 0,
+        "budget": 0,
+        "energyScore": -1
+      },
+      "tradeoff": "Gerginlik biter; ulaşım ve emisyon sorunu sürer.",
+      "systemAdd": {
+        "evidenceBias": -5
+      },
+      "misconception": "Bir grup itiraz ederse en iyi çözüm projeden vazgeçmektir."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Görüşme olmaz",
+    "deltas": {
+      "wellbeing": -2,
+      "budget": 0,
+      "energyScore": 0
+    },
+    "tradeoff": "Anlaşmazlık büyür."
+  },
+  "learningOutcomeIds": [
+    "CO1",
+    "CO2"
+  ],
+  "evidenceRefs": [
+    "R-UNESCO-ESD"
+  ],
+  "disclaimer": "Meclis puanı oyun göstergesidir.",
+  "reasoningOptions": [
+    "Kanıtla ve dinleyerek uzlaşmak kalıcı çözüm getirir.",
+    "Proje herkes için önemliydi.",
+    "Çatışmadan kaçınmak istedim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Bir müzakerede “kanıt” ile “görüş” arasındaki farkı bir örnekle açıklar mısın?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Sınıfta bir iklim kararını (ör. bahçeye ağaç dikimi) canlandırma ile tartışın; her rol bir kanıt ve bir endişe getirsin.",
+    "measurementPlan": [
+      "Kişisel bilgi toplama; yalnızca görüş özetle",
+      "Her grubun görüşünü aynı soruyla al",
+      "Kanıtı ve kaynağı birlikte yaz",
+      "Oy sonucunu ölçülmüş etki gibi sunma"
+    ]
+  },
+  "requires": "council_003"
+}

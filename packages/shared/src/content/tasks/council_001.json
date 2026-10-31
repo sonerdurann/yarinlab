@@ -1,7 +1,9 @@
 {
   "id": "council_001",
-  "version": "0.1.0",
-  "title": "Gelecek Meclisi / Görev 07",
+  "module": "council",
+  "order": 1,
+  "version": "1.0.0",
+  "title": "Gelecek Meclisi 1 – Kanıtı Topla",
   "brief": "Okul meclisi diğer modüllerin kanıtını bir araya getirir. Tek göstergeye kilitlenebilir, kanıtları dengeleyebilir veya önce ölçmeyi seçebilirsin. Puan oyun göstergesidir: oynanan modüller, iki kantin seçeneği ve yazılmış gerekçe tabanı artırır.",
   "baseline": {
     "budget": 12000,
@@ -15,37 +17,69 @@
       "id": "A",
       "label": "Tek gösterge",
       "summary": "Bir sayı yeter",
-      "deltas": { "wellbeing": -5, "budget": -100, "waterScore": -2 },
+      "deltas": {
+        "wellbeing": -5,
+        "budget": -100,
+        "waterScore": -2
+      },
       "tradeoff": "Tek göstergeye kilitlenmek meclis puanını düşürür. Diğer kanıtlar görünmez olur.",
-      "system": { "evidenceBias": -15 }
+      "system": {
+        "evidenceBias": -15
+      },
+      "misconception": "Tek bir gösterge iyi bir geleceği anlatmaya yeter."
     },
     {
       "id": "B",
       "label": "Kanıt dengesi",
       "summary": "Birden fazla iz",
-      "deltas": { "wellbeing": 8, "budget": -150, "waterScore": 3 },
+      "deltas": {
+        "wellbeing": 8,
+        "budget": -150,
+        "waterScore": 3
+      },
       "tradeoff": "Birden fazla kanıtı tartmak puanı yükseltir. Uzlaşma zaman alır.",
-      "system": { "evidenceBias": 20 }
+      "system": {
+        "evidenceBias": 20
+      }
     },
     {
       "id": "C",
       "label": "Önce ölç",
       "summary": "Karardan önce not",
-      "deltas": { "wellbeing": 2, "budget": -250, "waterScore": 1 },
+      "deltas": {
+        "wellbeing": 2,
+        "budget": -250,
+        "waterScore": 1
+      },
       "tradeoff": "Önce ölçmek temkinlidir; puan biraz yükselir ama karar gecikebilir.",
-      "system": { "evidenceBias": 5 }
+      "system": {
+        "evidenceBias": 5
+      }
     }
   ],
   "noDecision": {
     "id": "N",
     "label": "Kararlar yok",
     "summary": "Meclis dağılır",
-    "deltas": { "wellbeing": -2, "budget": -50, "waterScore": -1 },
+    "deltas": {
+      "wellbeing": -2,
+      "budget": -50,
+      "waterScore": -1
+    },
     "tradeoff": "Kanıt masada kalır; ortak karar oluşmaz. Puan tabanı yerinde durur.",
-    "system": { "evidenceBias": 0 }
+    "system": {
+      "evidenceBias": 0
+    }
   },
-  "learningOutcomeIds": ["L2", "L3", "L5"],
-  "evidenceRefs": ["R9"],
+  "learningOutcomeIds": [
+    "CO2",
+    "L2",
+    "L5"
+  ],
+  "evidenceRefs": [
+    "R-UNESCO-ESD",
+    "R9"
+  ],
   "disclaimer": "Simülasyon – gerçek saha sonucu değildir",
   "reasoningOptions": [
     "Tek bir sayı kararı kolaylaştırır diye düşündüm.",

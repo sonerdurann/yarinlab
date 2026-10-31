@@ -1,0 +1,113 @@
+{
+  "id": "carbon_003",
+  "module": "carbon",
+  "order": 3,
+  "version": "1.0.0",
+  "title": "Karbon Dedektifleri 3 – Yeşil Etiket",
+  "brief": "Markette üç ürün var: biri “%100 doğa dostu!” diyor, biri bağımsız bir kuruluşun belgesini ve ölçüm yöntemini gösteriyor, biri sadece yeşil yapraklı ambalajda. Hangi iddiaya güvenirsin?",
+  "facts": [
+    {
+      "label": "İddia 1",
+      "value": "“%100 doğa dostu” (kaynak yok)"
+    },
+    {
+      "label": "İddia 2",
+      "value": "bağımsız belge + yöntem"
+    },
+    {
+      "label": "İddia 3",
+      "value": "yeşil ambalaj"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Kaynaksız büyük iddia",
+      "summary": "“%100 doğa dostu”",
+      "deltas": {
+        "wellbeing": -2,
+        "budget": 0,
+        "waterScore": 0
+      },
+      "tradeoff": "Ölçülemeyen genel bir slogan; neye göre, hangi aşamada belli değil.",
+      "systemAdd": {
+        "claimScore": -10
+      },
+      "misconception": "Ürünün üzerinde çevreci yazıyorsa çevreye zararı yoktur."
+    },
+    {
+      "id": "B",
+      "label": "Bağımsız belge ve yöntem",
+      "summary": "Kanıtı kontrol et",
+      "deltas": {
+        "wellbeing": 4,
+        "budget": -100,
+        "waterScore": 1
+      },
+      "tradeoff": "Belgeyi kimin verdiği, hangi ölçütü kullandığı kontrol edilebilir. Yine de hiçbir ürün “etkisiz” değildir.",
+      "systemAdd": {
+        "claimScore": 18
+      }
+    },
+    {
+      "id": "C",
+      "label": "Yeşil ambalaj",
+      "summary": "Görünüşe güven",
+      "deltas": {
+        "wellbeing": 0,
+        "budget": 0,
+        "waterScore": 0
+      },
+      "tradeoff": "Renk ve resim bilgi vermez; bu bir pazarlama tercihidir.",
+      "systemAdd": {
+        "claimScore": -8
+      },
+      "misconception": "Yeşil renkli ambalaj ürünün çevreci olduğunu gösterir."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Hiçbirine bakılmaz",
+    "deltas": {
+      "wellbeing": -1,
+      "budget": 0,
+      "waterScore": 0
+    },
+    "tradeoff": "İddialar sorgulanmaz."
+  },
+  "learningOutcomeIds": [
+    "CA2",
+    "L5"
+  ],
+  "evidenceRefs": [
+    "R-EU-GREENCLAIMS",
+    "R-UNEP-LCI"
+  ],
+  "disclaimer": "İnceleme puanı oyun göstergesidir; ürünlerin gerçek sera gazı miktarı hesaplanmaz.",
+  "reasoningOptions": [
+    "İddiayı doğrulayan bağımsız bir kaynak aradım.",
+    "Ambalaj bana güven verdi.",
+    "Büyük iddia daha etkileyici geldi.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Bir ürün “çevre dostu” dediğinde hangi üç soruyu sorarsın?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Evde veya markette üç üründeki çevreci iddiaları not edin; her biri için “kanıt var/yok” ve “kim söylüyor” sütunlarını doldurun.",
+    "measurementPlan": [
+      "Ürün adı yerine ürün türünü yaz",
+      "İddiayı ve kaynağını aynen not et",
+      "Kaynak yoksa 'kanıt yok' diye işaretle",
+      "Kendi tahminini ölçüm gibi sunma"
+    ]
+  },
+  "requires": "carbon_002"
+}

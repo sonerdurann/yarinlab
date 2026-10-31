@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import type Phaser from 'phaser';
 import { gameStore, taskSteps, useGameState } from './state/gameStore';
 import { TopBar } from './ui/Hud/Hud';
-import { CityIndicators, EventLogPanel, MainMenu, ProgressPanel } from './ui/City/CityPanels';
+import { CityIndicators, EndingPanel, EventLogPanel, MainMenu, ProgressPanel } from './ui/City/CityPanels';
 import { BuildPanel } from './ui/City/BuildPanel';
 import { HelpPanel } from './ui/City/HelpPanel';
+import { AssessmentPanel } from './ui/City/AssessmentPanel';
 import { settingsStore } from './state/settingsStore';
 import { teacherStore } from './state/teacherStore';
 import { TaskPanel } from './ui/TaskPanel/TaskPanel';
@@ -105,11 +106,13 @@ export function App() {
         <p>Harita yükleniyor…</p>
         <span className="spinner" aria-hidden="true" />
       </div>
-      <MainMenu onSettings={settingsStore.open} onTeacher={teacherStore.openTeacher} />
+      <MainMenu onSettings={settingsStore.open} onTeacher={teacherStore.openTeacher} onSources={teacherStore.openSources} />
       <BuildPanel />
       <EventLogPanel />
       <ProgressPanel />
       <HelpPanel />
+      <EndingPanel />
+      <AssessmentPanel />
       <AuthPanel />
       <Intro />
       <DecisionModal />

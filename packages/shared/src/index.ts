@@ -41,3 +41,10 @@ export const saveSchema = z.object({
     sim: z.object({ seed: z.number().int(), day: z.number().int().min(0) }).passthrough(),
   }).passthrough(),
 });
+export * from './content';
+export * from './ai';
+export const assessmentSchema = z.object({
+  moduleId: z.enum(['energy', 'carbon', 'city', 'food', 'ocean', 'waste', 'council']),
+  kind: z.enum(['PRE', 'POST']),
+  answers: z.record(z.string().max(20), z.number().int().min(0).max(10)),
+});

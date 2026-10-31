@@ -9,12 +9,6 @@ import {
   CARBON_BASELINE,
   OCEAN_BASELINE,
   COUNCIL_BASELINE,
-  energyFromChoice,
-  wasteFromChoice,
-  cityFromChoice,
-  carbonFromChoice,
-  oceanFromChoice,
-  councilFromChoice,
   type EnergySystem,
   type WasteSystem,
   type CitySystem,
@@ -22,7 +16,6 @@ import {
   type OceanSystem,
   type CouncilSystem,
 } from '../game/systems/ClimateEngine';
-import type { PlayableScenario } from '../data/scenarios';
 import type { DecisionResult, Resources } from './types';
 import { getTutorFeedback, type TutorOutcome } from '../ai/tutorClient';
 import { composeWorld } from './composeWorld';
@@ -30,9 +23,10 @@ import {
   advanceDay, build as buildOn, demolish as demolishOn, earnedBadges, newSeed, newSim, scoreAttempt, upgrade as upgradeOn, xpForScore,
   BADGES, type AttemptScore, type LogEntry, type SimState,
 } from '@yarinlab/shared';
-import { cityOf, literacyOf, progressFacts, systemsOf, unlockCtx } from './city';
+import { cityOf, completedTaskIds, deriveSystems, literacyOf, progressFacts, systemsOf, unlockCtx } from './city';
+import { nextTaskOf, moduleById, taskStatus } from '@yarinlab/shared';
 
-export type Overlay = 'none' | 'menu' | 'build' | 'log' | 'progress' | 'help' | 'tasks' | 'assessment';
+export type Overlay = 'none' | 'menu' | 'build' | 'log' | 'progress' | 'help' | 'tasks' | 'assessment' | 'ending';
 export type ScoreRecord = AttemptScore & { scenarioId: string; choiceId: string; day: number };
 
 export type Period = 'today' | 'future-none' | 'future-mine';
@@ -108,6 +102,7 @@ export type GameState = {
   greenEnergyDays: number;
   realWorldCount: number;
   assessmentsPost: number;
+  assessments: { moduleId: string; kind: 'PRE' | 'POST'; pct: number; day: number }[];
   overlay: Overlay;
   /** İnşa panelinde seçili alan */
   buildZone: string | null;
@@ -151,6 +146,7 @@ const initial = (): GameState => ({
   greenEnergyDays: 0,
   realWorldCount: 0,
   assessmentsPost: 0,
+  assessments: [],
   overlay: 'none',
   buildZone: null,
 });
@@ -194,13 +190,6 @@ function readSaved(): Partial<GameState> | null {
         if (isResult(v) && v.scenarioId === k) applied[k] = v;
       }
     }
-    const energy = p.energySystem as Partial<EnergySystem> | undefined;
-    const waste = p.wasteSystem as Partial<WasteSystem> | undefined;
-    const city = p.citySystem as Partial<CitySystem> | undefined;
-    const carbon = p.carbonSystem as Partial<CarbonSystem> | undefined;
-    const ocean = p.oceanSystem as Partial<OceanSystem> | undefined;
-    const council = p.councilSystem as Partial<CouncilSystem> | undefined;
-    const finite = (v: unknown, fallback: number) => (typeof v === 'number' && Number.isFinite(v) ? v : fallback);
     const notes: Record<string, string> = {};
     if (p.transferByScenario && typeof p.transferByScenario === 'object') {
       for (const [k, v] of Object.entries(p.transferByScenario as object)) {
@@ -212,22 +201,7 @@ function readSaved(): Partial<GameState> | null {
     const patch: Partial<GameState> = {
       history,
       applied,
-      energySystem: {
-        renewableShare: typeof energy?.renewableShare === 'number' ? energy.renewableShare : ENERGY_BASELINE.renewableShare,
-        storageUnits: typeof energy?.storageUnits === 'number' ? energy.storageUnits : ENERGY_BASELINE.storageUnits,
-      },
-      wasteSystem: {
-        otherWasteKg: typeof waste?.otherWasteKg === 'number' ? waste.otherWasteKg : WASTE_BASELINE.otherWasteKg,
-        sortingRecovery: typeof waste?.sortingRecovery === 'number' ? waste.sortingRecovery : WASTE_BASELINE.sortingRecovery,
-      },
-      citySystem: {
-        sealedShare: finite(city?.sealedShare, CITY_BASELINE.sealedShare),
-        greenShare: finite(city?.greenShare, CITY_BASELINE.greenShare),
-        rainShare: finite(city?.rainShare, CITY_BASELINE.rainShare),
-      },
-      carbonSystem: { claimScore: finite(carbon?.claimScore, CARBON_BASELINE.claimScore) },
-      oceanSystem: { habitatCare: finite(ocean?.habitatCare, OCEAN_BASELINE.habitatCare) },
-      councilSystem: { evidenceBias: finite(council?.evidenceBias, COUNCIL_BASELINE.evidenceBias) },
+      ...deriveSystems(applied),
       transferAnswer: typeof p.transferAnswer === 'string' ? p.transferAnswer.slice(0, 280) : '',
       transferByScenario: notes,
       period: isPeriod(p.period) ? p.period : 'today',
@@ -244,6 +218,7 @@ function readSaved(): Partial<GameState> | null {
     patch.realWorldCount = num(p.realWorldCount);
     patch.assessmentsPost = num(p.assessmentsPost);
     if (Array.isArray(p.scores)) patch.scores = (p.scores as ScoreRecord[]).filter((x) => typeof x?.scenarioId === 'string' && typeof x.total === 'number').slice(-500);
+    if (Array.isArray(p.assessments)) patch.assessments = (p.assessments as GameState['assessments']).filter((a) => typeof a?.moduleId === 'string' && (a.kind === 'PRE' || a.kind === 'POST') && typeof a.pct === 'number').slice(-200);
     if (Array.isArray(p.badges)) patch.badges = (p.badges as unknown[]).filter((x): x is string => typeof x === 'string');
     if (typeof p.sessionId === 'string') patch.sessionId = p.sessionId;
     return patch;
@@ -278,6 +253,7 @@ function persist() {
         greenEnergyDays: state.greenEnergyDays,
         realWorldCount: state.realWorldCount,
         assessmentsPost: state.assessmentsPost,
+        assessments: state.assessments,
       }),
     );
   } catch {
@@ -315,28 +291,6 @@ function checkBadges() {
 }
 
 const foodActs = (s: GameState) => s.history.filter((h) => h.scenarioId === food.id);
-
-function systemsAfter(scenario: PlayableScenario, system: PlayableScenario['choices'][number]['system'], prev: GameState) {
-  return {
-    energySystem: scenario.cross === 'energy-storage' ? energyFromChoice(system) : prev.energySystem,
-    wasteSystem: scenario.cross === 'waste-loop' ? wasteFromChoice(system) : prev.wasteSystem,
-    citySystem: scenario.cross === 'city-flood' ? cityFromChoice(system) : prev.citySystem,
-    carbonSystem: scenario.cross === 'carbon-claim' ? carbonFromChoice(system) : prev.carbonSystem,
-    oceanSystem: scenario.cross === 'ocean-habitat' ? oceanFromChoice(system) : prev.oceanSystem,
-    councilSystem: scenario.cross === 'council-evidence' ? councilFromChoice(system) : prev.councilSystem,
-  };
-}
-
-function systemsReset(scenarioId: string, prev: GameState) {
-  return {
-    energySystem: scenarioId === 'energy_001' ? { ...ENERGY_BASELINE } : prev.energySystem,
-    wasteSystem: scenarioId === 'waste_001' ? { ...WASTE_BASELINE } : prev.wasteSystem,
-    citySystem: scenarioId === 'city_001' ? { ...CITY_BASELINE } : prev.citySystem,
-    carbonSystem: scenarioId === 'carbon_001' ? { ...CARBON_BASELINE } : prev.carbonSystem,
-    oceanSystem: scenarioId === 'ocean_001' ? { ...OCEAN_BASELINE } : prev.oceanSystem,
-    councilSystem: scenarioId === 'council_001' ? { ...COUNCIL_BASELINE } : prev.councilSystem,
-  };
-}
 
 export type TaskStep = { id: string; label: string; done: boolean };
 
@@ -391,7 +345,7 @@ export const gameStore = {
     if (h.locked) return set({ selectedHotspotId: null, schoolOpen: false, decisionOpen: false, notice: `${h.label}: Henüz açılmadı (Yakında)` });
     if (id === 'school') return set({ selectedHotspotId: id, notice: null, schoolOpen: true, decisionOpen: false });
     const scenarioId = HOTSPOT_SCENARIO[id];
-    if (scenarioId) openScenario(scenarioId, id);
+    if (scenarioId) openScenario(nextTaskOf(scenarioId.split('_')[0], completedTaskIds(state)).id, id);
   },
   setPeriod: (p: Period) => set({ period: p }),
   closeIntro: () => set({ introOpen: false }),
@@ -399,9 +353,16 @@ export const gameStore = {
   setWorldReady: () => set({ worldReady: true }),
   closePanel: () => set({ selectedHotspotId: null, schoolOpen: false }),
   clearNotice: () => set({ notice: null }),
-  openDecision: () => openScenario(food.id, 'canteen'),
+  openDecision: () => openScenario(nextTaskOf('food', completedTaskIds(state)).id, 'canteen'),
+  /** Görev Merkezi: kilitli görev açılmaz, nedeni bildirilir. */
+  openTask(taskId: string) {
+    const st = taskStatus(taskId, completedTaskIds(state));
+    if (st.status === 'locked') return set({ notice: st.reason ?? 'Bu görev henüz kilitli.' });
+    const m = moduleById(taskId.split('_')[0]);
+    openScenario(taskId, m?.hotspot ?? 'school');
+  },
   /** Meclisin harita pini yok; okul ve görev listesinden açılır. */
-  openCouncil: () => openScenario('council_001', 'school'),
+  openCouncil: () => openScenario(nextTaskOf('council', completedTaskIds(state)).id, 'school'),
   closeDecision: () => set({ decisionOpen: false, selectedHotspotId: null }),
   pickChoice: (id: string) => set({ pendingChoiceId: id }),
   setReasoningOption: (v: string | null) => set({ reasoningOption: v }),
@@ -420,7 +381,7 @@ export const gameStore = {
     const result = runDecision(scenario, state.pendingChoiceId, reasoning);
     const choice = scenario.choices.find((c) => c.id === state.pendingChoiceId);
     const applied = { ...state.applied, [scenario.id]: result };
-    const systems = systemsAfter(scenario, choice?.system, state);
+    const systems = deriveSystems({ ...state.applied, [scenario.id]: result });
     const score = scoreAttempt(result.before as unknown as Record<string, number>, result.after as unknown as Record<string, number>, scenario.rows, reasoning);
     const tried = state.history.some((h) => h.scenarioId === scenario.id && h.choiceId !== result.choiceId);
     const before = unlockCtx(state).completedTasks;
@@ -457,7 +418,7 @@ export const gameStore = {
       reasoningOption: null,
       reasoningText: '',
       applied,
-      ...systemsReset(state.activeScenarioId, state),
+      ...deriveSystems(applied),
       world: composeWorld(applied),
     });
   },
@@ -505,7 +466,14 @@ export const gameStore = {
     set({ sim: appendLog({ ...state.sim, buildings: r.buildings, treasury: state.sim.treasury + r.refund }, [logEntry('demolish', `Yapı kaldırıldı (+${r.refund} puan iade).`)]) });
   },
   recordRealWorld: () => { set({ realWorldCount: state.realWorldCount + 1 }); checkBadges(); },
-  recordAssessmentPost: () => { set({ assessmentsPost: state.assessmentsPost + 1 }); checkBadges(); },
+  recordAssessment(moduleId: string, kind: 'PRE' | 'POST', pct: number) {
+    set({
+      assessments: [...state.assessments, { moduleId, kind, pct, day: state.sim.day }],
+      assessmentsPost: state.assessmentsPost + (kind === 'POST' ? 1 : 0),
+      sim: appendLog(state.sim, [logEntry('system', `${kind === 'PRE' ? 'Ön' : 'Son'} değerlendirme (${moduleId}): %${pct}`)]),
+    });
+    checkBadges();
+  },
   /** Kayıt dışa/içe aktarma (sunucu eşitlemesi için). */
   exportSave(): unknown {
     try { return JSON.parse(storage()?.getItem(SESSION_KEY) ?? 'null'); } catch { return null; }

@@ -1,0 +1,113 @@
+{
+  "id": "city_004",
+  "module": "city",
+  "order": 4,
+  "version": "1.0.0",
+  "title": "KrizKenti 4 – Otopark mı Otobüs mü?",
+  "brief": "Şehir merkezinde trafik ve hava kirliliği artıyor. Esnaf otopark istiyor, öğrenciler güvenli bisiklet yolu ve otobüs. Ulaşım bütçesini nereye harcarsın?",
+  "facts": [
+    {
+      "label": "Ulaşım",
+      "value": "özel araç ağırlıklı (varsayım)"
+    },
+    {
+      "label": "Otopark",
+      "value": "beton yüzey ekler"
+    },
+    {
+      "label": "Hedef",
+      "value": "erişim + hava + emisyon"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Yeni çok katlı otopark",
+      "summary": "Araç erişimi",
+      "deltas": {
+        "energyScore": -2,
+        "budget": -600,
+        "wellbeing": 1
+      },
+      "tradeoff": "Araçla gelenler rahatlar; daha çok araç trafiği ve beton yüzey oluşur.",
+      "systemAdd": {
+        "sealedShare": 6,
+        "transitShare": -5
+      },
+      "misconception": "Daha çok yol ve otopark trafiği kalıcı olarak azaltır."
+    },
+    {
+      "id": "B",
+      "label": "Otobüs hattı + bisiklet yolu",
+      "summary": "Toplu ulaşım",
+      "deltas": {
+        "energyScore": 1,
+        "budget": -700,
+        "wellbeing": 5
+      },
+      "tradeoff": "Ulaşım emisyonu ve trafik azalır, araç sahibi olmayanlar da erişir; alışkanlık değişimi zaman alır.",
+      "systemAdd": {
+        "transitShare": 15
+      }
+    },
+    {
+      "id": "C",
+      "label": "Sadece trafik ışıklarını ayarla",
+      "summary": "Küçük düzenleme",
+      "deltas": {
+        "energyScore": 0,
+        "budget": -150,
+        "wellbeing": 1
+      },
+      "tradeoff": "Ucuz ve hızlı; temel sorun sürer.",
+      "systemAdd": {
+        "transitShare": 2
+      }
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Değişiklik yok",
+    "deltas": {
+      "energyScore": -1,
+      "budget": 0,
+      "wellbeing": -3
+    },
+    "tradeoff": "Trafik ve hava kirliliği sürer."
+  },
+  "learningOutcomeIds": [
+    "CI2",
+    "CI3",
+    "L2"
+  ],
+  "evidenceRefs": [
+    "R-IPCC-AR6-WG3"
+  ],
+  "disclaimer": "Riskler simülasyon varsayımıdır; ölçülmüş sel veya sıcaklık modeli değildir.",
+  "reasoningOptions": [
+    "Toplu ulaşım daha çok kişiye ulaşır ve emisyonu azaltır.",
+    "Esnafın isteğini önemsedim.",
+    "En az maliyetli adımı seçtim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyonda toplu ulaşım payı arttı. Okula geliş biçimlerini gerçek veriyle nasıl öğrenirsin?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Sınıfta anonim bir anket yapın: okula yürüyerek, bisikletle, otobüsle veya araçla gelenleri sayın (ad yazmadan).",
+    "measurementPlan": [
+      "Yalnızca yer kodu ve saat yaz; fotoğrafta kişi olmasın",
+      "Aynı yerleri aynı saatte ölç",
+      "Önce ve sonra ayrı kaydet",
+      "Sonucu simülasyon riskiyle bir tutma"
+    ]
+  },
+  "requires": "city_003"
+}

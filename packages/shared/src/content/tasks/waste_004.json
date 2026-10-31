@@ -1,0 +1,112 @@
+{
+  "id": "waste_004",
+  "module": "waste",
+  "order": 4,
+  "version": "1.0.0",
+  "title": "Döngü Ustaları 4 – Karışık Kutu",
+  "brief": "Geri dönüşüm kutularında yemek artığı ve karışık atık var; tesis kirli atığı geri dönüştüremiyor. Ayrıştırma sistemini nasıl iyileştirirsin?",
+  "facts": [
+    {
+      "label": "Kirlilik",
+      "value": "kutuların ~%40’ı karışık (örnek)"
+    },
+    {
+      "label": "Tesis",
+      "value": "kirli atığı kabul etmiyor"
+    },
+    {
+      "label": "Hedef",
+      "value": "temiz ayrıştırma"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Renkli kutular + eğitim + geri bildirim",
+      "summary": "Sistem + öğrenme",
+      "deltas": {
+        "budget": -300,
+        "wellbeing": 2,
+        "waterScore": 0
+      },
+      "tradeoff": "Ayrıştırma kalitesi artar; sürekli eğitim ve takip gerekir.",
+      "system": {
+        "sortingRecovery": 0.6
+      }
+    },
+    {
+      "id": "B",
+      "label": "Tek kutu, tesis ayırsın",
+      "summary": "Kolaylık",
+      "deltas": {
+        "budget": -200,
+        "wellbeing": 1,
+        "waterScore": 0
+      },
+      "tradeoff": "Kullanıcı için kolay; kirlenme nedeniyle geri kazanılan oran düşer.",
+      "system": {
+        "sortingRecovery": 0.2
+      }
+    },
+    {
+      "id": "C",
+      "label": "Eğitimsiz yeni kutular",
+      "summary": "Sadece kutu",
+      "deltas": {
+        "budget": -150,
+        "wellbeing": 0,
+        "waterScore": 0
+      },
+      "tradeoff": "Kutular gelir ama alışkanlık değişmezse kirlenme sürer.",
+      "system": {
+        "sortingRecovery": 0.3
+      },
+      "misconception": "Geri dönüşüm kutusu koymak tek başına geri dönüşümü sağlar."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Sistem aynı kalır",
+    "deltas": {
+      "budget": 0,
+      "wellbeing": 0,
+      "waterScore": 0
+    },
+    "tradeoff": "Kirli kutular boşa gider."
+  },
+  "learningOutcomeIds": [
+    "WA2",
+    "L2"
+  ],
+  "evidenceRefs": [
+    "R-UNEP-WASTE",
+    "R-SIFIRATIK"
+  ],
+  "disclaimer": "Atık miktarları simülasyon varsayımıdır; tartılmış saha verisi değildir.",
+  "reasoningOptions": [
+    "Doğru ayrıştırma öğrenmeyi gerektirir.",
+    "Kullanıcıyı zorlamamak istedim.",
+    "Kutu koymak yeterli diye düşündüm.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyonda ayrıştırma oranı arttı. Okulunda bir kutunun ne kadar “temiz” ayrıştırıldığını nasıl ölçersin?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Bir hafta boyunca geri dönüşüm kutularını (eldivenle, öğretmenle) inceleyip yanlış atılan parça sayısını kaydedin.",
+    "measurementPlan": [
+      "Ad yazma; yalnızca sınıf ve gün",
+      "Aynı kutuları aynı saatte say",
+      "Önce ve sonra ayrı kaydet",
+      "Sonucu simülasyon değeriyle bir tutma"
+    ]
+  },
+  "requires": "waste_003"
+}

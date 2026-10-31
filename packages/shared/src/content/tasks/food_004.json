@@ -1,0 +1,102 @@
+{
+  "id": "food_004",
+  "module": "food",
+  "order": 4,
+  "version": "1.0.0",
+  "title": "Son Tabak 4 – Yolda Bozulan Domatesler",
+  "brief": "Kantine gelen domateslerin bir kısmı uzun yolda eziliyor ve bozuluyor. Tedarik zincirinde nerede iyileştirme yaparsın?",
+  "facts": [
+    {
+      "label": "Tedarik",
+      "value": "uzak toptancı (kurgu)"
+    },
+    {
+      "label": "Kayıp",
+      "value": "yolda ezilme ve bekleme"
+    },
+    {
+      "label": "Hedef",
+      "value": "zinciri kısalt veya koru"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Yerel üreticiyle kısa zincir",
+      "summary": "Yakın ve taze",
+      "deltas": {
+        "foodWasteKg": -3,
+        "budget": -100,
+        "wellbeing": 3
+      },
+      "tradeoff": "Daha taze ürün, daha az bekleme; yerel üretim mevsime bağlıdır."
+    },
+    {
+      "id": "B",
+      "label": "Soğuk zincirli araç",
+      "summary": "Teknoloji",
+      "deltas": {
+        "foodWasteKg": -4,
+        "budget": -500,
+        "energyScore": -3
+      },
+      "tradeoff": "Bozulma azalır; araç ve soğutma enerji ister, maliyet yüksektir."
+    },
+    {
+      "id": "C",
+      "label": "Fazladan sipariş ver",
+      "summary": "Eksik kalmasın",
+      "deltas": {
+        "foodWasteKg": 4,
+        "budget": -200,
+        "wellbeing": 1
+      },
+      "tradeoff": "Eksiklik olmaz; bozulan ürün ve israf artar.",
+      "misconception": "Fazla sipariş vermek israfı önlemenin güvenli yoludur."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Zincir aynı kalır",
+    "deltas": {
+      "foodWasteKg": 1,
+      "budget": -100,
+      "wellbeing": 0
+    },
+    "tradeoff": "Yolda kayıp sürer."
+  },
+  "learningOutcomeIds": [
+    "FO3",
+    "L2"
+  ],
+  "evidenceRefs": [
+    "R-FAO-SOFA"
+  ],
+  "disclaimer": "Simülasyon – gerçek saha sonucu değildir",
+  "reasoningOptions": [
+    "Zinciri kısaltmak kaybı azaltır.",
+    "Bozulmayı teknolojiyle önlemek istedim.",
+    "Eksik kalmamak önemliydi.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Gıda kaybı (zincirde) ile gıda israfı (tabakta) arasındaki fark nedir? Okulunda hangisini ölçebilirsin?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Kantine gelen bir sebze kasasında hasarlı ürünleri sayın; teslimat günü ve kaynağını (firma adı olmadan) not edin.",
+    "measurementPlan": [
+      "Ad yazma; yalnızca gün ve öğün",
+      "Aynı terazi ve aynı saat",
+      "En az üç gün önce, üç gün sonra",
+      "Sonucu simülasyon değeriyle bir tutma"
+    ]
+  },
+  "requires": "food_003"
+}

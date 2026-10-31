@@ -1,11 +1,6 @@
 import type { Choice, Resources, Scenario } from '../../state/types';
-import food001 from './food_001.json';
-import energy001 from './energy_001.json';
-import waste001 from './waste_001.json';
-import city001 from './city_001.json';
-import carbon001 from './carbon_001.json';
-import ocean001 from './ocean_001.json';
-import council001 from './council_001.json';
+import { taskById, TASKS, type TaskDef } from '@yarinlab/shared';
+const food001 = taskById('food_001')!, energy001 = taskById('energy_001')!, waste001 = taskById('waste_001')!, city001 = taskById('city_001')!, carbon001 = taskById('carbon_001')!, ocean001 = taskById('ocean_001')!, council001 = taskById('council_001')!;
 
 export type Fact = { label: string; value: string };
 export type ResultRow = { key: keyof Resources; label: string; unit: string; max: number; lowerIsBetter?: boolean };
@@ -27,9 +22,12 @@ export type ChoiceSystem = {
   shade?: number;
   transitShare?: number;
 };
-export type PlayableChoice = Choice & { summary: string; system?: ChoiceSystem };
+export type PlayableChoice = Choice & { summary: string; system?: ChoiceSystem; systemAdd?: ChoiceSystem; misconception?: string };
 
 export type PlayableScenario = Omit<Scenario, 'choices'> & {
+  module: TaskDef['module'];
+  order: number;
+  requires?: string;
   title: string;
   shortTitle: string;
   brief: string;
@@ -72,7 +70,7 @@ const CARBON_ROWS: ResultRow[] = [
 const OCEAN_ROWS: ResultRow[] = CARBON_ROWS;
 const COUNCIL_ROWS: ResultRow[] = CARBON_ROWS;
 
-const foodJson = food001 as Omit<PlayableScenario, 'shortTitle' | 'facts' | 'rows' | 'cross'> & {
+const foodJson = food001 as unknown as Omit<PlayableScenario, 'shortTitle' | 'facts' | 'rows' | 'cross'> & {
   context: { students: number; mealDemand: number; budgetLabel: string };
 };
 
@@ -91,7 +89,7 @@ export const food: PlayableScenario = {
 };
 
 export const energy: PlayableScenario = {
-  ...(energy001 as Omit<PlayableScenario, 'shortTitle' | 'facts' | 'rows' | 'cross'>),
+  ...(energy001 as unknown as Omit<PlayableScenario, 'shortTitle' | 'facts' | 'rows' | 'cross'>),
   shortTitle: 'Enerji',
   cross: 'energy-storage',
   rows: ENERGY_ROWS,
@@ -105,7 +103,7 @@ export const energy: PlayableScenario = {
 };
 
 export const waste: PlayableScenario = {
-  ...(waste001 as Omit<PlayableScenario, 'shortTitle' | 'facts' | 'rows' | 'cross'>),
+  ...(waste001 as unknown as Omit<PlayableScenario, 'shortTitle' | 'facts' | 'rows' | 'cross'>),
   shortTitle: 'Atık',
   cross: 'waste-loop',
   rows: WASTE_ROWS,
@@ -118,7 +116,7 @@ export const waste: PlayableScenario = {
 };
 
 export const city: PlayableScenario = {
-  ...(city001 as Omit<PlayableScenario, 'shortTitle' | 'facts' | 'rows' | 'cross'>),
+  ...(city001 as unknown as Omit<PlayableScenario, 'shortTitle' | 'facts' | 'rows' | 'cross'>),
   shortTitle: 'Şehir',
   cross: 'city-flood',
   rows: CITY_ROWS,
@@ -131,7 +129,7 @@ export const city: PlayableScenario = {
 };
 
 export const carbon: PlayableScenario = {
-  ...(carbon001 as Omit<PlayableScenario, 'shortTitle' | 'facts' | 'rows' | 'cross'>),
+  ...(carbon001 as unknown as Omit<PlayableScenario, 'shortTitle' | 'facts' | 'rows' | 'cross'>),
   shortTitle: 'Karbon',
   cross: 'carbon-claim',
   rows: CARBON_ROWS,
@@ -144,7 +142,7 @@ export const carbon: PlayableScenario = {
 };
 
 export const ocean: PlayableScenario = {
-  ...(ocean001 as Omit<PlayableScenario, 'shortTitle' | 'facts' | 'rows' | 'cross'>),
+  ...(ocean001 as unknown as Omit<PlayableScenario, 'shortTitle' | 'facts' | 'rows' | 'cross'>),
   shortTitle: 'Kıyı',
   cross: 'ocean-habitat',
   rows: OCEAN_ROWS,
@@ -156,7 +154,7 @@ export const ocean: PlayableScenario = {
 };
 
 export const council: PlayableScenario = {
-  ...(council001 as Omit<PlayableScenario, 'shortTitle' | 'facts' | 'rows' | 'cross'>),
+  ...(council001 as unknown as Omit<PlayableScenario, 'shortTitle' | 'facts' | 'rows' | 'cross'>),
   shortTitle: 'Meclis',
   cross: 'council-evidence',
   rows: COUNCIL_ROWS,
@@ -167,17 +165,26 @@ export const council: PlayableScenario = {
   ],
 };
 
-export const playableOrder = [food, energy, waste, city, carbon, ocean, council];
-
-export const playableScenarios: Record<string, PlayableScenario> = {
-  food_001: food,
-  energy_001: energy,
-  waste_001: waste,
-  city_001: city,
-  carbon_001: carbon,
-  ocean_001: ocean,
-  council_001: council,
+const FIRST: Record<string, PlayableScenario> = { food_001: food, energy_001: energy, waste_001: waste, city_001: city, carbon_001: carbon, ocean_001: ocean, council_001: council };
+const MODULE_UI: Record<TaskDef['module'], Pick<PlayableScenario, 'shortTitle' | 'cross' | 'rows'>> = {
+  food: { shortTitle: 'Son Tabak', cross: 'food-waste', rows: FOOD_ROWS },
+  energy: { shortTitle: 'Enerji', cross: 'energy-storage', rows: ENERGY_ROWS },
+  waste: { shortTitle: 'Döngü', cross: 'waste-loop', rows: WASTE_ROWS },
+  city: { shortTitle: 'KrizKenti', cross: 'city-flood', rows: CITY_ROWS },
+  carbon: { shortTitle: 'Karbon', cross: 'carbon-claim', rows: CARBON_ROWS },
+  ocean: { shortTitle: 'Mavi Nöbet', cross: 'ocean-habitat', rows: OCEAN_ROWS },
+  council: { shortTitle: 'Meclis', cross: 'council-evidence', rows: COUNCIL_ROWS },
 };
+
+/** Tüm oynanabilir görevler (35+): veri dosyalarından üretilir; ilk görevler özel bilgi kartlarını korur. */
+export const playableScenarios: Record<string, PlayableScenario> = Object.fromEntries(
+  TASKS.map((t) => {
+    const ui = MODULE_UI[t.module];
+    const p = FIRST[t.id] ?? ({ ...(t as unknown as PlayableScenario), ...ui, shortTitle: `${ui.shortTitle} ${t.order}`, facts: t.facts ?? [] } as PlayableScenario);
+    return [t.id, { ...p, module: t.module, order: t.order, requires: t.requires }];
+  }),
+);
+export const playableOrder = TASKS.map((t) => playableScenarios[t.id]);
 
 export function playableById(id: string): PlayableScenario {
   return playableScenarios[id] ?? food;

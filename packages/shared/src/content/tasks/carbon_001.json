@@ -1,7 +1,9 @@
 {
   "id": "carbon_001",
-  "version": "0.1.0",
-  "title": "Karbon Dedektifleri / Görev 05",
+  "module": "carbon",
+  "order": 1,
+  "version": "1.0.0",
+  "title": "Karbon Dedektifleri 1 – Kutudaki İddia",
   "brief": "Bir ürün kutusu kendini daha iyi diye anlatıyor. Yazıyı olduğu gibi kabul edebilir, iki kaynağı kontrol edebilir veya iddiayı reddedebilirsin. Puan, iddianın ne kadar incelendiğini gösterir. Sera gazı miktarı hesaplanmaz.",
   "baseline": {
     "budget": 12000,
@@ -15,37 +17,69 @@
       "id": "A",
       "label": "Sloganı kabul et",
       "summary": "Yazıya güven",
-      "deltas": { "wellbeing": 6, "budget": -80, "waterScore": -3 },
+      "deltas": {
+        "wellbeing": 6,
+        "budget": -80,
+        "waterScore": -3
+      },
       "tradeoff": "Kontrol etmeden kabul etmek inceleme puanını düşürür. Memnuniyet bir an yükselir; bu bir kanıt değildir.",
-      "system": { "claimScore": 30 }
+      "system": {
+        "claimScore": 30
+      },
+      "misconception": "Ambalajdaki slogan ürünün çevreci olduğunu kanıtlar."
     },
     {
       "id": "B",
       "label": "İki kaynağı kontrol et",
       "summary": "Yazı ve ikinci bilgi",
-      "deltas": { "wellbeing": 4, "budget": -220, "waterScore": 2 },
+      "deltas": {
+        "wellbeing": 4,
+        "budget": -220,
+        "waterScore": 2
+      },
       "tradeoff": "İki kaynağı karşılaştırmak inceleme puanını yükseltir. Zaman ve bütçe gider.",
-      "system": { "claimScore": 75 }
+      "system": {
+        "claimScore": 75
+      }
     },
     {
       "id": "C",
       "label": "İddiayı reddet",
       "summary": "Hiçbir yazıya bakma",
-      "deltas": { "wellbeing": -6, "budget": -40, "waterScore": 1 },
+      "deltas": {
+        "wellbeing": -6,
+        "budget": -40,
+        "waterScore": 1
+      },
       "tradeoff": "Her iddiayı reddetmek de bir seçimdir; bazı doğru bilgiler dışarıda kalabilir.",
-      "system": { "claimScore": 45 }
+      "system": {
+        "claimScore": 45
+      }
     }
   ],
   "noDecision": {
     "id": "N",
     "label": "Kararlar yok",
     "summary": "Alışkanlık sürer",
-    "deltas": { "wellbeing": -3, "budget": -30, "waterScore": -1 },
+    "deltas": {
+      "wellbeing": -3,
+      "budget": -30,
+      "waterScore": -1
+    },
     "tradeoff": "İnceleme yapılmazsa puan yerinde kalır; alışkanlık değişmez.",
-    "system": { "claimScore": 40 }
+    "system": {
+      "claimScore": 40
+    }
   },
-  "learningOutcomeIds": ["L2", "L3", "L5"],
-  "evidenceRefs": ["R9"],
+  "learningOutcomeIds": [
+    "CA2",
+    "L2",
+    "L5"
+  ],
+  "evidenceRefs": [
+    "R-EU-GREENCLAIMS",
+    "R9"
+  ],
   "disclaimer": "Simülasyon – gerçek saha sonucu değildir",
   "reasoningOptions": [
     "Ürün yazısı yeterli göründü.",

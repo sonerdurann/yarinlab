@@ -1,0 +1,108 @@
+{
+  "id": "city_002",
+  "module": "city",
+  "order": 2,
+  "version": "1.0.0",
+  "title": "KrizKenti 2 – Sıcak Dalga Geliyor",
+  "brief": "Meteoroloji önümüzdeki hafta sıcak hava dalgası bekliyor. IPCC sıcak uçların daha sık görüleceğini belirtiyor. Beton ağırlıklı mahallelerde ısı daha yüksek hissediliyor. Belediye olarak ne yaparsın?",
+  "facts": [
+    {
+      "label": "Sıcak stres",
+      "value": "beton ve gölgesizlik artırır"
+    },
+    {
+      "label": "Kırılgan gruplar",
+      "value": "yaşlılar, küçük çocuklar, açık havada çalışanlar"
+    },
+    {
+      "label": "Hedef",
+      "value": "insanları koru, enerji yükünü düşün"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Gölge, ağaç ve serinleme noktası",
+      "summary": "Doğa temelli + sosyal",
+      "deltas": {
+        "waterScore": -1,
+        "budget": -500,
+        "wellbeing": 7
+      },
+      "tradeoff": "Gölge ve yeşil alan sıcaklığı azaltır, serinleme noktası kırılgan gruplara ulaşır; ağaçların büyümesi zaman alır.",
+      "systemAdd": {
+        "shade": 10,
+        "greenShare": 5
+      }
+    },
+    {
+      "id": "B",
+      "label": "Herkese klima dağıt",
+      "summary": "Teknik çözüm",
+      "deltas": {
+        "energyScore": -7,
+        "budget": -800,
+        "wellbeing": 4
+      },
+      "tradeoff": "İçeride serinlik sağlar; elektrik talebi ve kesinti riski artar, dışarısı daha da ısınır.",
+      "misconception": "Sıcak hava dalgasının tek çözümü klimadır."
+    },
+    {
+      "id": "C",
+      "label": "Yalnızca uyarı yayınla",
+      "summary": "Bilgilendirme",
+      "deltas": {
+        "waterScore": 0,
+        "budget": -50,
+        "wellbeing": -3
+      },
+      "tradeoff": "Ucuz ve hızlı; ama gölgesiz mahallelerde risk azalmaz."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Hazırlık yapılmaz",
+    "deltas": {
+      "waterScore": -2,
+      "budget": 0,
+      "wellbeing": -6
+    },
+    "tradeoff": "Sıcak dalga kırılgan grupları daha çok etkiler."
+  },
+  "learningOutcomeIds": [
+    "CI1",
+    "CI3",
+    "L3"
+  ],
+  "evidenceRefs": [
+    "R-IPCC-AR6-WG2",
+    "R-UNEP-COOL"
+  ],
+  "disclaimer": "Riskler simülasyon varsayımıdır; ölçülmüş sel veya sıcaklık modeli değildir.",
+  "reasoningOptions": [
+    "Gölge ve yeşil alan şehri uzun vadede serinletir.",
+    "En hızlı etkiyi istedim.",
+    "Bütçeyi korumak istedim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyondaki sıcak stres riski ile okul bahçesinde ölçülen sıcaklık aynı şey midir? Nasıl karşılaştırırsın?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Öğretmeninizle aynı saatte okul bahçesinde güneşte ve gölgede termometreyle sıcaklık ölçün; farkı tabloya yazın.",
+    "measurementPlan": [
+      "Yalnızca yer kodu ve saat yaz; fotoğrafta kişi olmasın",
+      "Aynı yerleri aynı saatte ölç",
+      "Önce ve sonra ayrı kaydet",
+      "Sonucu simülasyon riskiyle bir tutma"
+    ]
+  },
+  "requires": "city_001"
+}

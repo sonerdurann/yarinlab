@@ -1,0 +1,111 @@
+{
+  "id": "city_003",
+  "module": "city",
+  "order": 3,
+  "version": "1.0.0",
+  "title": "KrizKenti 3 – Kurak Yaz",
+  "brief": "Barajlar yarı yarıya boş. Tarım, parklar ve evler aynı sudan pay istiyor. Su kaynaklarını nasıl yönetirsin?",
+  "facts": [
+    {
+      "label": "Baraj doluluğu",
+      "value": "%48 (kurgu)"
+    },
+    {
+      "label": "Kullanım",
+      "value": "tarım, park, konut"
+    },
+    {
+      "label": "Hedef",
+      "value": "kıt suyu adil ve verimli paylaş"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Yağmur hasadı + damla sulama",
+      "summary": "Verimlilik",
+      "deltas": {
+        "waterScore": 7,
+        "budget": -500,
+        "wellbeing": 2
+      },
+      "tradeoff": "Su kullanımı azalır, yağmur depolanır; kurulum maliyetli ve yağmura bağlı.",
+      "systemAdd": {
+        "rainShare": 10
+      }
+    },
+    {
+      "id": "B",
+      "label": "Yeni derin kuyu",
+      "summary": "Yeraltı suyu",
+      "deltas": {
+        "waterScore": 4,
+        "budget": -400,
+        "wellbeing": 1
+      },
+      "tradeoff": "Kısa vadede su artar; yeraltı suyu yavaş dolar, aşırı çekim kalıcı sorun yaratabilir.",
+      "misconception": "Yeraltı suyu bitmeyen bir kaynaktır."
+    },
+    {
+      "id": "C",
+      "label": "Park sulamasını tamamen kes",
+      "summary": "Kısıntı",
+      "deltas": {
+        "waterScore": 3,
+        "budget": 100,
+        "wellbeing": -6
+      },
+      "tradeoff": "Su tasarruf edilir; ağaçlar zarar görür, gölge ve serinlik azalır.",
+      "systemAdd": {
+        "greenShare": -5,
+        "shade": -3
+      }
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Kullanım sürer",
+    "deltas": {
+      "waterScore": -6,
+      "budget": 0,
+      "wellbeing": -2
+    },
+    "tradeoff": "Kurak günlerde su yetersizliği büyür."
+  },
+  "learningOutcomeIds": [
+    "CI1",
+    "CI2",
+    "L3"
+  ],
+  "evidenceRefs": [
+    "R-UNESCO-WATER",
+    "R-IPCC-AR6-WG2"
+  ],
+  "disclaimer": "Riskler simülasyon varsayımıdır; ölçülmüş sel veya sıcaklık modeli değildir.",
+  "reasoningOptions": [
+    "Suyu verimli kullanmak kıtlığı azaltır.",
+    "Hızlı ek su gerekiyordu.",
+    "En ucuz tasarruf yolunu seçtim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyonda su göstergesi yükseldi. Okulunda gerçek su kullanımını hangi göstergeyle izleyebilirsin?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Okul sayacını öğretmeninizle bir hafta aynı saatte okuyun; musluk hatırlatma kartlarından önce ve sonra kullanımı karşılaştırın.",
+    "measurementPlan": [
+      "Yalnızca yer kodu ve saat yaz; fotoğrafta kişi olmasın",
+      "Aynı yerleri aynı saatte ölç",
+      "Önce ve sonra ayrı kaydet",
+      "Sonucu simülasyon riskiyle bir tutma"
+    ]
+  },
+  "requires": "city_002"
+}

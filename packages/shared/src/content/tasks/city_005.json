@@ -1,0 +1,112 @@
+{
+  "id": "city_005",
+  "module": "city",
+  "order": 5,
+  "version": "1.0.0",
+  "title": "KrizKenti 5 – Uyum Bütçesi ve Eşitlik",
+  "brief": "Kuzey Mahallesi ağaçlık ve yüksekte. Güney Mahallesi yoğun, gölgesiz ve dere kenarında; sel ve sıcaktan daha çok etkileniyor. 2.000 puanlık iklim uyum bütçesini nasıl dağıtırsın?",
+  "facts": [
+    {
+      "label": "Kuzey",
+      "value": "düşük risk, yeşil"
+    },
+    {
+      "label": "Güney",
+      "value": "yüksek sel + sıcak riski"
+    },
+    {
+      "label": "Bütçe",
+      "value": "2.000 puan (kurgu)"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Eşit böl",
+      "summary": "Her mahalleye 1.000",
+      "deltas": {
+        "waterScore": 2,
+        "budget": -400,
+        "wellbeing": 2
+      },
+      "tradeoff": "Basit ve anlaşılır; en çok risk taşıyan mahalle yetersiz destek alabilir.",
+      "systemAdd": {
+        "shade": 3,
+        "greenShare": 2
+      },
+      "misconception": "Herkese eşit pay vermek her zaman adil sonuç verir."
+    },
+    {
+      "id": "B",
+      "label": "Riske göre öncelik",
+      "summary": "Güney önce",
+      "deltas": {
+        "waterScore": 4,
+        "budget": -400,
+        "wellbeing": 7
+      },
+      "tradeoff": "Riskin en yüksek olduğu yerde koruma artar; diğer mahalleye gerekçe açıklanmalıdır.",
+      "systemAdd": {
+        "shade": 6,
+        "greenShare": 4,
+        "rainShare": 5
+      }
+    },
+    {
+      "id": "C",
+      "label": "Merkez meydanı güzelleştir",
+      "summary": "Görünür proje",
+      "deltas": {
+        "waterScore": 0,
+        "budget": -400,
+        "wellbeing": 2
+      },
+      "tradeoff": "Herkes görür ve beğenebilir; risk azaltmaya katkısı sınırlı."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Bütçe harcanmaz",
+    "deltas": {
+      "waterScore": -1,
+      "budget": 0,
+      "wellbeing": -4
+    },
+    "tradeoff": "Riskler sürer, en çok Güney etkilenir."
+  },
+  "learningOutcomeIds": [
+    "CI2",
+    "CI3",
+    "CO1"
+  ],
+  "evidenceRefs": [
+    "R-IPCC-AR6-WG2"
+  ],
+  "disclaimer": "Riskler simülasyon varsayımıdır; ölçülmüş sel veya sıcaklık modeli değildir.",
+  "reasoningOptions": [
+    "Riskin en yüksek olduğu yere öncelik verdim.",
+    "Herkese eşit davranmak istedim.",
+    "Görünür bir proje istedim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Eşitlik (herkese aynı) ile hakkaniyet (ihtiyaca göre) arasındaki farkı kendi okulundan bir örnekle açıklar mısın?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Okul çevresinde gölgesi olmayan bekleme noktalarını (durak, giriş kapısı) gözlemleyip haritaya işaretleyin; kişisel bilgi toplamayın.",
+    "measurementPlan": [
+      "Yalnızca yer kodu ve saat yaz; fotoğrafta kişi olmasın",
+      "Aynı yerleri aynı saatte ölç",
+      "Önce ve sonra ayrı kaydet",
+      "Sonucu simülasyon riskiyle bir tutma"
+    ]
+  },
+  "requires": "city_004"
+}

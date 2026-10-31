@@ -1,0 +1,107 @@
+{
+  "id": "waste_002",
+  "module": "waste",
+  "order": 2,
+  "version": "1.0.0",
+  "title": "Döngü Ustaları 2 – Önce Önle",
+  "brief": "Okulda her gün yüzlerce tek kullanımlık bardak çöpe gidiyor. Atık hiyerarşisinde en üst basamak atığın hiç oluşmamasıdır. Ne yaparsın?",
+  "facts": [
+    {
+      "label": "Tek kullanımlık",
+      "value": "günde ~300 bardak (örnek)"
+    },
+    {
+      "label": "Hiyerarşi",
+      "value": "önle > azalt > yeniden kullan > geri dönüştür > bertaraf"
+    },
+    {
+      "label": "Hedef",
+      "value": "atığı kaynağında önle"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Matara ve su istasyonu",
+      "summary": "Önleme",
+      "deltas": {
+        "budget": -300,
+        "wellbeing": 3,
+        "waterScore": 1
+      },
+      "tradeoff": "Bardak atığı kaynağında azalır; matara alışkanlığı ve temiz su istasyonu gerekir.",
+      "systemAdd": {
+        "otherWasteKg": -4
+      }
+    },
+    {
+      "id": "B",
+      "label": "Daha çok çöp kutusu",
+      "summary": "Toplama",
+      "deltas": {
+        "budget": -200,
+        "wellbeing": 1,
+        "waterScore": 0
+      },
+      "tradeoff": "Ortam daha düzenli görünür; atık miktarı değişmez.",
+      "misconception": "Daha çok çöp kutusu koymak atığı azaltır."
+    },
+    {
+      "id": "C",
+      "label": "Hepsini yakma tesisine gönder",
+      "summary": "Bertaraf",
+      "deltas": {
+        "budget": -200,
+        "wellbeing": 0,
+        "energyScore": 1
+      },
+      "tradeoff": "Hacim azalır; malzeme kaybolur, emisyon ve kül oluşur. Hiyerarşinin alt basamağıdır.",
+      "misconception": "Atığı yakmak sorunu tamamen ortadan kaldırır."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Tek kullanımlık sürer",
+    "deltas": {
+      "budget": -100,
+      "wellbeing": 0,
+      "waterScore": 0
+    },
+    "tradeoff": "Atık yükü aynı kalır."
+  },
+  "learningOutcomeIds": [
+    "WA1",
+    "L3"
+  ],
+  "evidenceRefs": [
+    "R-UNEP-WASTE",
+    "R-SIFIRATIK"
+  ],
+  "disclaimer": "Atık miktarları simülasyon varsayımıdır; tartılmış saha verisi değildir.",
+  "reasoningOptions": [
+    "Atığı oluşmadan önlemek en iyisi.",
+    "Okul daha düzenli görünmeli.",
+    "Atıktan hemen kurtulmak istedim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyonda atık 4 kg azaldı. Okulunda bir günde kaç tek kullanımlık bardak atıldığını nasıl sayarsın?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Bir gün boyunca okuldaki tek kullanımlık bardak/şişe sayısını sayın; matara kampanyasından bir hafta sonra tekrar sayın.",
+    "measurementPlan": [
+      "Ad yazma; yalnızca sınıf ve gün",
+      "Aynı kutuları aynı saatte say",
+      "Önce ve sonra ayrı kaydet",
+      "Sonucu simülasyon değeriyle bir tutma"
+    ]
+  },
+  "requires": "waste_001"
+}

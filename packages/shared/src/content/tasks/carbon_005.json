@@ -1,0 +1,113 @@
+{
+  "id": "carbon_005",
+  "module": "carbon",
+  "order": 5,
+  "version": "1.0.0",
+  "title": "Karbon Dedektifleri 5 – Kaynak Dedektifi",
+  "brief": "Üç farklı yerde “bu ürün yılda X kg sera gazı yayar” yazıyor. Biri sosyal medya paylaşımı, biri yöntemi ve sistem sınırını açıklayan bir rapor, biri reklam: “rakibinden %50 daha az!”. Hangi bilgiyi raporuna koyarsın?",
+  "facts": [
+    {
+      "label": "Bilgi 1",
+      "value": "sosyal medya, kaynak yok"
+    },
+    {
+      "label": "Bilgi 2",
+      "value": "yöntem + sistem sınırı açık"
+    },
+    {
+      "label": "Bilgi 3",
+      "value": "reklam karşılaştırması"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Sosyal medya rakamı",
+      "summary": "Hızlı ve kolay",
+      "deltas": {
+        "wellbeing": -2,
+        "budget": 0,
+        "waterScore": 0
+      },
+      "tradeoff": "Kim, nasıl ölçtü belli değil; doğrulanamaz.",
+      "systemAdd": {
+        "claimScore": -10
+      },
+      "misconception": "İnternette sayıyla verilen her bilgi bilimsel ölçümdür."
+    },
+    {
+      "id": "B",
+      "label": "Yöntemi açık rapor",
+      "summary": "Doğrulanabilir",
+      "deltas": {
+        "wellbeing": 4,
+        "budget": -100,
+        "waterScore": 0
+      },
+      "tradeoff": "Hangi aşamaların sayıldığı ve varsayımlar görülebilir; okuması zaman alır.",
+      "systemAdd": {
+        "claimScore": 18
+      }
+    },
+    {
+      "id": "C",
+      "label": "Reklam karşılaştırması",
+      "summary": "“%50 daha az”",
+      "deltas": {
+        "wellbeing": 0,
+        "budget": 0,
+        "waterScore": 0
+      },
+      "tradeoff": "Neye göre ve hangi koşulda karşılaştırıldığı belirsiz; göreli iddia eksik bilgi verir.",
+      "systemAdd": {
+        "claimScore": -5
+      }
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Rapor rakamsız kalır",
+    "deltas": {
+      "wellbeing": -1,
+      "budget": 0,
+      "waterScore": 0
+    },
+    "tradeoff": "Hiç kanıt kullanılmaz."
+  },
+  "learningOutcomeIds": [
+    "CA2",
+    "L5",
+    "L2"
+  ],
+  "evidenceRefs": [
+    "R-ISO14040",
+    "R-IPCC-AR6-WG3"
+  ],
+  "disclaimer": "İnceleme puanı oyun göstergesidir; ürünlerin gerçek sera gazı miktarı hesaplanmaz.",
+  "reasoningOptions": [
+    "Yöntemi ve varsayımları görebildiğim kaynağı seçtim.",
+    "En çarpıcı rakamı seçtim.",
+    "En hızlı bulduğum bilgiyi kullandım.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyon puanı ile bir raporun kg CO₂e değeri neden aynı şey değildir?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Sınıf olarak bir iklim haberini seçin; haberin kaynağını, ölçüm yöntemini ve tarihini bulup “doğrulanabilir mi?” tablosu yapın.",
+    "measurementPlan": [
+      "Ürün adı yerine ürün türünü yaz",
+      "İddiayı ve kaynağını aynen not et",
+      "Kaynak yoksa 'kanıt yok' diye işaretle",
+      "Kendi tahminini ölçüm gibi sunma"
+    ]
+  },
+  "requires": "carbon_004"
+}

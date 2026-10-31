@@ -1,8 +1,9 @@
-import { BADGES, levelForXp, WEATHER_ICON, xpForLevel } from '@yarinlab/shared';
+import { BADGES, endingFor, levelForXp, WEATHER_ICON, xpForLevel } from '@yarinlab/shared';
 import { gameStore, useGameState } from '../../state/gameStore';
 import { cityOf, completedTaskIds, moduleOf } from '../../state/city';
 import { playableScenarios } from '../../data/scenarios';
 import { Modal } from '../Modal/Modal';
+import { RoadmapButton } from '../Roadmap/RoadmapPanel';
 import { authStore, useAuth } from '../../state/authStore';
 
 /** Üst çubuk: tarih, mevsim, hava, seviye ve gün ilerletme. */
@@ -136,7 +137,7 @@ export function ProgressPanel() {
 }
 
 /** Ana menü: yeni oyun, devam, giriş, ayarlar, yardım. */
-export function MainMenu({ onSettings, onTeacher }: { onSettings: () => void; onTeacher: () => void }) {
+export function MainMenu({ onSettings, onTeacher, onSources }: { onSettings: () => void; onTeacher: () => void; onSources: () => void }) {
   const s = useGameState();
   const { user } = useAuth();
   if (s.overlay !== 'menu') return null;
@@ -151,8 +152,37 @@ export function MainMenu({ onSettings, onTeacher }: { onSettings: () => void; on
         <button onClick={authStore.open}>{user ? 'Hesabım' : 'Giriş / kayıt'}</button>
         {user?.role === 'TEACHER' && <button onClick={onTeacher}>Öğretmen paneli</button>}
         <button onClick={() => gameStore.openOverlay('progress')}>İlerleme ve rozetler</button>
+        <button onClick={() => gameStore.openOverlay('assessment')}>Öğrenme değerlendirmesi</button>
         <button onClick={onSettings}>Ayarlar</button>
         <button onClick={() => gameStore.openOverlay('help')}>Yardım ve rehber</button>
+        <button onClick={onSources}>Kaynaklar ve lisanslar</button>
+        <RoadmapButton />
+      </div>
+    </Modal>
+  );
+}
+
+/** Final: 2040 sonu (göstergelerden deterministik; oyun kurgusu). Yeniden deneme teşvik edilir. */
+export function EndingPanel() {
+  const s = useGameState();
+  if (s.overlay !== 'ending') return null;
+  const ind = cityOf(s).indicators;
+  const last = [...s.history].reverse().find((h) => h.scenarioId === 'council_005');
+  const e = endingFor({ resilience: ind.resilience, ecosystem: ind.ecosystem, wellbeing: ind.wellbeing, emissionIndex: ind.emissionIndex, literacy: ind.literacy, balancedPlan: last?.choiceId === 'A' });
+  return (
+    <Modal titleId="end-title" title={e.title} onClose={gameStore.closeOverlay} wide>
+      <div className={`ending ending-${e.key}`}>
+        <p className="ending-text">{e.text}</p>
+        <ul className="facts">
+          <li>Dayanıklılık {ind.resilience}/100</li><li>Ekosistem {ind.ecosystem}/100</li><li>Refah {ind.wellbeing}/100</li>
+          <li>Emisyon endeksi {ind.emissionIndex}</li><li>Okuryazarlık {ind.literacy}/100</li><li>Gelecek puanı {e.score}</li>
+        </ul>
+        <p className="notice">Bu son bir oyun kurgusudur; gerçek 2040 tahmini değildir. Farklı kararlar farklı gelecekler kurar.</p>
+      </div>
+      <div className="actions">
+        <button onClick={() => gameStore.openOverlay('log')}>Olay günlüğünü incele</button>
+        <button onClick={() => gameStore.openOverlay('assessment')}>Son değerlendirmeyi yap</button>
+        <button className="primary" onClick={gameStore.closeOverlay}>Şehri geliştirmeye devam et</button>
       </div>
     </Modal>
   );

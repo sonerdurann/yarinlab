@@ -1,0 +1,116 @@
+{
+  "id": "council_002",
+  "module": "council",
+  "order": 2,
+  "version": "1.0.0",
+  "title": "Gelecek Meclisi 2 – Dört Ses",
+  "brief": "Meclise dört grup geldi: esnaf (kesintiler işini bozuyor), yaşlılar derneği (sıcak günler), balıkçılar (kıyı), öğrenciler (okul ve ulaşım). Gündemi nasıl belirlersin?",
+  "facts": [
+    {
+      "label": "Esnaf",
+      "value": "enerji güvenilirliği"
+    },
+    {
+      "label": "Yaşlılar",
+      "value": "sıcak stres"
+    },
+    {
+      "label": "Balıkçılar",
+      "value": "kıyı ve geçim"
+    },
+    {
+      "label": "Öğrenciler",
+      "value": "okul, ulaşım"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "En kalabalık grubu dinle",
+      "summary": "Çoğunluk",
+      "deltas": {
+        "wellbeing": 0,
+        "budget": 0,
+        "waterScore": 0
+      },
+      "tradeoff": "Hızlı karar; küçük ama kırılgan gruplar göz ardı edilebilir.",
+      "systemAdd": {
+        "evidenceBias": -4
+      },
+      "misconception": "Çoğunluğun istediği her zaman en iyi iklim kararıdır."
+    },
+    {
+      "id": "B",
+      "label": "İhtiyaçları kanıtla karşılaştır",
+      "summary": "Risk + kırılganlık",
+      "deltas": {
+        "wellbeing": 5,
+        "budget": -100,
+        "waterScore": 0
+      },
+      "tradeoff": "Her grubun riski ve önceki modüllerdeki veriler karşılaştırılır; daha çok zaman ister.",
+      "systemAdd": {
+        "evidenceBias": 8
+      }
+    },
+    {
+      "id": "C",
+      "label": "En yüksek sesi dinle",
+      "summary": "Baskı",
+      "deltas": {
+        "wellbeing": -3,
+        "budget": 0,
+        "waterScore": 0
+      },
+      "tradeoff": "Gergin toplantı çabuk biter; karar kanıta dayanmaz.",
+      "systemAdd": {
+        "evidenceBias": -8
+      }
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Gündem belirlenmez",
+    "deltas": {
+      "wellbeing": -2,
+      "budget": 0,
+      "waterScore": 0
+    },
+    "tradeoff": "Gruplar dinlenmediğini hisseder."
+  },
+  "learningOutcomeIds": [
+    "CO1",
+    "L2"
+  ],
+  "evidenceRefs": [
+    "R-UNESCO-ESD",
+    "R-IPCC-AR6-WG2"
+  ],
+  "disclaimer": "Meclis puanı oyun göstergesidir.",
+  "reasoningOptions": [
+    "Kırılgan grupların ihtiyacını kanıtla görmek istedim.",
+    "Çoğunluğun sesi önemli.",
+    "Toplantıyı hızlı bitirmek istedim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Gerçek bir okul meclisinde farklı görüşleri adil biçimde nasıl toplarsın?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Sınıfta dört gruba ayrılıp her grup bir paydaşın ihtiyacını bir paragrafla yazsın; sonra kanıtlarla karşılaştırın.",
+    "measurementPlan": [
+      "Kişisel bilgi toplama; yalnızca görüş özetle",
+      "Her grubun görüşünü aynı soruyla al",
+      "Kanıtı ve kaynağı birlikte yaz",
+      "Oy sonucunu ölçülmüş etki gibi sunma"
+    ]
+  },
+  "requires": "council_001"
+}

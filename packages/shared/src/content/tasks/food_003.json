@@ -1,0 +1,106 @@
+{
+  "id": "food_003",
+  "module": "food",
+  "order": 3,
+  "version": "1.0.0",
+  "title": "Son Tabak 3 – Kurak Mevsimde Sera",
+  "brief": "Okul bahçesindeki sera kantine sebze sağlıyor. Bu yaz yağış az; su sınırlı. FAO verimli sulamanın kuraklığa uyumda önemli olduğunu belirtiyor. Serayı nasıl yönetirsin?",
+  "facts": [
+    {
+      "label": "Yağış",
+      "value": "normalin altında (kurgu)"
+    },
+    {
+      "label": "Sulama",
+      "value": "salma (eski yöntem)"
+    },
+    {
+      "label": "Hedef",
+      "value": "az suyla üretimi koru"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Damla sulama + malç",
+      "summary": "Verimli sulama",
+      "deltas": {
+        "waterScore": 6,
+        "budget": -400,
+        "foodWasteKg": -1
+      },
+      "tradeoff": "Su buharlaşması azalır, üretim korunur; kurulum maliyetli.",
+      "systemAdd": {
+        "rainShare": 3
+      }
+    },
+    {
+      "id": "B",
+      "label": "Daha çok su ver",
+      "summary": "Salma sulama",
+      "deltas": {
+        "waterScore": -6,
+        "budget": -100,
+        "foodWasteKg": 0
+      },
+      "tradeoff": "Kısa vadede bitkiler sulanır; kıt su hızla tükenir.",
+      "misconception": "Kuraklıkta bitkiye daha çok su vermek her zaman üretimi artırır."
+    },
+    {
+      "id": "C",
+      "label": "Serayı kapat, dışarıdan al",
+      "summary": "Tedarik",
+      "deltas": {
+        "waterScore": 2,
+        "budget": -300,
+        "foodWasteKg": 1
+      },
+      "tradeoff": "Okulun suyu korunur; taşıma ve tedarik riski artar, öğrenme bahçesi kaybolur."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Sera kendi hâline",
+    "deltas": {
+      "waterScore": -3,
+      "budget": 0,
+      "foodWasteKg": 1
+    },
+    "tradeoff": "Kuraklık üretimi düşürür."
+  },
+  "learningOutcomeIds": [
+    "FO2",
+    "L3"
+  ],
+  "evidenceRefs": [
+    "R-FAO-SOFA",
+    "R-IPCC-AR6-WG2"
+  ],
+  "disclaimer": "Simülasyon – gerçek saha sonucu değildir",
+  "reasoningOptions": [
+    "Suyu verimli kullanmak kuraklıkta üretimi korur.",
+    "Bitkileri hemen kurtarmak istedim.",
+    "Okulun suyunu korumak istedim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyonda su göstergesi arttı. Gerçek bir bahçede sulama suyunu nasıl ölçerdin?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Okul bahçesinde aynı büyüklükteki iki saksıyı farklı sulayıp (biri malçlı) toprağın nemini bir hafta gözlemleyin.",
+    "measurementPlan": [
+      "Ad yazma; yalnızca gün ve öğün",
+      "Aynı terazi ve aynı saat",
+      "En az üç gün önce, üç gün sonra",
+      "Sonucu simülasyon değeriyle bir tutma"
+    ]
+  },
+  "requires": "food_002"
+}

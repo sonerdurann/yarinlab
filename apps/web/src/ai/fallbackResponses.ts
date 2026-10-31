@@ -1,5 +1,7 @@
 import data from './aiFallback.tr.json';
 import type { DecisionResult } from '../state/types';
+import { fallbackFeedback } from '@yarinlab/shared';
+import { playableById } from '../data/scenarios';
 
 /** Kılavuz §18 çıktı sözleşmesi. */
 export type TutorResponse = {
@@ -32,9 +34,10 @@ export function fillTemplate(t: string, r: DecisionResult): string {
 
 export function fallbackForResult(r: DecisionResult): TutorResponse {
   const byScenario = (data.byScenario as Record<string, Record<string, Template>> | undefined)?.[r.scenarioId];
-  const table = byScenario ?? (data.byChoice as Record<string, Template>);
-  const t = table[r.choiceId] ?? data.unknownChoice;
-  const sourceIds = (data.sourceIdsByScenario as Record<string, string[]> | undefined)?.[r.scenarioId] ?? data.sourceIds;
+  const t = byScenario?.[r.choiceId] ?? (r.scenarioId === 'food_001' ? (data.byChoice as Record<string, Template>)[r.choiceId] : undefined);
+  // Elle yazılmış metni olmayan görevler: görev verisinden üretilen doğrulanmış geri bildirim.
+  if (!t) return fallbackFeedback({ scenarioId: r.scenarioId, choiceId: r.choiceId, before: r.before, after: r.after, reasoning: r.reasoning });
+  const sourceIds = playableById(r.scenarioId).evidenceRefs.slice(0, 3);
   return {
     summary: fillTemplate(t.summary, r),
     tradeoff: t.tradeoff,

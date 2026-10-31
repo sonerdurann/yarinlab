@@ -1,0 +1,105 @@
+{
+  "id": "food_005",
+  "module": "food",
+  "order": 5,
+  "version": "1.0.0",
+  "title": "Son Tabak 5 – Artanı Ne Yapalım?",
+  "brief": "Bütün planlamaya rağmen bugün 6 kg temiz, servis edilmemiş yemek arttı. Gıda israfı hiyerarşisi önce önlemeyi, sonra paylaşmayı, sonra hayvan yemi/kompostu, en son bertarafı önerir.",
+  "facts": [
+    {
+      "label": "Artan",
+      "value": "6 kg servis edilmemiş (örnek)"
+    },
+    {
+      "label": "Hiyerarşi",
+      "value": "önle > paylaş > kompost > at"
+    },
+    {
+      "label": "Hedef",
+      "value": "en yüksek değeri koru"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Güvenli şekilde paylaş",
+      "summary": "Gıda bankası / personel",
+      "deltas": {
+        "foodWasteKg": -5,
+        "budget": -100,
+        "wellbeing": 6
+      },
+      "tradeoff": "Yemek insanlara ulaşır; hijyen ve soğuk zincir kurallarına uymak gerekir."
+    },
+    {
+      "id": "B",
+      "label": "Kompost",
+      "summary": "Toprağa dönsün",
+      "deltas": {
+        "foodWasteKg": -2,
+        "budget": -50,
+        "wellbeing": 1
+      },
+      "tradeoff": "Çöpten iyi; ama yenebilir yemeğin besin değeri kaybolur.",
+      "misconception": "Kompost yapmak gıda israfını önlemekle aynı şeydir."
+    },
+    {
+      "id": "C",
+      "label": "Çöpe at",
+      "summary": "Kolay yol",
+      "deltas": {
+        "foodWasteKg": 0,
+        "budget": 0,
+        "wellbeing": -4
+      },
+      "tradeoff": "En kolay; kaynaklar boşa gider ve atık yükü artar."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Plan yapılmaz",
+    "deltas": {
+      "foodWasteKg": 1,
+      "budget": 0,
+      "wellbeing": -2
+    },
+    "tradeoff": "Artan yemek çöpe gider."
+  },
+  "learningOutcomeIds": [
+    "L1",
+    "L4",
+    "WA1"
+  ],
+  "evidenceRefs": [
+    "R11",
+    "R-FAO-SOFA",
+    "R-SIFIRATIK"
+  ],
+  "disclaimer": "Simülasyon – gerçek saha sonucu değildir",
+  "reasoningOptions": [
+    "Yenebilir yemeğin insanlara ulaşması en iyisi.",
+    "Toprağa dönmesi yeterli.",
+    "En kolay yolu seçtim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyonda artan yemek 6 kg idi. Okulunda bir günde gerçekte ne kadar yemek artıyor? Nasıl tartarsın?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Kantinde üç gün boyunca servis sonrası artan yemeği ve tabak artığını ayrı ayrı tartın; sonuçları sınıf tablosuna yazın.",
+    "measurementPlan": [
+      "Ad yazma; yalnızca gün ve öğün",
+      "Aynı terazi ve aynı saat",
+      "En az üç gün önce, üç gün sonra",
+      "Sonucu simülasyon değeriyle bir tutma"
+    ]
+  },
+  "requires": "food_004"
+}

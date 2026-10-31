@@ -1,0 +1,114 @@
+{
+  "id": "carbon_004",
+  "module": "carbon",
+  "order": 4,
+  "version": "1.0.0",
+  "title": "Karbon Dedektifleri 4 – Yeni Çanta Gerekli mi?",
+  "brief": "Okul gezisi için çanta lazım. Eski çantanın fermuarı bozuk. Yeni almak, ödünç almak, onarmak ya da ucuz bir tane almak mümkün. Kullanım ömrü ve gereksiz tüketim önemli.",
+  "facts": [
+    {
+      "label": "Eski çanta",
+      "value": "fermuar bozuk, kumaş sağlam"
+    },
+    {
+      "label": "Ucuz çanta",
+      "value": "kısa ömürlü (varsayım)"
+    },
+    {
+      "label": "Hedef",
+      "value": "ihtiyacı en az kaynakla karşıla"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Onar veya ödünç al",
+      "summary": "Önce mevcut olanı kullan",
+      "deltas": {
+        "wellbeing": 3,
+        "budget": 100,
+        "waterScore": 1
+      },
+      "tradeoff": "Yeni ürün üretimi önlenir; onarım zaman alır, ödünç almak planlama ister.",
+      "systemAdd": {
+        "otherWasteKg": -1,
+        "claimScore": 6
+      }
+    },
+    {
+      "id": "B",
+      "label": "Dayanıklı yeni çanta",
+      "summary": "Uzun ömür",
+      "deltas": {
+        "wellbeing": 2,
+        "budget": -300,
+        "waterScore": 0
+      },
+      "tradeoff": "Uzun yıllar kullanılırsa yıllık etkisi düşer; yine de yeni üretim gerekir.",
+      "systemAdd": {
+        "claimScore": 3
+      }
+    },
+    {
+      "id": "C",
+      "label": "En ucuz çanta",
+      "summary": "Kısa ömür",
+      "deltas": {
+        "wellbeing": 0,
+        "budget": -100,
+        "waterScore": -1
+      },
+      "tradeoff": "Kısa sürede bozulursa yeniden alınır; toplamda daha çok atık ve kaynak kullanılır.",
+      "systemAdd": {
+        "otherWasteKg": 1,
+        "claimScore": -4
+      },
+      "misconception": "En ucuz ürün çevre için de en iyi seçenektir."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Karar ertelenir",
+    "deltas": {
+      "wellbeing": -1,
+      "budget": 0,
+      "waterScore": 0
+    },
+    "tradeoff": "Gezi günü acele alışveriş yapılabilir."
+  },
+  "learningOutcomeIds": [
+    "CA3",
+    "WA1"
+  ],
+  "evidenceRefs": [
+    "R-UNEP-WASTE",
+    "R-UNEP-LCI"
+  ],
+  "disclaimer": "İnceleme puanı oyun göstergesidir; ürünlerin gerçek sera gazı miktarı hesaplanmaz.",
+  "reasoningOptions": [
+    "En çevreci ürün hiç üretilmeyen üründür.",
+    "Uzun ömür toplam etkiyi azaltır.",
+    "Bütçe benim için öncelikti.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyonda “onar” seçeneği atığı azalttı. Gerçekte bir eşyanın kullanım ömrünü nasıl kayda geçirirsin?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Sınıfta bir hafta boyunca “onarılabilir mi?” kutusu açın; bozulan eşyaları ve hangilerinin onarıldığını sayın (ad yazmadan).",
+    "measurementPlan": [
+      "Ürün adı yerine ürün türünü yaz",
+      "İddiayı ve kaynağını aynen not et",
+      "Kaynak yoksa 'kanıt yok' diye işaretle",
+      "Kendi tahminini ölçüm gibi sunma"
+    ]
+  },
+  "requires": "carbon_003"
+}

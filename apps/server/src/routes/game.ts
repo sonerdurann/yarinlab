@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify';
-import { attemptSchema, MAX_SAVE_BYTES, saveSchema } from '@yarinlab/shared';
+import { assessmentSchema, attemptSchema, MAX_SAVE_BYTES, saveSchema, scoreAssessment } from '@yarinlab/shared';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '../db.js';
 import { requireAuth } from '../lib/session.js';
@@ -59,5 +59,18 @@ export async function gameRoutes(app: FastifyInstance) {
       select: { taskId: true, moduleId: true, choiceId: true, reasoning: true, score: true, attemptNo: true, createdAt: true },
     });
     return { attempts };
+  });
+
+  /** Ön/son değerlendirme: puan sunucuda hesaplanır (istemci puanına güvenilmez). */
+  app.post('/api/assessments', { preHandler: requireAuth }, async (req, reply) => {
+    const b = assessmentSchema.parse(req.body);
+    const sc = scoreAssessment(b.moduleId, b.answers);
+    const a = await prisma.assessment.create({ data: { userId: req.user!.id, kind: b.kind, moduleId: b.moduleId, answers: b.answers, score: sc.pct } });
+    return reply.code(201).send({ id: a.id, ...sc });
+  });
+
+  app.get('/api/assessments/mine', { preHandler: requireAuth }, async (req) => {
+    const assessments = await prisma.assessment.findMany({ where: { userId: req.user!.id }, orderBy: { createdAt: 'asc' }, select: { moduleId: true, kind: true, score: true, createdAt: true } });
+    return { assessments };
   });
 }

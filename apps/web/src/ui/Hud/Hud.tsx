@@ -4,7 +4,6 @@ import { useCountUp } from '../useCountUp';
 import { Logo } from '../Logo';
 import { settingsStore } from '../../state/settingsStore';
 import { gameStore as gs } from '../../state/gameStore';
-import { RoadmapButton } from '../Roadmap/RoadmapPanel';
 
 const fmt = (n: number) => n.toLocaleString('tr-TR');
 
@@ -45,8 +44,6 @@ export function TopBar() {
         <button onClick={() => gs.openOverlay('help')} aria-label="Yardım">?</button>
         <button onClick={authStore.open}>{user ? user.displayName : 'Giriş'}</button>
         <button onClick={teacherStore.openTeacher}>Öğretmen</button>
-        <button onClick={teacherStore.openSources}>Kaynaklar</button>
-        <RoadmapButton />
         <button onClick={settingsStore.open} aria-label="Ayarlar">⚙</button>
       </span>
     </header>

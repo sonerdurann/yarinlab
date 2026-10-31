@@ -1,0 +1,111 @@
+{
+  "id": "waste_003",
+  "module": "waste",
+  "order": 3,
+  "version": "1.0.0",
+  "title": "Döngü Ustaları 3 – Tamir Kafe",
+  "brief": "Bozuk sandalyeler, yırtık çantalar ve çalışmayan hesap makineleri depoda birikiyor. Bazıları biraz emekle onarılabilir. Okul ne yapsın?",
+  "facts": [
+    {
+      "label": "Depoda",
+      "value": "40 bozuk eşya (örnek)"
+    },
+    {
+      "label": "Onarılabilir",
+      "value": "yaklaşık yarısı (tahmin)"
+    },
+    {
+      "label": "Hedef",
+      "value": "ürün ömrünü uzat"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Aylık tamir atölyesi",
+      "summary": "Onar ve öğren",
+      "deltas": {
+        "budget": -300,
+        "wellbeing": 5,
+        "waterScore": 0
+      },
+      "tradeoff": "Eşyaların ömrü uzar, beceri kazanılır; gönüllü ve araç gerekir.",
+      "systemAdd": {
+        "otherWasteKg": -2
+      }
+    },
+    {
+      "id": "B",
+      "label": "Hepsini at, yenisini al",
+      "summary": "Hızlı yenileme",
+      "deltas": {
+        "budget": -600,
+        "wellbeing": 1,
+        "waterScore": 0
+      },
+      "tradeoff": "Hızlı çözüm; atık ve yeni üretim artar.",
+      "systemAdd": {
+        "otherWasteKg": 2
+      },
+      "misconception": "Bozulan eşyayı atıp yenisini almak her zaman daha ekonomiktir."
+    },
+    {
+      "id": "C",
+      "label": "İkinci el ve bağış rafı",
+      "summary": "Yeniden kullanım",
+      "deltas": {
+        "budget": -50,
+        "wellbeing": 3,
+        "waterScore": 0
+      },
+      "tradeoff": "Kullanılabilir eşya yeni sahibine gider; bozuk olanlar için çözüm değildir.",
+      "systemAdd": {
+        "otherWasteKg": -1
+      }
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Depo dolmaya devam eder",
+    "deltas": {
+      "budget": 0,
+      "wellbeing": -1,
+      "waterScore": 0
+    },
+    "tradeoff": "Eşyalar atık olur."
+  },
+  "learningOutcomeIds": [
+    "WA1",
+    "CA3"
+  ],
+  "evidenceRefs": [
+    "R-UNEP-WASTE"
+  ],
+  "disclaimer": "Atık miktarları simülasyon varsayımıdır; tartılmış saha verisi değildir.",
+  "reasoningOptions": [
+    "Onarmak hem atığı azaltır hem beceri kazandırır.",
+    "Okul yeni eşyalarla daha iyi görünür.",
+    "Paylaşmak kolay ve ucuz.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Onarılan bir eşyanın çevreye katkısını gerçekte nasıl kanıtlarsın? Yalnızca “onarıldı” demek yeter mi?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Okulda bir “tamir günü” düzenleyin: kaç eşya onarıldı, kaçı onarılamadı, sayın ve kaydedin.",
+    "measurementPlan": [
+      "Ad yazma; yalnızca sınıf ve gün",
+      "Aynı kutuları aynı saatte say",
+      "Önce ve sonra ayrı kaydet",
+      "Sonucu simülasyon değeriyle bir tutma"
+    ]
+  },
+  "requires": "waste_002"
+}

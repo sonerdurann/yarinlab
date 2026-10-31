@@ -1,7 +1,9 @@
 {
   "id": "city_001",
-  "version": "0.1.0",
-  "title": "KrizKenti / Görev 04",
+  "module": "city",
+  "order": 1,
+  "version": "1.0.0",
+  "title": "KrizKenti 1 – Suyu Tutmayan Şehir",
   "brief": "Şehir yüzeyi suyu tutmuyor. Yeşil alan, yağmur suyu payı veya boru hattı seçebilirsin. Sızdırmaz yüzey artınca taşkın riski yükselir. Amaç tek başına daha yüksek su göstergesi değil; riski de okuyan bir denge.",
   "baseline": {
     "budget": 12000,
@@ -15,37 +17,77 @@
       "id": "A",
       "label": "Yeşil alan",
       "summary": "Park ve toprak",
-      "deltas": { "waterScore": 6, "budget": -400, "wellbeing": 10 },
+      "deltas": {
+        "waterScore": 6,
+        "budget": -400,
+        "wellbeing": 10
+      },
       "tradeoff": "Yeşil alan suyu tutar ve memnuniyeti yükseltir; bütçe azalır. Taşkın riski düşer. Bu bir sel ölçümü değildir.",
-      "system": { "sealedShare": 25, "greenShare": 55, "rainShare": 0 }
+      "system": {
+        "sealedShare": 25,
+        "greenShare": 55,
+        "rainShare": 0
+      }
     },
     {
       "id": "B",
       "label": "Yağmur suyu",
       "summary": "Tutma ve yeşil",
-      "deltas": { "waterScore": 14, "budget": -1100, "wellbeing": 8 },
+      "deltas": {
+        "waterScore": 14,
+        "budget": -1100,
+        "wellbeing": 8
+      },
       "tradeoff": "Yağmur payı riski daha da düşürür; bedeli bütçededir. Su göstergesi yükselir.",
-      "system": { "sealedShare": 30, "greenShare": 35, "rainShare": 45 }
+      "system": {
+        "sealedShare": 30,
+        "greenShare": 35,
+        "rainShare": 45
+      }
     },
     {
       "id": "C",
       "label": "Boru hattı",
       "summary": "Sert zemin",
-      "deltas": { "waterScore": 4, "budget": -800, "wellbeing": -8 },
+      "deltas": {
+        "waterScore": 4,
+        "budget": -800,
+        "wellbeing": -8
+      },
       "tradeoff": "Boru suyu bir yere taşır; sızdırmaz yüzey artınca risk yükselebilir. Memnuniyet düşebilir.",
-      "system": { "sealedShare": 55, "greenShare": 15, "rainShare": 10 }
+      "system": {
+        "sealedShare": 55,
+        "greenShare": 15,
+        "rainShare": 10
+      },
+      "misconception": "Boru hattı gibi gri altyapı taşkını tek başına çözer."
     }
   ],
   "noDecision": {
     "id": "N",
     "label": "Kararlar yok",
     "summary": "Mevcut yüzey sürer",
-    "deltas": { "waterScore": -2, "budget": -100, "wellbeing": -3 },
+    "deltas": {
+      "waterScore": -2,
+      "budget": -100,
+      "wellbeing": -3
+    },
     "tradeoff": "Yüzeyler aynı kalır; göstergeler yavaşça zayıflar. Risk kendiliğinden çözülmez.",
-    "system": { "sealedShare": 40, "greenShare": 20, "rainShare": 0 }
+    "system": {
+      "sealedShare": 40,
+      "greenShare": 20,
+      "rainShare": 0
+    }
   },
-  "learningOutcomeIds": ["L2", "L3", "L5"],
-  "evidenceRefs": ["R9"],
+  "learningOutcomeIds": [
+    "CI1",
+    "L3",
+    "L5"
+  ],
+  "evidenceRefs": [
+    "R-IPCC-AR6-WG2",
+    "R9"
+  ],
   "disclaimer": "Simülasyon – gerçek saha sonucu değildir",
   "reasoningOptions": [
     "Taşkın riskini düşürmek istedim.",

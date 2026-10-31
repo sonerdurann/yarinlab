@@ -1,0 +1,121 @@
+{
+  "id": "council_005",
+  "module": "council",
+  "order": 5,
+  "version": "1.0.0",
+  "title": "Gelecek Meclisi 5 – 2040 Planı",
+  "brief": "Final: Meclis, şehrin 2040’a kadar uygulanacak sürdürülebilir gelecek planını oylayacak. Önceki tüm kararların ve şehir göstergelerin kanıt olarak masada. Planını seç ve savun.",
+  "facts": [
+    {
+      "label": "Kanıt",
+      "value": "tüm modüllerdeki kararların"
+    },
+    {
+      "label": "Zaman",
+      "value": "2026 → 2040"
+    },
+    {
+      "label": "Hedef",
+      "value": "dengeli, adil ve uygulanabilir plan"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Dengeli dönüşüm planı",
+      "summary": "Enerji + su + atık + kıyı + ulaşım, aşamalı",
+      "deltas": {
+        "wellbeing": 6,
+        "budget": -600,
+        "energyScore": 3,
+        "waterScore": 3
+      },
+      "tradeoff": "Her alanda adım adım ilerleme; sürekli izleme ve toplum katılımı gerekir.",
+      "systemAdd": {
+        "evidenceBias": 10,
+        "efficiency": 0.03,
+        "rainShare": 3,
+        "habitatCare": 3
+      }
+    },
+    {
+      "id": "B",
+      "label": "Tek büyük teknoloji hamlesi",
+      "summary": "Hızlı ve pahalı",
+      "deltas": {
+        "wellbeing": 1,
+        "budget": -1200,
+        "energyScore": 8
+      },
+      "tradeoff": "Enerjide büyük sıçrama; bütçe zorlanır, diğer riskler (sel, kıyı, eşitsizlik) sürer.",
+      "systemAdd": {
+        "evidenceBias": -2,
+        "solarKw": 80,
+        "storageKwh": 200
+      },
+      "misconception": "Tek bir teknoloji iklim sorunlarının hepsini çözer."
+    },
+    {
+      "id": "C",
+      "label": "Kararı ertele",
+      "summary": "Daha çok bekle",
+      "deltas": {
+        "wellbeing": -4,
+        "budget": 0,
+        "energyScore": 0
+      },
+      "tradeoff": "Bütçe korunur; riskler büyür ve 2040 hedefleri zorlaşır.",
+      "systemAdd": {
+        "evidenceBias": -6
+      },
+      "misconception": "İklim önlemlerini ertelemek maliyeti azaltır."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Plan oylanmaz",
+    "deltas": {
+      "wellbeing": -3,
+      "budget": 0,
+      "energyScore": 0
+    },
+    "tradeoff": "Şehir yön belirleyemez."
+  },
+  "learningOutcomeIds": [
+    "CO2",
+    "CO3",
+    "L3",
+    "L5"
+  ],
+  "evidenceRefs": [
+    "R-IPCC-AR6-SYR",
+    "R-UNESCO-ESD"
+  ],
+  "disclaimer": "Meclis puanı oyun göstergesidir.",
+  "reasoningOptions": [
+    "Önceki modüllerde öğrendiğim gibi tek gösterge yetmez; dengeli plan seçtim.",
+    "Hızlı sonuç istedim.",
+    "Bütçeyi korumak istedim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Oyunun 2040’ı bir simülasyon. Gerçek okulunda 2040’a kadar sürdürebileceğin bir adım ne olurdu, nasıl ölçerdin?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Sınıf olarak okulunuz için bir “2040 iklim planı” afişi hazırlayın: üç ölçülebilir hedef, sorumlu ekip ve ölçüm yöntemi yazın.",
+    "measurementPlan": [
+      "Kişisel bilgi toplama; yalnızca görüş özetle",
+      "Her grubun görüşünü aynı soruyla al",
+      "Kanıtı ve kaynağı birlikte yaz",
+      "Oy sonucunu ölçülmüş etki gibi sunma"
+    ]
+  },
+  "requires": "council_004"
+}

@@ -1,0 +1,107 @@
+{
+  "id": "energy_003",
+  "module": "energy",
+  "order": 3,
+  "version": "1.0.0",
+  "title": "Enerji Adası 3 – Bulutlu Hafta",
+  "brief": "Hava durumu bir hafta bulutlu ve rüzgârlı geçecek diyor. Yenilenebilir üretim havaya göre değişir. Haftayı kesintisiz geçirmek için ne yaparsın?",
+  "facts": [
+    {
+      "label": "Bulutta güneş",
+      "value": "~%45 üretim (varsayım)"
+    },
+    {
+      "label": "Rüzgârlı gün",
+      "value": "türbin daha çok üretir"
+    },
+    {
+      "label": "Hedef",
+      "value": "değişkenliğe hazırlık"
+    }
+  ],
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Yalnızca güneşe güven",
+      "summary": "Hazırlık yok",
+      "deltas": {
+        "energyScore": -4,
+        "budget": 0,
+        "wellbeing": -3
+      },
+      "tradeoff": "Bulutlu günlerde üretim düşer; şebeke sınırı aşılırsa kesinti olabilir.",
+      "misconception": "Yenilenebilir enerji her gün aynı miktarda üretir."
+    },
+    {
+      "id": "B",
+      "label": "Kaynak karması",
+      "summary": "Güneş + rüzgâr + depo",
+      "deltas": {
+        "energyScore": 6,
+        "budget": -600,
+        "wellbeing": 2
+      },
+      "tradeoff": "Farklı kaynaklar farklı havada üretir; biri düşerken diğeri destekler. Yatırım gerekir.",
+      "systemAdd": {
+        "windKw": 30,
+        "storageKwh": 80
+      }
+    },
+    {
+      "id": "C",
+      "label": "Şebeke yedek anlaşması",
+      "summary": "Gerekirse şebekeden al",
+      "deltas": {
+        "energyScore": 3,
+        "budget": -400,
+        "wellbeing": 1
+      },
+      "tradeoff": "Güvenilirlik artar; şebeke elektriği emisyon endeksini yükseltebilir ve her ay ücret ödenir."
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Hafta şansa bırakılır",
+    "deltas": {
+      "energyScore": -3,
+      "budget": 0,
+      "wellbeing": -2
+    },
+    "tradeoff": "Üretim havaya göre dalgalanır; kesinti olursa okul etkilenir."
+  },
+  "learningOutcomeIds": [
+    "EN1",
+    "EN3",
+    "L2"
+  ],
+  "evidenceRefs": [
+    "R-IEA-RENEW"
+  ],
+  "disclaimer": "Enerji ölçümü değil, oyun göstergesidir. Üretim ve talep saatlik simülasyonla hesaplanır.",
+  "reasoningOptions": [
+    "Hava değiştikçe üretim de değişir, bu yüzden karma seçtim.",
+    "Güvenilirliği en çok artıranı seçtim.",
+    "Maliyeti düşük tutmak istedim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Bulutlu bir günde gerçek bir güneş panelinin üretimi neden düşer? Bunu doğrulamak için hangi veriye bakardın?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Bir hafta boyunca her gün hava durumunu (güneşli, bulutlu, rüzgârlı) not edin; okulda güneş paneli varsa üretim göstergesini öğretmeninizle birlikte okuyun.",
+    "measurementPlan": [
+      "Yalnızca okul ve sınıf kodu kullan; ad yazma",
+      "Aynı saatlerde ve aynı hava koşulunda gözlem yap",
+      "Önce ve sonra sonuçlarını ayrı kaydet",
+      "Sonucu simülasyon puanıyla bir tutma"
+    ]
+  },
+  "requires": "energy_002"
+}
