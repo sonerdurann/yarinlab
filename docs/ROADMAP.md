@@ -19,7 +19,7 @@ Final: 15-16 Kas, 24 saat geliştirme, 5 dk sunum + 3 dk soru-cevap. Finalde 3 k
 - [x] 03 Kenney City, Buildings, Landscape, UI Pack indirildi + lisanslar doğrulandı
 - [x] 04 Tiled 32×32 izometrik harita (JSON üretildi, Kenney 132×66 ölçüsüyle)
 - [x] 05 Okul ve kantin binaları haritada (Kenney sprite)
-- [ ] 06 Kantin hotspot + React görev paneli
+- [x] 06 Kantin hotspot + React görev paneli
 - [x] 07 3 seçenekli saf karar motoru
 - [ ] 08 İki gelecek karşılaştırması
 - [ ] 09 Fallback AI açıklaması + gerekçe alanı
