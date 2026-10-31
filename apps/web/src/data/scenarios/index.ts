@@ -20,6 +20,12 @@ export type ChoiceSystem = {
   claimScore?: number;
   habitatCare?: number;
   evidenceBias?: number;
+  solarKw?: number;
+  windKw?: number;
+  storageKwh?: number;
+  efficiency?: number;
+  shade?: number;
+  transitShare?: number;
 };
 export type PlayableChoice = Choice & { summary: string; system?: ChoiceSystem };
 

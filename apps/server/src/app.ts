@@ -4,9 +4,10 @@ import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
 import { ZodError } from 'zod';
 import { authRoutes } from './routes/auth.js';
+import { gameRoutes } from './routes/game.js';
 import { prisma } from './db.js';
 
-export async function buildApp(opts: { logger?: boolean } = {}) {
+export async function buildApp(opts: { logger?: boolean; authRateMax?: number } = {}) {
   const app = Fastify({ logger: opts.logger ?? false, bodyLimit: 256 * 1024 });
   await app.register(helmet);
   await app.register(cookie);
@@ -23,6 +24,7 @@ export async function buildApp(opts: { logger?: boolean } = {}) {
     await prisma.$queryRaw`select 1`;
     return { ok: true };
   });
-  await app.register(authRoutes);
+  await app.register(authRoutes, { authRateMax: opts.authRateMax ?? (process.env.VITEST ? 1000 : 10) });
+  await app.register(gameRoutes);
   return app;
 }

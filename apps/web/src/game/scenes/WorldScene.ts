@@ -4,6 +4,7 @@ import { hotspots, type Hotspot } from '../tiles/hotspots';
 import { DECOR } from '../tiles/decor';
 import { gameStore } from '../../state/gameStore';
 import { isReducedMotion as reducedMotion, settingsStore } from '../../state/settingsStore';
+import { BUILD_SLOTS, buildingDef, weatherFor, type PlacedBuilding, type Weather } from '@yarinlab/shared';
 
 type TiledLayer = { name: string; type: string; data?: number[] };
 type TiledMap = { layers: TiledLayer[] };
@@ -32,6 +33,13 @@ export class WorldScene extends Phaser.Scene {
   /** Sürekli ortam animasyonları (su parıltısı, türbin); hareket ayarına göre durdurulur/sürdürülür. */
   private ambient: Phaser.Tweens.Tween[] = [];
   private waterTiles: Phaser.GameObjects.Image[] = [];
+  private placed = new Map<string, { objs: Phaser.GameObjects.GameObject[]; level: number }>();
+  private slotMarks = new Map<string, Phaser.GameObjects.Image>();
+  private sky?: Phaser.GameObjects.Rectangle;
+  private rain: Phaser.GameObjects.Image[] = [];
+  private rainTweens: Phaser.Tweens.Tween[] = [];
+  private lastDay = -1;
+  private lastWeather?: Weather;
 
   constructor() {
     super('WorldScene');
@@ -50,6 +58,11 @@ export class WorldScene extends Phaser.Scene {
       .setVisible(false);
     this.addHotspots();
     this.setupCamera();
+    this.addTraffic();
+    this.setupSky();
+    this.syncCity(true);
+    const unsubCity = gameStore.subscribe(() => this.syncCity(false));
+    this.events.once('shutdown', unsubCity);
     // Kanvas sınırları ilk yerleşimde eski kalabiliyor; işaretçi koordinatları için yenile.
     this.scale.updateBounds();
     this.scale.on('resize', () => this.scale.updateBounds());
@@ -66,6 +79,7 @@ export class WorldScene extends Phaser.Scene {
       const reduced = reducedMotion();
       this.ambient.forEach((t) => (reduced ? t.pause() : t.resume()));
       if (reduced) this.waterTiles.forEach((w) => w.setAlpha(1));
+      this.rainTweens.forEach((t) => (reduced ? t.pause() : t.resume()));
     };
     applyMotion();
     const unsubMotion = settingsStore.subscribe(applyMotion);
@@ -180,6 +194,164 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
+  /** Kurulan yapılar ve boş alanlar store ile eşitlenir; yeni yapı ve yükseltmede kısa animasyon. */
+  private syncCity(initial: boolean) {
+    const st = gameStore.get();
+    const ids = new Set(st.sim.buildings.map((b) => b.id));
+    for (const [id, v] of this.placed) {
+      if (!ids.has(id)) { v.objs.forEach((o) => o.destroy()); this.placed.delete(id); }
+    }
+    for (const b of st.sim.buildings) {
+      const cur = this.placed.get(b.id);
+      if (cur && cur.level === b.level) continue;
+      cur?.objs.forEach((o) => o.destroy());
+      const objs = this.drawPlaced(b);
+      this.placed.set(b.id, { objs, level: b.level });
+      if (!initial && !reducedMotion()) {
+        objs.forEach((o) => {
+          const img = o as Phaser.GameObjects.Image;
+          if (!('y' in img)) return;
+          const y = img.y;
+          img.setAlpha(0).setY(y - 40);
+          this.tweens.add({ targets: img, alpha: 1, y, duration: 420, ease: 'Back.easeOut' });
+        });
+        const p = this.slotCenter(b.slot);
+        if (p) this.burst(p.x, p.y);
+      }
+    }
+    const taken = new Set(st.sim.buildings.map((b) => b.slot));
+    for (const s of BUILD_SLOTS) {
+      let m = this.slotMarks.get(s.id);
+      if (!m) {
+        const p = iso(s.x, s.y);
+        m = this.add.image(p.x, p.y, 'slot').setOrigin(0.5, 0).setDepth(2).setAlpha(0.85);
+        this.slotMarks.set(s.id, m);
+      }
+      m.setVisible(!taken.has(s.id));
+    }
+    const weather = weatherFor(st.sim.seed, st.sim.day);
+    if (st.sim.day !== this.lastDay || weather !== this.lastWeather) {
+      const changedDay = this.lastDay >= 0 && st.sim.day !== this.lastDay;
+      this.lastDay = st.sim.day;
+      this.lastWeather = weather;
+      this.applyWeather(weather, changedDay);
+    }
+  }
+
+  private slotCenter(slotId: string) {
+    const s = BUILD_SLOTS.find((x) => x.id === slotId);
+    return s ? iso(s.x + 0.5, s.y + 0.5) : undefined;
+  }
+
+  private drawPlaced(b: PlacedBuilding): Phaser.GameObjects.GameObject[] {
+    const s = BUILD_SLOTS.find((x) => x.id === b.slot);
+    const def = buildingDef(b.type);
+    if (!s || !def) return [];
+    const p = iso(s.x, s.y);
+    const objs: Phaser.GameObjects.GameObject[] = [];
+    const scale = 0.9 + b.level * 0.1;
+    if (def.sprite.startsWith('building:')) {
+      const frame = def.sprite.slice(9);
+      const f = this.textures.getFrame('buildings', frame);
+      objs.push(this.add.image(p.x, p.y - (f.height - GROUND_SPRITE_HEIGHT) * scale, 'buildings', frame).setOrigin(0.5, 0).setScale(scale).setDepth(10 + p.y));
+    } else if (def.sprite === 'turbine') {
+      const bottom = p.y + MAP.tileHeight * 0.75;
+      objs.push(this.add.image(p.x, bottom, 'turbine').setOrigin(0.5, 1).setDepth(10 + p.y + 20));
+      const hub = this.add.image(p.x, bottom - 150 + 38, 'blades').setDepth(10 + p.y + 21);
+      objs.push(hub);
+      const t = this.tweens.add({ targets: hub, angle: 360, duration: 6000 / b.level, repeat: -1 });
+      this.ambient.push(t);
+      if (reducedMotion()) t.pause();
+    } else if (def.sprite === 'tree') {
+      for (let k = 0; k < b.level + 1; k++) {
+        const c = iso(s.x + 0.3 + (k % 2) * 0.4, s.y + 0.3 + Math.floor(k / 2) * 0.4);
+        objs.push(this.add.image(c.x, c.y + 6, 'tree').setOrigin(0.5, 1).setDepth(10 + c.y));
+      }
+    } else {
+      objs.push(this.add.image(p.x, p.y, def.sprite).setOrigin(0.5, 0).setDepth(def.sprite === 'crop' ? 1 : 10 + p.y + 10));
+    }
+    if (b.level > 1) {
+      const c = iso(s.x + 0.5, s.y + 0.5);
+      objs.push(this.add.text(c.x + 30, c.y - 40, `★${b.level}`, { fontFamily: 'Noto Sans, sans-serif', fontSize: '18px', color: '#12263a', backgroundColor: '#e8b73a', padding: { x: 4, y: 1 } }).setDepth(5400));
+    }
+    return objs;
+  }
+
+  /** İnşa / görev bildirimi: kıvılcım halkası. */
+  private burst(x: number, y: number) {
+    const ring = this.add.graphics().setDepth(5100).setPosition(x, y);
+    ring.lineStyle(5, 0x2e9e6b, 1).strokeEllipse(0, 0, 90, 45);
+    this.tweens.add({ targets: ring, scaleX: 2.2, scaleY: 2.2, alpha: 0, duration: 900, ease: 'Cubic.easeOut', onComplete: () => ring.destroy() });
+  }
+
+  private pulseObj(o?: Phaser.GameObjects.GameObject) {
+    if (!o || reducedMotion()) return;
+    const img = o as Phaser.GameObjects.Image;
+    this.tweens.add({ targets: img, scale: img.scale * 1.08, duration: 200, yoyo: true });
+  }
+
+  /** Gökyüzü katmanı: ekrana sabit, renk/alfa ile gün-gece ve hava tonu. */
+  private setupSky() {
+    const { width, height } = this.scale;
+    this.sky = this.add.rectangle(0, 0, width, height, 0x000000, 0).setOrigin(0).setScrollFactor(0).setDepth(7000);
+    this.scale.on('resize', (s: Phaser.Structs.Size) => this.sky?.setSize(s.width, s.height));
+    for (let k = 0; k < 90; k++) {
+      this.rain.push(this.add.image(0, 0, 'drop').setScrollFactor(0).setDepth(7001).setVisible(false).setAngle(12));
+    }
+  }
+
+  private applyWeather(w: Weather, newDay: boolean) {
+    const tint: Record<Weather, [number, number]> = {
+      sunny: [0xffffff, 0], cloudy: [0x6d7d8c, 0.18], rainy: [0x40566b, 0.26], windy: [0x9fb3c2, 0.08],
+      storm: [0x1d2b3a, 0.38], heatwave: [0xff9b3d, 0.16], drought: [0xc49a5a, 0.16],
+    };
+    const [color, alpha] = tint[w];
+    const sky = this.sky!;
+    const finish = () => { sky.setFillStyle(color, alpha); };
+    if (newDay && !reducedMotion()) {
+      // gece geçişi: kararır, sonra yeni günün tonuna açılır
+      sky.setFillStyle(0x0b1830, sky.fillAlpha);
+      this.tweens.add({ targets: sky, fillAlpha: 0.62, duration: 650, ease: 'Sine.easeIn', yoyo: false, onComplete: () => {
+        sky.setFillStyle(color, 0.62);
+        this.tweens.add({ targets: sky, fillAlpha: alpha, duration: 900, ease: 'Sine.easeOut' });
+      } });
+    } else finish();
+    this.rainTweens.forEach((t) => t.remove());
+    this.rainTweens = [];
+    const raining = w === 'rainy' || w === 'storm';
+    const { width, height } = this.scale;
+    this.rain.forEach((d, k) => {
+      d.setVisible(raining);
+      if (!raining) return;
+      const x = (k * 97) % Math.max(1, width), y0 = -20 - ((k * 53) % height);
+      d.setPosition(x, y0);
+      const t = this.tweens.add({ targets: d, y: height + 20, x: x - 60, duration: (w === 'storm' ? 500 : 800) + (k % 7) * 60, repeat: -1, delay: (k % 11) * 70 });
+      if (reducedMotion()) { t.pause(); d.setVisible(k % 3 === 0).setY((k * 37) % height); }
+      this.rainTweens.push(t);
+    });
+  }
+
+  /** Yollarda gidip gelen araçlar ve yürüyen insanlar (ortam animasyonu; hareket azaltmada durur). */
+  private addTraffic() {
+    const route = (kind: 'car' | 'walker', from: [number, number], to: [number, number], dur: number, delay: number) => {
+      const a = iso(from[0] + 0.5, from[1] + 0.5), b = iso(to[0] + 0.5, to[1] + 0.5);
+      const img = this.add.image(a.x, a.y, kind).setOrigin(0.5, 1).setDepth(10 + a.y + 5);
+      img.setFlipX(b.x < a.x);
+      const t = this.tweens.add({
+        targets: img, x: b.x, y: b.y, duration: dur, delay, yoyo: true, repeat: -1, ease: 'Linear',
+        onUpdate: () => img.setDepth(10 + img.y + 5),
+        onYoyo: () => img.setFlipX(!img.flipX),
+      });
+      this.ambient.push(t);
+    };
+    route('car', [3, 15], [27, 15], 16000, 0);
+    route('car', [14, 4], [14, 26], 14000, 3000);
+    route('car', [25, 10], [14, 10], 9000, 1500);
+    route('walker', [14, 12], [14, 20], 12000, 500);
+    route('walker', [6, 15], [12, 15], 10000, 2500);
+    route('walker', [5, 8], [5, 18], 15000, 4000);
+  }
+
   /** Dünya koordinatı -> karo (ters izometrik). */
   private toTile(wx: number, wy: number) {
     return { x: (wx / HW + wy / HH) / 2, y: (wy / HH - wx / HW) / 2 };
@@ -206,6 +378,15 @@ export class WorldScene extends Phaser.Scene {
     });
     this.input.on('pointerup', (p: Phaser.Input.Pointer) => {
       if (this.dragged) return;
+      const w = this.cameras.main.getWorldPoint(p.x, p.y);
+      const t = this.toTile(w.x, w.y);
+      const slot = BUILD_SLOTS.find((s) => Math.floor(t.x) === s.x && Math.floor(t.y) === s.y);
+      if (slot) {
+        const b = gameStore.get().sim.buildings.find((x) => x.slot === slot.id);
+        gameStore.openOverlay('build', slot.zone);
+        if (b) this.pulseObj(this.placed.get(b.id)?.objs[0]);
+        return;
+      }
       const h = this.hotspotAtPointer(p);
       if (h) gameStore.selectHotspot(h.id);
     });

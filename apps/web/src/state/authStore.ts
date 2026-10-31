@@ -15,7 +15,7 @@ export const authStore = {
   async refresh() {
     try {
       const r = await api<{ user: ApiUser | null }>('/api/auth/me');
-      set({ user: r.user, checked: true, offline: false, open: !r.user && !state.open ? true : state.open });
+      set({ user: r.user, checked: true, offline: false });
     } catch {
       set({ checked: true, offline: true }); // sunucu yok: çevrim dışı oynanabilir
     }

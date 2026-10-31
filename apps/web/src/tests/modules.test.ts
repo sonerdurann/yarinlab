@@ -80,13 +80,15 @@ describe('ortak dünya', () => {
     gameStore.evaluate();
     const both = gameStore.get().world;
     expect(both.foodWasteKg).toBe(20);
-    expect(both.energyScore).toBe(88);
+    // Görev deltası 88; saatlik enerji modeli kurulu güneşin payını ekler (ortak şehir simülasyonu).
+    expect(composeWorld(gameStore.get().applied).energyScore).toBe(88);
+    expect(both.energyScore).toBeGreaterThan(88);
     expect(both.budget).toBe(10700);
     gameStore.selectHotspot('canteen');
     gameStore.retry();
     const left = gameStore.get().world;
     expect(left.foodWasteKg).toBe(food.baseline.foodWasteKg);
-    expect(left.energyScore).toBe(88);
+    expect(left.energyScore).toBe(both.energyScore);
     expect(left.budget).toBe(11400);
     expect(composeWorld(gameStore.get().applied).energyScore).toBe(88);
   });

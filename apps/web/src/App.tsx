@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import type Phaser from 'phaser';
 import { gameStore, taskSteps, useGameState } from './state/gameStore';
-import { TopBar, WorldStatus } from './ui/Hud/Hud';
+import { TopBar } from './ui/Hud/Hud';
+import { CityIndicators, EventLogPanel, MainMenu, ProgressPanel } from './ui/City/CityPanels';
+import { BuildPanel } from './ui/City/BuildPanel';
+import { HelpPanel } from './ui/City/HelpPanel';
+import { settingsStore } from './state/settingsStore';
+import { teacherStore } from './state/teacherStore';
 import { TaskPanel } from './ui/TaskPanel/TaskPanel';
 import { DecisionModal } from './ui/DecisionModal/DecisionModal';
 import { TeacherPanel } from './ui/TeacherPanel/TeacherPanel';
@@ -13,6 +18,7 @@ import { SettingsPanel } from './ui/Settings/SettingsPanel';
 import { PeriodSwitch, PeriodTint } from './ui/PeriodSwitch/PeriodSwitch';
 import { AuthPanel } from './ui/Auth/AuthPanel';
 import { authStore } from './state/authStore';
+import { startSaveSync } from './state/saveSync';
 import { SchoolPanel } from './ui/SchoolPanel/SchoolPanel';
 
 export function App() {
@@ -38,7 +44,7 @@ export function App() {
     };
   }, []);
 
-  useEffect(() => { void authStore.refresh(); }, []);
+  useEffect(() => { startSaveSync(); void authStore.refresh(); }, []);
 
   const zoom = (delta: number) => game.current?.scene.getScene('WorldScene')?.events.emit('zoom', delta);
 
@@ -85,7 +91,7 @@ export function App() {
           )}
         </div>
         <TaskPanel onPick={pick} />
-        <WorldStatus />
+        <CityIndicators />
       </div>
       {gs.schoolOpen && <SchoolPanel onPick={pick} />}
       {notice && !decisionOpen && (
@@ -99,6 +105,11 @@ export function App() {
         <p>Harita yükleniyor…</p>
         <span className="spinner" aria-hidden="true" />
       </div>
+      <MainMenu onSettings={settingsStore.open} onTeacher={teacherStore.openTeacher} />
+      <BuildPanel />
+      <EventLogPanel />
+      <ProgressPanel />
+      <HelpPanel />
       <AuthPanel />
       <Intro />
       <DecisionModal />

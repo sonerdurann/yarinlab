@@ -113,5 +113,33 @@ export class BootScene extends Phaser.Scene {
         box(g, (a as number) - 0.01, 0.33, (b as number) + 0.01, 0.71, 4, 0x2b3f55, oy - 30); // kapak
       });
     });
+
+    // yapı alanı işareti: kesikli elmas ve artı (boş inşa alanı)
+    make('slot', W, H, (g) => {
+      const d = [P(0, 0), P(1, 0), P(1, 1), P(0, 1)];
+      g.fillStyle(0xffffff, 0.28).fillPoints(d.map((p) => new Phaser.Math.Vector2(p.x, p.y)), true);
+      g.lineStyle(3, 0xffffff, 0.9);
+      for (let k = 0; k < 4; k++) {
+        const a = d[k], b = d[(k + 1) % 4];
+        for (let t = 0; t < 1; t += 0.2) g.lineBetween(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.x + (b.x - a.x) * (t + 0.1), a.y + (b.y - a.y) * (t + 0.1));
+      }
+      const c = P(0.5, 0.5);
+      g.fillStyle(0x2e9e6b, 1).fillCircle(c.x, c.y, 13);
+      g.fillStyle(0xffffff, 1).fillRect(c.x - 7, c.y - 2, 14, 4).fillRect(c.x - 2, c.y - 7, 4, 14);
+    });
+    // yağmur damlası, küçük araç ve yürüyen kişi (Kenney izometrik stile uygun sade şekiller)
+    make('drop', 4, 18, (g) => { g.fillStyle(0xdff2ff, 0.8).fillRect(1, 0, 2, 18); });
+    make('car', 44, 34, (g) => {
+      g.fillStyle(0x12263a, 0.18).fillEllipse(22, 28, 40, 10);
+      g.fillStyle(0x2e9e6b, 1).fillRoundedRect(4, 12, 36, 14, 5);
+      g.fillStyle(0xbfeadb, 1).fillRoundedRect(12, 5, 20, 10, 4);
+      g.fillStyle(0x12263a, 1).fillCircle(12, 27, 4).fillCircle(32, 27, 4);
+    });
+    make('walker', 16, 30, (g) => {
+      g.fillStyle(0x12263a, 0.18).fillEllipse(8, 28, 12, 4);
+      g.fillStyle(0x4aa8d8, 1).fillRoundedRect(3, 10, 10, 13, 3);
+      g.fillStyle(0xf2c7a5, 1).fillCircle(8, 6, 5);
+      g.fillStyle(0x12263a, 1).fillRect(4, 22, 3, 6).fillRect(9, 22, 3, 6);
+    });
   }
 }

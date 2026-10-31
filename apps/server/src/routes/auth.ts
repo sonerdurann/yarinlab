@@ -9,9 +9,9 @@ import { endSession, loadUser, requireRole, startSession } from '../lib/session.
 
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 const newCode = () => Array.from({ length: 6 }, () => CODE_CHARS[randomInt(CODE_CHARS.length)]).join('');
-const strict = { config: { rateLimit: { max: 10, timeWindow: '1 minute' } } };
 
-export async function authRoutes(app: FastifyInstance) {
+export async function authRoutes(app: FastifyInstance, opts: { authRateMax?: number }) {
+  const strict = { config: { rateLimit: { max: opts.authRateMax ?? 10, timeWindow: '1 minute' } } };
   app.post('/api/auth/teacher/register', strict, async (req, reply) => {
     const b = teacherRegisterSchema.parse(req.body);
     const email = b.email.toLowerCase();

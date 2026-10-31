@@ -26,6 +26,14 @@ import type { PlayableScenario } from '../data/scenarios';
 import type { DecisionResult, Resources } from './types';
 import { getTutorFeedback, type TutorOutcome } from '../ai/tutorClient';
 import { composeWorld } from './composeWorld';
+import {
+  advanceDay, build as buildOn, demolish as demolishOn, earnedBadges, newSeed, newSim, scoreAttempt, upgrade as upgradeOn, xpForScore,
+  BADGES, type AttemptScore, type LogEntry, type SimState,
+} from '@yarinlab/shared';
+import { cityOf, literacyOf, progressFacts, systemsOf, unlockCtx } from './city';
+
+export type Overlay = 'none' | 'menu' | 'build' | 'log' | 'progress' | 'help' | 'tasks' | 'assessment';
+export type ScoreRecord = AttemptScore & { scenarioId: string; choiceId: string; day: number };
 
 export type Period = 'today' | 'future-none' | 'future-mine';
 
@@ -91,6 +99,18 @@ export type GameState = {
   compareB: string;
   /** Ortak dünya durumu */
   world: Resources;
+  /** Ortak şehir simülasyonu: tohum, gün, binalar, olay günlüğü */
+  sim: SimState;
+  xp: number;
+  scores: ScoreRecord[];
+  /** Kazanılmış rozet anahtarları (bildirim için) */
+  badges: string[];
+  greenEnergyDays: number;
+  realWorldCount: number;
+  assessmentsPost: number;
+  overlay: Overlay;
+  /** İnşa panelinde seçili alan */
+  buildZone: string | null;
 };
 
 const initial = (): GameState => ({
@@ -124,7 +144,24 @@ const initial = (): GameState => ({
   compareA: 'N',
   compareB: 'B',
   world: { ...food.baseline },
+  sim: newSim(newSeed()),
+  xp: 0,
+  scores: [],
+  badges: [],
+  greenEnergyDays: 0,
+  realWorldCount: 0,
+  assessmentsPost: 0,
+  overlay: 'none',
+  buildZone: null,
 });
+
+const isSim = (x: unknown): x is SimState => {
+  if (!x || typeof x !== 'object') return false;
+  const o = x as SimState;
+  return Number.isInteger(o.seed) && Number.isInteger(o.day) && o.day >= 0 && typeof o.treasury === 'number' && Number.isFinite(o.treasury)
+    && Array.isArray(o.buildings) && o.buildings.every((b) => typeof b?.id === 'string' && typeof b.type === 'string' && typeof b.slot === 'string' && [1, 2, 3].includes(b.level))
+    && Array.isArray(o.log) && !!o.shock && typeof o.shock === 'object';
+};
 
 const storage = (): Storage | null => {
   const ls = (globalThis as { localStorage?: Storage }).localStorage;
@@ -197,8 +234,17 @@ function readSaved(): Partial<GameState> | null {
       canteenVisited: p.canteenVisited === true || history.some((h) => h.scenarioId === food.id),
       reflection: [String(reflection[0] ?? '').slice(0, 280), String(reflection[1] ?? '').slice(0, 280)],
       introOpen: history.length === 0,
+      overlay: history.length > 0 ? 'menu' : 'none',
       world: composeWorld(applied),
     };
+    if (isSim(p.sim)) patch.sim = { ...p.sim, log: p.sim.log.filter((e) => typeof e?.message === 'string').slice(-200) };
+    const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) && v >= 0 ? v : 0);
+    patch.xp = num(p.xp);
+    patch.greenEnergyDays = num(p.greenEnergyDays);
+    patch.realWorldCount = num(p.realWorldCount);
+    patch.assessmentsPost = num(p.assessmentsPost);
+    if (Array.isArray(p.scores)) patch.scores = (p.scores as ScoreRecord[]).filter((x) => typeof x?.scenarioId === 'string' && typeof x.total === 'number').slice(-500);
+    if (Array.isArray(p.badges)) patch.badges = (p.badges as unknown[]).filter((x): x is string => typeof x === 'string');
     if (typeof p.sessionId === 'string') patch.sessionId = p.sessionId;
     return patch;
   } catch {
@@ -225,6 +271,13 @@ function persist() {
         period: state.period,
         canteenVisited: state.canteenVisited,
         reflection: state.reflection,
+        sim: state.sim,
+        xp: state.xp,
+        scores: state.scores,
+        badges: state.badges,
+        greenEnergyDays: state.greenEnergyDays,
+        realWorldCount: state.realWorldCount,
+        assessmentsPost: state.assessmentsPost,
       }),
     );
   } catch {
@@ -232,13 +285,34 @@ function persist() {
   }
 }
 
-let state: GameState = { ...initial(), ...readSaved() };
+const withWorld = (s: GameState): GameState => ({ ...s, world: cityOf(s).resources });
+let state: GameState = withWorld({ ...initial(), ...readSaved() });
 const listeners = new Set<() => void>();
+const persistListeners = new Set<() => void>();
+export type AttemptEvent = { scenarioId: string; choiceId: string; reasoning?: string; before: Resources; after: Resources; score: { outcome: number; reasoning: number; balance: number; total: number }; day: number };
+const attemptListeners = new Set<(a: AttemptEvent) => void>();
 const set = (patch: Partial<GameState>) => {
-  state = { ...state, ...patch };
+  state = withWorld({ ...state, ...patch });
   persist();
+  persistListeners.forEach((l) => l());
   listeners.forEach((l) => l());
 };
+
+const logEntry = (kind: LogEntry['kind'], message: string, why?: string): LogEntry => ({ day: state.sim.day, kind, message, why });
+const appendLog = (sim: SimState, entries: LogEntry[]): SimState => ({ ...sim, log: [...sim.log, ...entries].slice(-200) });
+
+/** Yeni kazanılan rozetleri günlüğe ve bildirime ekler (baskısız: yalnızca bilgi). */
+function checkBadges() {
+  const now = earnedBadges(progressFacts(state));
+  const fresh = now.filter((k) => !state.badges.includes(k));
+  if (!fresh.length) return;
+  const names = fresh.map((k) => BADGES.find((b) => b.key === k)?.name ?? k);
+  set({
+    badges: [...state.badges, ...fresh],
+    sim: appendLog(state.sim, names.map((n) => logEntry('badge', `Rozet kazanıldı: ${n}`))),
+    notice: `Yeni rozet: ${names.join(', ')}`,
+  });
+}
 
 const foodActs = (s: GameState) => s.history.filter((h) => h.scenarioId === food.id);
 
@@ -347,7 +421,13 @@ export const gameStore = {
     const choice = scenario.choices.find((c) => c.id === state.pendingChoiceId);
     const applied = { ...state.applied, [scenario.id]: result };
     const systems = systemsAfter(scenario, choice?.system, state);
+    const score = scoreAttempt(result.before as unknown as Record<string, number>, result.after as unknown as Record<string, number>, scenario.rows, reasoning);
+    const tried = state.history.some((h) => h.scenarioId === scenario.id && h.choiceId !== result.choiceId);
+    const before = unlockCtx(state).completedTasks;
     set({
+      scores: [...state.scores, { ...score, scenarioId: scenario.id, choiceId: result.choiceId, day: state.sim.day }].slice(-500),
+      xp: state.xp + xpForScore(score.total, tried),
+      sim: appendLog(state.sim, [logEntry('decision', `${scenario.title}: “${choice?.label ?? result.choiceId}” seçildi (puan ${score.total}).`, choice?.tradeoff)]),
       result,
       history: [...state.history, result],
       applied,
@@ -357,6 +437,10 @@ export const gameStore = {
       reflection: ['', ''],
       canteenVisited: state.canteenVisited || scenario.id === food.id,
     });
+    attemptListeners.forEach((l) => l({ scenarioId: scenario.id, choiceId: result.choiceId, reasoning, before: result.before, after: result.after, score: { outcome: score.outcome, reasoning: score.reasoning, balance: score.balance, total: score.total }, day: state.sim.day }));
+    const after = unlockCtx(state).completedTasks;
+    if (after > before) set({ sim: appendLog(state.sim, [logEntry('unlock', `Tamamlanan görev: ${after}. Yeni yapılar açılmış olabilir (İnşa paneli).`)]) });
+    checkBadges();
     void getTutorFeedback(result).then((outcome) => {
       if (state.result === result) set({ tutor: { status: 'ready', outcome } });
     });
@@ -388,11 +472,56 @@ export const gameStore = {
     });
   },
   closeComparison: () => set({ comparisonOpen: false }),
+  openOverlay: (overlay: Overlay, buildZone: string | null = null) => set({ overlay, buildZone: buildZone ?? state.buildZone }),
+  closeOverlay: () => set({ overlay: 'none' }),
+  setBuildZone: (z: string | null) => set({ buildZone: z }),
+  /** Günü bitir: tohumlu hava, saatlik enerji, olaylar, gelir/bakım. */
+  endDay() {
+    const out = advanceDay(composeWorld(state.applied), systemsOf(state), state.sim, literacyOf(state));
+    const e = out.city.indicators.energy;
+    const green = e.outageHours === 0 && e.renewableSharePct >= 50;
+    const events = out.entries.filter((x) => x.kind === 'event');
+    set({ sim: out.sim, greenEnergyDays: state.greenEnergyDays + (green ? 1 : 0), notice: events.length ? events.map((x) => x.message).join(' ') : `Yeni gün: ${out.city.indicators.weatherTr}.` });
+    checkBadges();
+    return out;
+  },
+  build(type: string, slotId: string) {
+    const r = buildOn(state.sim.buildings, type, slotId, state.world.budget, state.sim.day, unlockCtx(state));
+    if (!r.ok) { set({ notice: r.message }); return r; }
+    set({ sim: appendLog({ ...state.sim, buildings: r.buildings, treasury: state.sim.treasury - r.cost }, [logEntry('build', r.message)]), notice: r.message });
+    checkBadges();
+    return r;
+  },
+  upgrade(id: string) {
+    const r = upgradeOn(state.sim.buildings, id, state.world.budget);
+    if (!r.ok) { set({ notice: r.message }); return r; }
+    set({ sim: appendLog({ ...state.sim, buildings: r.buildings, treasury: state.sim.treasury - r.cost }, [logEntry('upgrade', r.message)]), notice: r.message });
+    checkBadges();
+    return r;
+  },
+  demolish(id: string) {
+    const r = demolishOn(state.sim.buildings, id);
+    if (r.buildings.length === state.sim.buildings.length) return;
+    set({ sim: appendLog({ ...state.sim, buildings: r.buildings, treasury: state.sim.treasury + r.refund }, [logEntry('demolish', `Yapı kaldırıldı (+${r.refund} puan iade).`)]) });
+  },
+  recordRealWorld: () => { set({ realWorldCount: state.realWorldCount + 1 }); checkBadges(); },
+  recordAssessmentPost: () => { set({ assessmentsPost: state.assessmentsPost + 1 }); checkBadges(); },
+  /** Kayıt dışa/içe aktarma (sunucu eşitlemesi için). */
+  exportSave(): unknown {
+    try { return JSON.parse(storage()?.getItem(SESSION_KEY) ?? 'null'); } catch { return null; }
+  },
+  importSave(payload: unknown) {
+    try { storage()?.setItem(SESSION_KEY, JSON.stringify(payload)); } catch { return; }
+    gameStore.reloadSession();
+  },
+  hasSave: () => state.history.length > 0 || state.sim.day > 0 || state.sim.buildings.length > 0,
+  onAttempt(l: (a: AttemptEvent) => void) { attemptListeners.add(l); return () => { attemptListeners.delete(l); }; },
+  onPersist(l: () => void) { persistListeners.add(l); return () => { persistListeners.delete(l); }; },
   setCompare: (slot: 'A' | 'B', id: string) => set(slot === 'A' ? { compareA: id } : { compareB: id }),
   /** Kayıtlı oturumu yeniden okur (test ve yenileme). */
   reloadSession() {
     const ready = state.worldReady;
-    state = { ...initial(), ...readSaved(), worldReady: ready };
+    state = withWorld({ ...initial(), ...readSaved(), worldReady: ready });
     listeners.forEach((l) => l());
   },
   /** Yeni oturum: örnek öğrenci verisi sıfırlanır (T09). */
@@ -402,7 +531,8 @@ export const gameStore = {
     } catch {
       /* yoksay */
     }
-    state = { ...initial(), worldReady: state.worldReady };
+    state = withWorld({ ...initial(), worldReady: state.worldReady });
+    persistListeners.forEach((l) => l());
     listeners.forEach((l) => l());
   },
 };
