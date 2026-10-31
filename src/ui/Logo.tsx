@@ -1,7 +1,7 @@
-/** YarinLab işareti: izometrik elmas zemin, yaprak ve enerji güneşi (palet: gece mavisi, iklim yeşili, enerji altını). */
+/** YarınLab işareti: izometrik elmas zemin, yaprak ve enerji güneşi (palet: gece mavisi, iklim yeşili, enerji altını). */
 export function Logo({ size = 28 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 64 64" role="img" aria-label="YarinLab logosu">
+    <svg width={size} height={size} viewBox="0 0 64 64" role="img" aria-label="YarınLab logosu">
       <rect width="64" height="64" rx="14" fill="#12263a" />
       <path d="M32 30 L54 41 L32 52 L10 41 Z" fill="#bfeadb" />
       <path d="M32 52 L54 41 L54 45 L32 56 Z" fill="#8cc9b3" />

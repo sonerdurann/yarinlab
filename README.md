@@ -1,4 +1,4 @@
-# YarinLab – Geleceği Sen Tasarla
+# YarınLab — Geleceği Sen Tasarla
 
 COP31 / KLM Teknolojileri Creathonu için modern 2.5D izometrik iklim karar oyunu (6-8. sınıf).
 Öğrenciler bütçe, su, enerji, atık ve refah arasında seçim yapar; sonuçları ortak bir okul-şehir simülasyonunda görür ve açıklama alır.

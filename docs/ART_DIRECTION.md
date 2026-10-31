@@ -14,7 +14,7 @@ Palet: gece mavisi · iklim yeşili · nane · su mavisi · enerji altını · k
 | Animasyon | 150-250 ms geçiş, 1-2 sn karar efekti |
 
 ## Özel üretilecekler
-- YarinLab logo ve simgesi; okul kimliği; kantin tabelası; yapay zekâ rehber karakteri.
+- YarınLab logo ve simgesi; okul kimliği; kantin tabelası; yapay zekâ rehber karakteri.
 - Güneş paneli, batarya, yağmur bahçesi, geri dönüşüm alanı için eksik izometrik parçalar.
 - Dönemler arası değişimi gösteren iki renklendirme/tasarım varyasyonu.
 Kenney sanat diliyle aynı perspektif, palet, kontur ve gölge. Üçüncü taraf eserleri yalnızca benzerlik için yeniden üretilmez; lisans/kaynak kaydı tutulur.
