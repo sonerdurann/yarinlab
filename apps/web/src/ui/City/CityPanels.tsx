@@ -3,11 +3,9 @@ import { gameStore, useGameState } from '../../state/gameStore';
 import { cityOf, completedTaskIds, moduleOf } from '../../state/city';
 import { playableScenarios } from '../../data/scenarios';
 import { Modal } from '../Modal/Modal';
-import { RoadmapButton } from '../Roadmap/RoadmapPanel';
 import { Speech } from '../Mascot';
 
 const BADGE_ICON: Record<string, string> = { 'first-decision': '👣', reasoner: '💬', 'two-futures': '🔮', explorer: '🧭', builder: '🏗️', upgrader: '🚀', 'clean-grid': '⚡', seasons: '🍂', halfway: '🏔️', council: '🏛️', field: '🔬', reflect: '📝' };
-import { authStore, useAuth } from '../../state/authStore';
 
 /** Üst çubuk: tarih, mevsim, büyük hava simgesi ve gün ilerletme. */
 export function TimeChip() {
@@ -44,7 +42,7 @@ export function CityIndicators() {
   ];
   return (
     <aside className="panel world-status" aria-label="Şehir durumu">
-      <h2>🏙️ Şehrim</h2>
+      <h2>📊 Şehir raporu</h2>
       <div className="stat-grid">
         {tiles.map((t) => (
           <div key={t.label} className={`stat-tile tone-${t.tone}${t.wide ? ' wide' : ''}`} title={t.title}>
@@ -59,8 +57,7 @@ export function CityIndicators() {
       </div>
       <p className="hint">Bu sayılar oyun içi simülasyondur, gerçek ölçüm değildir.</p>
       <div className="actions left">
-        <button onClick={() => gameStore.openOverlay('build')}>🏗️ İnşa</button>
-        <button onClick={() => gameStore.openOverlay('log')}>📜 Günlük</button>
+        <button onClick={() => gameStore.openOverlay('log')}>📜 Olay günlüğü</button>
         <button onClick={() => gameStore.openOverlay('progress')}>🏅 Rozetler</button>
       </div>
     </aside>
@@ -134,32 +131,6 @@ export function ProgressPanel() {
           </tbody>
         </table>
       )}
-    </Modal>
-  );
-}
-
-/** Ana menü: yeni oyun, devam, giriş, ayarlar, yardım. */
-export function MainMenu({ onSettings, onTeacher, onSources }: { onSettings: () => void; onTeacher: () => void; onSources: () => void }) {
-  const s = useGameState();
-  const { user } = useAuth();
-  if (s.overlay !== 'menu') return null;
-  const has = gameStore.hasSave();
-  return (
-    <Modal titleId="menu-title" title="YarınLab — Geleceği Sen Tasarla" onClose={gameStore.closeOverlay}>
-      <Speech mood="wave">{user ? <>Tekrar hoş geldin <b>{user.displayName}</b>! Şehrin seni bekliyor.</> : <>Bugünün kararları, yarının dünyasını şekillendirir. Hadi başlayalım!</>}</Speech>
-      <div className="menu-buttons">
-        {has && <button className="primary" onClick={gameStore.closeOverlay}>▶️ Devam et (Gün {s.sim.day + 1})</button>}
-        <button className={has ? '' : 'primary'} onClick={() => { if (!has || confirm('Mevcut şehir silinip yeni oyun başlasın mı?')) { gameStore.resetSession(); gameStore.closeOverlay(); } }}>🌱 Yeni oyun</button>
-        <button onClick={authStore.open}>{user ? '👤 Hesabım' : '🔑 Giriş / sınıfa katıl'}</button>
-        {user?.role === 'TEACHER' && <button onClick={onTeacher}>🍎 Öğretmen paneli</button>}
-        <button onClick={() => gameStore.openOverlay('progress')}>🏅 Rozetlerim ve ilerlemem</button>
-        <button onClick={() => gameStore.openOverlay('assessment')}>📝 Ön/son testler</button>
-        <button onClick={onSettings}>⚙️ Ayarlar (ses, yazı, hareket)</button>
-        <button onClick={() => { gameStore.closeOverlay(); gameStore.closeIntro(); gameStore.openTask('food_001'); }}>🎬 90 saniyelik tanıtım (kantin görevi)</button>
-        <button onClick={() => gameStore.openOverlay('help')}>❓ Yardım ve rehber</button>
-        <button onClick={onSources}>📚 Bilimsel kaynaklar ve lisanslar</button>
-        <RoadmapButton />
-      </div>
     </Modal>
   );
 }

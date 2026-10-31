@@ -1,17 +1,17 @@
-import { BUILD_SLOTS, BUILDINGS, buildingDef, isUnlocked, unlockText, WEATHER_ICON, type ZoneId } from '@yarinlab/shared';
+import { BUILD_SLOTS, BUILDINGS, buildingDef, effectsAt, isUnlocked, maxLevel, unlockText, WEATHER_ICON, type ZoneId } from '@yarinlab/shared';
 import { gameStore, useGameState } from '../../state/gameStore';
 import { cityOf, unlockCtx } from '../../state/city';
 import { Modal } from '../Modal/Modal';
 import { EnergyChart } from './EnergyChart';
 
-const ZONE_TR: Record<ZoneId, string> = {
+export const ZONE_TR: Record<ZoneId, string> = {
   school: 'Okul kampüsü', canteen: 'Kantin ve mutfak', energy: 'Enerji bölgesi', waste: 'Geri dönüşüm merkezi',
   city: 'Şehir merkezi ve mahalleler', farm: 'Tarım ve sera', ocean: 'Kıyı ve deniz',
 };
 const ZONES = Object.keys(ZONE_TR) as ZoneId[];
-const BUILDING_ICON: Record<string, string> = { solar: '☀️', wind: '🌬️', battery: '🔋', retrofit: '💡', climateLab: '🔬', compost: '🪱', sorting: '♻️', repair: '🛠️', park: '🌳', rainTank: '🌧️', bus: '🚌', waterPlant: '🚰', greenhouse: '🌱', wetland: '🦆', trap: '🕸️' };
+export const BUILDING_ICON: Record<string, string> = { campus: '🏫', solar: '☀️', wind: '🌬️', battery: '🔋', retrofit: '💡', climateLab: '🔬', compost: '🪱', sorting: '♻️', repair: '🛠️', park: '🌳', rainTank: '🌧️', bus: '🚌', waterPlant: '🚰', greenhouse: '🌱', wetland: '🦆', trap: '🕸️' };
 
-const effectText = (e: Record<string, number | undefined>) => {
+export const effectText = (e: Record<string, number | undefined>) => {
   const L: Record<string, string> = {
     solarKw: 'güneş kW', windKw: 'rüzgâr kW', storageKwh: 'depolama kWh', efficiency: 'talep azaltma', extraDemandKwh: 'ek talep kWh/gün',
     wasteDivertKg: 'atıktan ayrılan kg/gün', foodWasteCutKg: 'gıda atığı −kg/gün', greenShare: 'yeşil alan', rainShare: 'yağmur hasadı',
@@ -31,7 +31,9 @@ export function BuildPanel() {
   const slots = BUILD_SLOTS.filter((x) => x.zone === zone);
   const free = slots.filter((x) => !s.sim.buildings.some((b) => b.slot === x.id));
   const here = s.sim.buildings.filter((b) => slots.some((x) => x.id === b.slot));
-  const defs = BUILDINGS.filter((b) => b.zone === zone);
+  const defs = BUILDINGS.filter((b) => b.zone === zone && !b.fixed);
+  // Haritada boş bir alana tıklandıysa o alan kullanılır
+  const picked = s.inspect?.kind === 'slot' ? free.find((x) => x.id === (s.inspect as { id: string }).id) : undefined;
   return (
     <Modal titleId="build-title" title="İnşa ve geliştirme" onClose={gameStore.closeOverlay} wide>
       <p>Bütçe: <strong>{s.world.budget.toLocaleString('tr-TR')} puan</strong> · Günlük bakım: {city.indicators.upkeep} puan · Boş alan: {free.length}/{slots.length}</p>
@@ -52,13 +54,14 @@ export function BuildPanel() {
           <ul className="build-list">
             {here.map((b) => {
               const d = buildingDef(b.type)!;
-              const next = b.level < 3 ? d.cost[b.level] : null;
+              const max = maxLevel(d);
+              const next = b.level < max ? d.cost[b.level] : null;
               return (
                 <li key={b.id}>
-                  <div><span className="bld-ico" aria-hidden="true">{BUILDING_ICON[d.type] ?? '🏠'}</span><strong>{d.name}</strong> · {'★'.repeat(b.level)}{'☆'.repeat(3 - b.level)}<br /><span className="hint">{effectText(Object.fromEntries(Object.entries(d.perLevel).map(([k, v]) => [k, (v as number) * b.level])))}</span></div>
+                  <div><span className="bld-ico" aria-hidden="true">{BUILDING_ICON[d.type] ?? '🏠'}</span><strong>{d.name}</strong> · <span aria-label={`Seviye ${b.level}/${max}`}>{'★'.repeat(b.level)}{'☆'.repeat(max - b.level)}</span><br /><span className="hint">{effectText(effectsAt(d, b.level) as Record<string, number>) || d.levelNames?.[b.level - 1]}</span></div>
                   <div className="actions">
                     {next !== null && <button onClick={() => gameStore.upgrade(b.id)} disabled={s.world.budget < next}>Yükselt ({next})</button>}
-                    <button onClick={() => gameStore.demolish(b.id)}>Kaldır</button>
+                    {!d.fixed && <button onClick={() => gameStore.demolish(b.id)}>Kaldır</button>}
                   </div>
                 </li>
               );
@@ -70,7 +73,7 @@ export function BuildPanel() {
       <ul className="build-list">
         {defs.map((d) => {
           const open = isUnlocked(d, ctx);
-          const slot = free[0];
+          const slot = picked ?? free[0];
           return (
             <li key={d.type} className={open ? '' : 'locked'}>
               <div>

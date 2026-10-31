@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { randomInt } from 'node:crypto';
 import {
-  classroomCreateSchema, studentLoginSchema, studentRegisterSchema, teacherLoginSchema, teacherRegisterSchema,
+  classroomCreateSchema, studentLoginSchema, studentRegisterSchema, teacherAccountSchema, teacherLoginSchema, teacherRegisterSchema,
 } from '@yarinlab/shared';
 import { prisma } from '../db.js';
 import { hashPassword, verifyPassword } from '../lib/password.js';
@@ -76,6 +76,22 @@ export async function authRoutes(app: FastifyInstance, opts: { authRateMax?: num
     if (!req.user) return { user: null };
     const e = await prisma.enrollment.findUnique({ where: { userId: req.user.id } });
     return { user: { ...req.user, classroomId: e?.classroomId } };
+  });
+
+  // Öğretmen ayarları: görünen ad / parola. Mevcut parola doğrulanır; parola değişince diğer oturumlar kapanır.
+  app.patch('/api/auth/me', { preHandler: requireRole('TEACHER'), ...strict }, async (req, reply) => {
+    const b = teacherAccountSchema.parse(req.body);
+    const u = await prisma.user.findUniqueOrThrow({ where: { id: req.user!.id } });
+    if (!(await verifyPassword(b.currentPassword, u.passwordHash))) return reply.code(403).send({ error: 'wrong_password' });
+    const data: { displayName?: string; passwordHash?: string } = {};
+    if (b.displayName) data.displayName = b.displayName;
+    if (b.newPassword) data.passwordHash = await hashPassword(b.newPassword);
+    const updated = await prisma.user.update({ where: { id: u.id }, data });
+    if (b.newPassword) {
+      await prisma.session.deleteMany({ where: { userId: u.id } });
+      await startSession(reply, u.id);
+    }
+    return { user: { id: updated.id, role: updated.role, displayName: updated.displayName } };
   });
 
   // --- Öğretmen: sınıf yönetimi (yalnızca kendi sınıfları) ---

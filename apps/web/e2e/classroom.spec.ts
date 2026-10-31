@@ -43,9 +43,13 @@ test('öğretmen sınıf açar, öğrenci kodla katılır ve oynar, öğretmen r
   await decide(student, 2, 'Önce batarya çünkü kesinti riski ve bütçe dengesi önemli.');
   await expect(student.locator('.sync')).toContainText('Kaydedildi');
 
-  await teacher.getByRole('tab', { name: 'İlerleme' }).click();
-  await expect(teacher.getByRole('table').nth(1)).toContainText(`Ece${id}`.slice(0, 16));
-  await teacher.getByRole('tab', { name: 'Raporlar ve öneriler' }).click();
+  await teacher.getByRole('tab', { name: /Öğrencilerim/ }).click();
+  await expect(teacher.getByRole('table').first()).toContainText(`Ece${id}`.slice(0, 16));
+  await teacher.getByRole('button', { name: 'Karar analizi' }).first().click();
+  await expect(teacher.locator('.student-detail')).toContainText('Önce batarya');
+  await teacher.getByRole('tab', { name: /Değerlendirme sonuçları/ }).click();
+  await expect(teacher.getByRole('img', { name: /Ön test ve Son test/ })).toBeVisible();
+  await teacher.getByRole('tab', { name: /Raporlar/ }).click();
   const [pdf] = await Promise.all([teacher.waitForEvent('download'), teacher.getByRole('link', { name: 'PDF indir' }).click()]);
   expect(pdf.suggestedFilename()).toMatch(/\.pdf$/);
   const [csv] = await Promise.all([teacher.waitForEvent('download'), teacher.getByRole('link', { name: /CSV indir/ }).click()]);

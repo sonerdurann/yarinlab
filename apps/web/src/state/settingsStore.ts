@@ -8,9 +8,14 @@ export const TEXT_PERCENT: Record<TextSize, number> = { normal: 100, large: 112.
 const KEY = 'yarinlab.settings.v1';
 
 export type Graphics = 'high' | 'low';
-export type SettingsState = { motion: MotionSetting; textSize: TextSize; sound: boolean; volume: number; graphics: Graphics; open: boolean };
-type Persisted = Pick<SettingsState, 'motion' | 'textSize' | 'sound' | 'volume' | 'graphics'>;
-const DEFAULTS: Persisted = { motion: 'auto', textSize: 'normal', sound: true, volume: 0.4, graphics: 'high' };
+/** Ses: efekt (sound/volume), müzik ve ortam ayrı açılır ve ayrı ses düzeyine sahiptir (prompt §12). */
+export type SettingsState = {
+  motion: MotionSetting; textSize: TextSize; sound: boolean; volume: number; graphics: Graphics; open: boolean;
+  music: boolean; musicVolume: number; ambient: boolean; ambientVolume: number;
+};
+type Persisted = Pick<SettingsState, 'motion' | 'textSize' | 'sound' | 'volume' | 'graphics' | 'music' | 'musicVolume' | 'ambient' | 'ambientVolume'>;
+const DEFAULTS: Persisted = { motion: 'auto', textSize: 'normal', sound: true, volume: 0.4, graphics: 'high', music: false, musicVolume: 0.25, ambient: true, ambientVolume: 0.3 };
+const vol = (v: unknown, d: number) => (typeof v === 'number' && v >= 0 && v <= 1 ? v : d);
 
 /** Otomatik: cihazın "hareketi azalt" tercihi geçerli; "azalt/tam" onu geçersiz kılar. */
 export const resolveMotion = (setting: MotionSetting, systemReduced: boolean) => setting === 'reduce' || (setting === 'auto' && systemReduced);
@@ -32,6 +37,10 @@ function load(): Persisted {
         sound: typeof p.sound === 'boolean' ? p.sound : DEFAULTS.sound,
         volume: typeof p.volume === 'number' && p.volume >= 0 && p.volume <= 1 ? p.volume : DEFAULTS.volume,
         graphics: p.graphics === 'low' ? 'low' : 'high',
+        music: typeof p.music === 'boolean' ? p.music : DEFAULTS.music,
+        musicVolume: vol(p.musicVolume, DEFAULTS.musicVolume),
+        ambient: typeof p.ambient === 'boolean' ? p.ambient : DEFAULTS.ambient,
+        ambientVolume: vol(p.ambientVolume, DEFAULTS.ambientVolume),
       };
     }
   } catch {
@@ -55,7 +64,7 @@ function applyDom() {
 const set = (patch: Partial<SettingsState>) => {
   state = { ...state, ...patch };
   try {
-    localStorage.setItem(KEY, JSON.stringify({ motion: state.motion, textSize: state.textSize, sound: state.sound, volume: state.volume, graphics: state.graphics }));
+    localStorage.setItem(KEY, JSON.stringify({ motion: state.motion, textSize: state.textSize, sound: state.sound, volume: state.volume, graphics: state.graphics, music: state.music, musicVolume: state.musicVolume, ambient: state.ambient, ambientVolume: state.ambientVolume }));
   } catch {
     /* yoksay */
   }
@@ -84,6 +93,10 @@ export const settingsStore = {
   setSound: (sound: boolean) => set({ sound }),
   setVolume: (volume: number) => set({ volume: Math.max(0, Math.min(1, volume)) }),
   setGraphics: (graphics: Graphics) => set({ graphics }),
+  setMusic: (music: boolean) => set({ music }),
+  setMusicVolume: (v: number) => set({ musicVolume: Math.max(0, Math.min(1, v)) }),
+  setAmbient: (ambient: boolean) => set({ ambient }),
+  setAmbientVolume: (v: number) => set({ ambientVolume: Math.max(0, Math.min(1, v)) }),
   reset: () => set({ ...DEFAULTS }),
 };
 

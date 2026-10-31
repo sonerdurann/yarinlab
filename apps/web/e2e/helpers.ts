@@ -6,6 +6,14 @@ export const uid = () => `${Date.now().toString(36)}${Math.floor(Math.random() *
 export async function start(page: Page) {
   await page.goto('/');
   await expect(page.locator('.loading.done')).toBeAttached({ timeout: 20_000 });
+  // Başlık ekranı -> yeni oyun -> karakter oluşturucu -> hikâye girişi
+  const newGame = page.getByRole('button', { name: /Yeni oyuna başla/ });
+  if (await newGame.isVisible()) {
+    page.once('dialog', (d) => void d.accept());
+    await newGame.click();
+    const ready = page.getByRole('button', { name: /Hazırım/ });
+    if (await ready.isVisible()) await ready.click();
+  }
   const skip = page.getByRole('button', { name: 'Atla', exact: true });
   if (await skip.isVisible()) {
     await skip.click();
@@ -20,4 +28,11 @@ export async function decide(page: Page, choiceIndex: number, reason: string) {
   await dialog.locator('textarea').first().fill(reason);
   await page.getByRole('button', { name: /Kararımı dene/ }).click();
   await expect(dialog.locator('.star-result')).toBeVisible();
+}
+
+/** Alt dock'tan Görevler çekmecesini açar (bölge listesi ve görev merkezi). */
+export async function openTasks(page: Page) {
+  const btn = page.getByRole('navigation', { name: 'Oyun menüsü' }).getByRole('button', { name: /Görevler/ });
+  if ((await btn.getAttribute('aria-pressed')) !== 'true') await btn.click();
+  await expect(page.locator('.task-panel')).toBeVisible();
 }

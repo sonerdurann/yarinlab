@@ -23,7 +23,7 @@ for p in isometric-tiles-vehicles interface-sounds game-icons; do rm -rf "$DEST/
 lic() { find "$1" -iname 'license*.txt' | head -1; }
 
 # Sesler: oyundaki 5 olay için seçilen dosyalar (yoksa oyun kodla üretilen sese döner)
-for f in confirmation_002 maximize_006 pluck_002 confirmation_004 error_004; do
+for f in confirmation_002 maximize_006 pluck_002 confirmation_004 error_004 click_002 select_002 maximize_008 confirmation_001; do
   src=$(find "$DEST/interface-sounds" -name "$f.ogg" | head -1 || true)
   [ -n "$src" ] && cp "$src" "$PUB/sounds/" || echo "UYARI: $f.ogg pakette yok (kod sesi kullanılacak)"
 done

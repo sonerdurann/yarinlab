@@ -17,20 +17,12 @@ export function TaskPanel({ onPick }: Props) {
   const total = MODULES.reduce((n, m) => n + tasksOfModule(m.id).length, 0);
   const best = new Map<string, number>();
   for (const sc of s.scores) best.set(sc.scenarioId, Math.max(best.get(sc.scenarioId) ?? 0, sc.total));
-  const suggested = MODULES.map((m) => tasksOfModule(m.id).find((t) => taskStatus(t.id, done).status === 'available'))
-    .filter(Boolean)
-    .sort((a, b) => done.filter((d) => d.startsWith(a!.module)).length - done.filter((d) => d.startsWith(b!.module)).length)[0];
   const starsTotal = [...best.values()].reduce((a, v) => a + starsFor(v), 0);
   return (
     <aside className="panel task-panel" aria-label="Görev merkezi">
       <h2><span aria-hidden="true">🗺️</span> Görev merkezi</h2>
       <p className="chapter"><strong>{ch.title}</strong><br /><span className="hint">{ch.text}</span></p>
       <p className="hint"><b>{done.length}/{total}</b> görev tamamlandı · <span aria-hidden="true">⭐</span> {starsTotal} yıldız</p>
-      {suggested && !s.decisionOpen && (
-        <button className="primary" style={{ width: '100%' }} onClick={() => gameStore.openTask(suggested.id)}>
-          <span aria-hidden="true">{MODULE_THEME[suggested.module].emoji} </span>Önerilen: {short(suggested.title)}
-        </button>
-      )}
       <DirectorTip />
       <div className="actions left" style={{ marginTop: 4 }}>
         <button className="link" onClick={() => gameStore.openOverlay('tasks')}>📋 Ödevlerim</button>

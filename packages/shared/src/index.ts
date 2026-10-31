@@ -34,6 +34,13 @@ export const attemptSchema = z.object({
 });
 export type AttemptInput = z.infer<typeof attemptSchema>;
 export const MAX_SAVE_BYTES = 400_000;
+/** Öğretmen hesap ayarları: görünen ad ve/veya parola değişimi (mevcut parola zorunlu). */
+export const teacherAccountSchema = z.object({
+  displayName: z.string().trim().min(2).max(60).optional(),
+  currentPassword: z.string().min(1).max(200),
+  newPassword: z.string().min(8).max(200).optional(),
+}).refine((x) => x.displayName !== undefined || x.newPassword !== undefined, { message: 'Değişiklik yok' });
+
 export const saveSchema = z.object({
   version: z.number().int().min(0),
   state: z.object({

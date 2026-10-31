@@ -26,7 +26,6 @@ type Report = {
   notes: string[];
 };
 const LEVEL = { baslangic: '🌱 Başlangıç', gelisen: '🌿 Gelişen', yetkin: '🌳 Yetkin' } as const;
-type Tab = 'class' | 'assign' | 'progress' | 'learning' | 'field' | 'reports';
 
 const Bar = ({ value, label }: { value: number | null; label: string }) => (
   <span className="hbar" title={label}>
@@ -59,12 +58,20 @@ export function TeacherPanel() {
   return <Dashboard />;
 }
 
+type Screen = 'overview' | 'classes' | 'students' | 'assign' | 'learning' | 'assess' | 'field' | 'reports' | 'settings';
+const SCREENS: [Screen, string, string][] = [
+  ['overview', '📊', 'Genel bakış'], ['classes', '🏫', 'Sınıflarım'], ['students', '🧒', 'Öğrencilerim'], ['assign', '📋', 'Görev atama'],
+  ['learning', '🎯', 'Öğrenme kazanımları'], ['assess', '📝', 'Değerlendirme sonuçları'], ['field', '🌍', 'Gerçek dünya etkinlikleri'],
+  ['reports', '📄', 'Raporlar'], ['settings', '⚙️', 'Ayarlar'],
+];
+
+/** Öğretmen paneli (prompt §10): tam ekran, sol gezinme, 9 ekran; yalnızca öğretmenin kendi sınıfları ve gerçek verisi. */
 function Dashboard() {
   const [classes, setClasses] = useState<Classroom[]>([]);
   const [sel, setSel] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [err, setErr] = useState('');
-  const [school, setSchool] = useState(false);
+  const [screen, setScreen] = useState<Screen>('classes');
   const load = useCallback(async () => {
     try {
       const r = await api<{ classrooms: Classroom[] }>('/api/classrooms');
@@ -76,32 +83,102 @@ function Dashboard() {
   const create = async () => {
     try {
       const r = await api<{ classroom: Classroom }>('/api/classrooms', { body: { name } });
-      setName(''); setSel(r.classroom.id); await load();
+      setName(''); setSel(r.classroom.id); setScreen('classes'); await load();
     } catch (e) { setErr(errorText(e)); }
   };
+  const title = SCREENS.find((x) => x[0] === screen)!;
   return (
     <Modal titleId="tp-title" title="Öğretmen paneli" onClose={teacherStore.closeTeacher} wide>
-      <div className="class-bar">
-        <label>Sınıf{' '}
-          <select value={sel ?? ''} onChange={(e) => setSel(e.target.value)} aria-label="Sınıf seç">
-            {classes.length === 0 && <option value="">Henüz sınıf yok</option>}
-            {classes.map((c) => <option key={c.id} value={c.id}>{c.name} ({c._count?.enrollments ?? 0} öğrenci)</option>)}
-          </select>
-        </label>
-        <form onSubmit={(e) => { e.preventDefault(); void create(); }} className="inline-form">
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Yeni sınıf adı (ör. 7-A)" aria-label="Yeni sınıf adı" minLength={2} maxLength={60} required />
-          <button type="submit">Sınıf oluştur</button>
-        </form>
-        <button aria-pressed={school} onClick={() => setSchool(!school)}>🏫 {school ? 'Sınıfa dön' : 'Okul özeti'}</button>
+      <div className="teacher-shell">
+        <nav className="teacher-nav" role="tablist" aria-label="Öğretmen bölümleri" aria-orientation="vertical">
+          {SCREENS.map(([k, ico, l]) => (
+            <button key={k} role="tab" aria-selected={screen === k} className={screen === k ? 'on' : ''} onClick={() => setScreen(k)}>
+              <span aria-hidden="true">{ico}</span> {l}
+            </button>
+          ))}
+        </nav>
+        <div className="teacher-main">
+          <div className="teacher-head">
+            <h3>{title[1]} {title[2]}</h3>
+            {screen !== 'settings' && (
+              <div className="class-bar">
+                <label>Sınıf{' '}
+                  <select value={sel ?? ''} onChange={(e) => setSel(e.target.value)} aria-label="Sınıf seç">
+                    {classes.length === 0 && <option value="">Henüz sınıf yok</option>}
+                    {classes.map((c) => <option key={c.id} value={c.id}>{c.name} ({c._count?.enrollments ?? 0} öğrenci)</option>)}
+                  </select>
+                </label>
+                {screen === 'classes' && (
+                  <form onSubmit={(e) => { e.preventDefault(); void create(); }} className="inline-form">
+                    <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Yeni sınıf adı (ör. 7-A)" aria-label="Yeni sınıf adı" minLength={2} maxLength={60} required />
+                    <button type="submit">Sınıf oluştur</button>
+                  </form>
+                )}
+              </div>
+            )}
+          </div>
+          {err && <p role="alert" className="form-error">{err}</p>}
+          {screen === 'settings' ? <AccountSettings />
+            : sel ? <ClassView key={sel} id={sel} screen={screen} onChanged={load} onDeleted={() => { setSel(null); void load(); }} />
+            : screen === 'overview' ? <SchoolOverview /> : <p>Başlamak için “Sınıflarım” ekranında bir sınıf oluşturun.</p>}
+        </div>
       </div>
-      {err && <p role="alert" className="form-error">{err}</p>}
-      {school ? <SchoolOverview /> : sel ? <ClassView key={sel} id={sel} onChanged={load} onDeleted={() => { setSel(null); void load(); }} /> : <p>Başlamak için bir sınıf oluşturun.</p>}
     </Modal>
   );
 }
 
-function ClassView({ id, onChanged, onDeleted }: { id: string; onChanged: () => void; onDeleted: () => void }) {
-  const [tab, setTab] = useState<Tab>('class');
+/** Ayarlar: görünen ad ve parola (mevcut parola doğrulanır; parola değişince diğer oturumlar kapanır). */
+function AccountSettings() {
+  const { user } = useAuth();
+  const [f, setF] = useState({ displayName: user?.displayName ?? '', currentPassword: '', newPassword: '' });
+  const [msg, setMsg] = useState('');
+  const save = async () => {
+    try {
+      const body: Record<string, string> = { currentPassword: f.currentPassword };
+      if (f.displayName && f.displayName !== user?.displayName) body.displayName = f.displayName;
+      if (f.newPassword) body.newPassword = f.newPassword;
+      await api('/api/auth/me', { method: 'PATCH', body });
+      setF({ ...f, currentPassword: '', newPassword: '' });
+      setMsg('Kaydedildi.');
+      void authStore.refresh();
+    } catch (e) { setMsg(errorText(e)); }
+  };
+  return (
+    <section className="settings-form">
+      <form onSubmit={(e) => { e.preventDefault(); void save(); }}>
+        <label className="field">Görünen ad<input value={f.displayName} onChange={(e) => setF({ ...f, displayName: e.target.value })} minLength={2} maxLength={60} /></label>
+        <label className="field">Yeni parola (isteğe bağlı, en az 8 karakter)<input type="password" autoComplete="new-password" value={f.newPassword} onChange={(e) => setF({ ...f, newPassword: e.target.value })} minLength={8} /></label>
+        <label className="field">Mevcut parola<input type="password" autoComplete="current-password" required value={f.currentPassword} onChange={(e) => setF({ ...f, currentPassword: e.target.value })} /></label>
+        <button className="primary" type="submit">Kaydet</button>
+      </form>
+      {msg && <p role="status" className="notice">{msg}</p>}
+      <h3>Veri ve gizlilik (KVKK)</h3>
+      <ul className="hint">{NOTICE.map((n) => <li key={n}>{n}</li>)}</ul>
+    </section>
+  );
+}
+
+/** Basit SVG çubuk grafik: iki seri (ör. başlayan/bitiren, ön/son test). */
+function PairChart({ rows, a, b }: { rows: { label: string; a: number | null; b: number | null }[]; a: string; b: string }) {
+  const h = 26, W = 560, left = 150;
+  return (
+    <figure className="pair-chart">
+      <svg viewBox={`0 0 ${W} ${rows.length * h + 24}`} role="img" aria-label={`${a} ve ${b} karşılaştırması`}>
+        {rows.map((r, k) => (
+          <g key={r.label} transform={`translate(0 ${k * h + 4})`}>
+            <text x={left - 8} y="15" textAnchor="end" fontSize="12" fill="#243447">{r.label}</text>
+            <rect x={left} y="2" width={((W - left - 50) * (r.a ?? 0)) / 100} height="9" rx="4" fill="#176b58" />
+            <rect x={left} y="12" width={((W - left - 50) * (r.b ?? 0)) / 100} height="9" rx="4" fill="#41c9d1" />
+            <text x={W - 44} y="15" fontSize="11" fill="#3d4e63">{r.a ?? '–'} / {r.b ?? '–'}</text>
+          </g>
+        ))}
+      </svg>
+      <figcaption className="hint"><span className="sw" style={{ background: '#176b58' }} /> {a} <span className="sw" style={{ background: '#41c9d1' }} /> {b} (%)</figcaption>
+    </figure>
+  );
+}
+
+function ClassView({ id, screen, onChanged, onDeleted }: { id: string; screen: Screen; onChanged: () => void; onDeleted: () => void }) {
   const [d, setD] = useState<Detail | null>(null);
   const [r, setR] = useState<Report | null>(null);
   const [msg, setMsg] = useState('');
@@ -111,33 +188,40 @@ function ClassView({ id, onChanged, onDeleted }: { id: string; onChanged: () => 
       setD(dd); setR(rr);
     } catch (e) { setMsg(errorText(e)); }
   }, [id]);
-  // Sekme değişince güncel veriyi çek (öğrenciler oynarken rapor bayatlamasın).
-  useEffect(() => { void refresh(); onChanged(); }, [refresh, tab]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Ekran değişince güncel veriyi çek (öğrenciler oynarken rapor bayatlamasın).
+  useEffect(() => { void refresh(); onChanged(); }, [refresh, screen]); // eslint-disable-line react-hooks/exhaustive-deps
   const act = async (fn: () => Promise<unknown>, ok?: string) => {
     try { await fn(); setMsg(ok ?? ''); await refresh(); onChanged(); } catch (e) { setMsg(errorText(e)); }
   };
   if (!d || !r) return <p role="status">Yükleniyor…</p>;
-  const tabs: [Tab, string][] = [['class', 'Sınıf ve öğrenciler'], ['assign', 'Görev atama'], ['progress', 'İlerleme'], ['learning', 'Kazanım ve yanılgılar'], ['field', 'Gerçek dünya'], ['reports', 'Raporlar ve öneriler']];
   return (
     <>
-      <div className="tabs" role="tablist" aria-label="Öğretmen bölümleri">
-        {tabs.map(([k, l]) => <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)}>{l}</button>)}
-        <button onClick={() => void refresh()} aria-label="Verileri yenile">↻ Yenile</button>
-      </div>
+      <div className="actions left"><button onClick={() => void refresh()} aria-label="Verileri yenile">↻ Yenile</button></div>
       {msg && <p role="status" className="notice">{msg}</p>}
-      <div className="kpis" aria-label="Sınıf özeti">
-        <div><b>{r.kpis.students}</b><span>Katılan öğrenci</span></div>
-        <div><b>{r.kpis.activeStudents}</b><span>Oynamaya başlayan</span></div>
-        <div><b>{r.kpis.completedTasks}</b><span>Tamamlanan görev</span></div>
-        <div><b>{r.kpis.prePostPairs}</b><span>Ön + son test çifti</span></div>
-        <div><b>{r.kpis.avgReasoning ?? '–'}</b><span>Ort. gerekçe puanı</span></div>
-      </div>
-      {tab === 'class' && <ClassTab d={d} act={act} onDeleted={onDeleted} />}
-      {tab === 'assign' && <AssignTab id={id} d={d} r={r} act={act} />}
-      {tab === 'progress' && <ProgressTab r={r} />}
-      {tab === 'learning' && <LearningTab r={r} />}
-      {tab === 'field' && <FieldTab id={id} r={r} act={act} />}
-      {tab === 'reports' && <ReportsTab id={id} r={r} />}
+      {(screen === 'overview' || screen === 'students' || screen === 'assess') && (
+        <div className="kpis" aria-label="Sınıf özeti">
+          <div><b>{r.kpis.students}</b><span>Katılan öğrenci</span></div>
+          <div><b>{r.kpis.activeStudents}</b><span>Oynamaya başlayan</span></div>
+          <div><b>{r.kpis.completedTasks}</b><span>Tamamlanan görev</span></div>
+          <div><b>{r.kpis.prePostPairs}</b><span>Ön + son test çifti</span></div>
+          <div><b>{r.kpis.avgReasoning ?? '–'}</b><span>Ort. gerekçe puanı</span></div>
+        </div>
+      )}
+      {screen === 'overview' && (
+        <>
+          <h3>Modül ilerlemesi</h3>
+          <PairChart rows={r.modules.map((m) => ({ label: m.name, a: m.startedPct, b: m.completedPct }))} a="Başlayan" b="Bitiren" />
+          <h3>Okul özeti</h3>
+          <SchoolOverview />
+        </>
+      )}
+      {screen === 'classes' && <ClassTab d={d} act={act} onDeleted={onDeleted} />}
+      {screen === 'students' && <StudentsTab r={r} />}
+      {screen === 'assign' && <AssignTab id={id} d={d} r={r} act={act} />}
+      {screen === 'learning' && <LearningTab r={r} />}
+      {screen === 'assess' && <AssessTab r={r} />}
+      {screen === 'field' && <FieldTab id={id} r={r} act={act} />}
+      {screen === 'reports' && <ReportsTab id={id} r={r} />}
     </>
   );
 }
@@ -243,10 +327,45 @@ function AssignTab({ id, d, r, act }: { id: string; d: Detail; r: Report; act: A
   );
 }
 
-function ProgressTab({ r }: { r: Report }) {
+/** Öğrencilerim: öğrenci ilerleme tablosu ve seçilen öğrencinin karar analizi. */
+function StudentsTab({ r }: { r: Report }) {
+  const [pick, setPick] = useState<string | null>(null);
+  const st = r.students.find((x) => x.id === pick);
   return (
     <section>
-      <h3>Modüller</h3>
+      {r.students.length === 0 ? <p>Henüz öğrenci yok.</p> : (
+        <table className="result">
+          <thead><tr><th>Takma ad</th><th>Grup</th><th>Görev</th><th>Modül</th><th>Ort. puan</th><th>Gerekçe</th><th>Denge</th><th>Yanılgı</th><th>Son etkinlik</th><th>Analiz</th></tr></thead>
+          <tbody>{r.students.map((s) => (
+            <tr key={s.id} className={pick === s.id ? 'sel' : ''}><td>{s.nickname}</td><td>{s.group ?? '–'}</td><td>{s.completedTasks}</td><td>{s.modulesPlayed}/7</td><td>{s.avgTotal ?? '–'}</td><td>{s.avgReasoning ?? '–'}</td><td>{s.avgBalance ?? '–'}</td><td>{s.misconceptionChoices}</td>
+              <td>{s.lastActive ? new Date(s.lastActive).toLocaleString('tr-TR') : '–'}</td>
+              <td><button onClick={() => setPick(pick === s.id ? null : s.id)} aria-pressed={pick === s.id}>Karar analizi</button></td></tr>
+          ))}</tbody>
+        </table>
+      )}
+      {st && (
+        <div className="student-detail panel-lite">
+          <h3>{st.nickname}: öğrenci raporu</h3>
+          <ul className="facts">{r.rubric.map((x) => <li key={x.id}><b>{x.name}:</b> {st.rubric[x.id] ? LEVEL[st.rubric[x.id]!] : '–'}</li>)}</ul>
+          <h4>Kararları ve gerekçeleri</h4>
+          {r.reasonings.filter((x) => x.nickname === st.nickname).length === 0 ? <p>Gerekçeli karar yok.</p> : (
+            <ul className="reason-list">{r.reasonings.filter((x) => x.nickname === st.nickname).map((x, k) => (
+              <li key={k}>{x.title} · “{x.choice}”{x.misconception && <span className="warn"> (yanılgı riski)</span>}<br /><q>{x.reasoning}</q> <span className="hint">puan {x.total ?? '–'}, gerekçe {x.reasoningScore ?? '–'}</span></li>
+            ))}</ul>
+          )}
+        </div>
+      )}
+      <p className="hint">Puanlar oyun içi değerlendirmedir (sonuç %40, gerekçe %35, denge %25); not değildir.</p>
+    </section>
+  );
+}
+
+/** Değerlendirme sonuçları: modül bazında ön/son test ve ilerleme. */
+function AssessTab({ r }: { r: Report }) {
+  return (
+    <section>
+      <h3>Ön test → son test (doğru yüzdesi)</h3>
+      <PairChart rows={r.modules.map((m) => ({ label: m.name, a: m.pre, b: m.post }))} a="Ön test" b="Son test" />
       <table className="result">
         <thead><tr><th>Modül</th><th>Başlayan</th><th>Bitiren</th><th>Ort. görev</th><th>Ön → son test</th></tr></thead>
         <tbody>{r.modules.map((m) => (
@@ -254,17 +373,7 @@ function ProgressTab({ r }: { r: Report }) {
             <td>{m.pre !== null ? `%${m.pre} → %${m.post} (n=${m.prePostN})` : '–'}</td></tr>
         ))}</tbody>
       </table>
-      <h3>Öğrenci ilerleme raporu</h3>
-      {r.students.length === 0 ? <p>Henüz öğrenci yok.</p> : (
-        <table className="result">
-          <thead><tr><th>Takma ad</th><th>Grup</th><th>Görev</th><th>Modül</th><th>Ort. puan</th><th>Gerekçe</th><th>Denge</th><th>Yanılgı</th><th>Son etkinlik</th></tr></thead>
-          <tbody>{r.students.map((s) => (
-            <tr key={s.id}><td>{s.nickname}</td><td>{s.group ?? '–'}</td><td>{s.completedTasks}</td><td>{s.modulesPlayed}/7</td><td>{s.avgTotal ?? '–'}</td><td>{s.avgReasoning ?? '–'}</td><td>{s.avgBalance ?? '–'}</td><td>{s.misconceptionChoices}</td>
-              <td>{s.lastActive ? new Date(s.lastActive).toLocaleString('tr-TR') : '–'}</td></tr>
-          ))}</tbody>
-        </table>
-      )}
-      <p className="hint">Puanlar oyun içi değerlendirmedir (sonuç %40, gerekçe %35, denge %25); not değildir.</p>
+      <p className="hint">Ön/son test karşılaştırması yalnızca iki testi de çözen öğrencilerden hesaplanır (n).</p>
     </section>
   );
 }

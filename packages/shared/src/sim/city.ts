@@ -1,6 +1,6 @@
 import { calendar, weatherFor, WEATHER_TR, type Weather } from './clock';
 import { simulateEnergyDay, type EnergyDay } from './energy';
-import { buildingEffects, type PlacedBuilding } from './buildings';
+import { buildingEffects, FIXED_BUILDINGS, type PlacedBuilding } from './buildings';
 import { ASSUMED_COLLECTION_CAPACITY_KG, coastalRisk, floodRisk, heatRisk, OTHER_SCHOOL_WASTE_KG, wasteCollection } from './risks';
 import { rngFor } from './rng';
 
@@ -34,7 +34,7 @@ export type SimState = {
   shock: Partial<Record<'energyScore' | 'waterScore' | 'wellbeing', number>>;
   log: LogEntry[];
 };
-export const newSim = (seed: number): SimState => ({ seed, day: 0, treasury: 0, buildings: [], shock: {}, log: [] });
+export const newSim = (seed: number): SimState => ({ seed, day: 0, treasury: 0, buildings: [...FIXED_BUILDINGS], shock: {}, log: [] });
 
 /** Varsayım: günlük işletme bütçesi geliri (puan). */
 export const DAILY_INCOME = 300;

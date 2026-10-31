@@ -2,9 +2,10 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { gameStore } from '../state/gameStore';
 import { cityOf, completedTaskIds, unlockCtx } from '../state/city';
 import { BUILD_SLOTS } from '@yarinlab/shared';
+import { coastGround, PIER, STATION } from '../game/tiles/coast';
 import { DECOR } from '../game/tiles/decor';
 import { hotspots } from '../game/tiles/hotspots';
-import map from '../../public/assets/maps/world_alpha.json';
+import map from '../../public/assets/maps/world_v2.json';
 
 const mem = new Map<string, string>();
 (globalThis as { localStorage?: unknown }).localStorage ??= {
@@ -88,11 +89,22 @@ describe('ortak şehir simülasyonu (store)', () => {
 describe('yapı alanları haritayla çakışmaz', () => {
   const roads = (map as { layers: { name: string; data?: number[] }[] }).layers.find((l) => l.name === 'roads')!.data!;
   const ground = (map as { layers: { name: string; data?: number[] }[] }).layers.find((l) => l.name === 'ground')!.data!;
-  it.each(BUILD_SLOTS)('$id', (slot) => {
-    expect(roads[slot.y * 32 + slot.x]).toBe(0);
-    expect(ground[slot.y * 32 + slot.x]).not.toBe(3); // su
-    expect(DECOR.some((d) => d.x === slot.x && d.y === slot.y)).toBe(false);
-    expect(hotspots.some((h) => Math.abs(h.tileX - slot.x) <= 1 && Math.abs(h.tileY - slot.y) <= 1)).toBe(false);
+  it.each(BUILD_SLOTS.filter((s) => s.map !== 'coast' && s.id !== 'campus'))('$id', (slot) => {
+    expect(roads[slot.y * 40 + slot.x]).toBe(0);
+    expect(ground[slot.y * 40 + slot.x]).not.toBe(3); // su
+    expect(DECOR.some((d) => d.x === slot.x && d.y === slot.y || (d.kind === 'court' && slot.x >= d.x && slot.x <= d.x + 1 && slot.y >= d.y && slot.y <= d.y + 1))).toBe(false);
+    // ana bina tabanı ve çevresindeki bir karoya denk gelmez
+    expect(hotspots.some((h) => slot.x >= h.tileX - 1 && slot.x <= h.tileX + h.foot[0] && slot.y >= h.tileY - 1 && slot.y <= h.tileY + h.foot[1])).toBe(false);
+    // kendi bölgesinin sınırları içindedir
+    const zone = hotspots.find((h) => h.id === slot.zone)!;
+    expect(slot.x >= zone.bounds[0] - 2 && slot.x <= zone.bounds[1] + 2 && slot.y >= zone.bounds[2] - 2 && slot.y <= zone.bounds[3] + 2, slot.id).toBe(true);
+  });
+  it('kıyı alanları kıyı haritasında, karada değil; iskele ve istasyonla çakışmaz', () => {
+    for (const s of BUILD_SLOTS.filter((x) => x.map === 'coast')) {
+      expect(['sand', 'shallow']).toContain(coastGround(s.x, s.y));
+      expect(PIER.some(([x, y]) => x === s.x && y === s.y)).toBe(false);
+      expect(s.x >= STATION.x - 1 && s.x <= STATION.x + STATION.fw && s.y >= STATION.y - 1 && s.y <= STATION.y + STATION.fd).toBe(false);
+    }
   });
 });
 

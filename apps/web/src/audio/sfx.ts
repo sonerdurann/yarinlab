@@ -5,19 +5,24 @@ import { settingsStore } from '../state/settingsStore';
  * Kod ile üretilen kısa ses efektleri (WebAudio; harici ses dosyası/lisans yok). Ses kapalıysa veya tarayıcı
  * desteklemiyorsa sessizce hiçbir şey yapmaz. AudioContext ilk kullanıcı etkileşiminden sonra açılır.
  */
-export type Sfx = 'decision' | 'build' | 'day' | 'badge' | 'warn';
+export type Sfx = 'decision' | 'build' | 'day' | 'badge' | 'warn' | 'menu' | 'select' | 'upgrade' | 'complete';
 const NOTES: Record<Sfx, [number, number, OscillatorType][]> = {
   decision: [[523, 0.08, 'sine'], [659, 0.12, 'sine']],
   build: [[392, 0.07, 'triangle'], [523, 0.07, 'triangle'], [784, 0.14, 'triangle']],
   day: [[330, 0.18, 'sine'], [440, 0.22, 'sine']],
   badge: [[659, 0.08, 'square'], [784, 0.08, 'square'], [1047, 0.18, 'square']],
   warn: [[220, 0.16, 'sawtooth'], [196, 0.2, 'sawtooth']],
+  menu: [[660, 0.05, 'sine'], [880, 0.07, 'sine']],
+  select: [[740, 0.06, 'triangle']],
+  upgrade: [[392, 0.06, 'triangle'], [494, 0.06, 'triangle'], [587, 0.06, 'triangle'], [784, 0.16, 'triangle']],
+  complete: [[523, 0.08, 'sine'], [659, 0.08, 'sine'], [784, 0.08, 'sine'], [1047, 0.2, 'sine']],
 };
 let ctx: AudioContext | null = null;
 
 /** Kenney Interface Sounds (CC0) dosyaları; scripts/fetch-kenney-extras.sh ile eklenir. Yoksa kodla üretilen ses çalar. */
 export const KENNEY_SOUND: Record<Sfx, string> = {
   decision: 'confirmation_002', build: 'maximize_006', day: 'pluck_002', badge: 'confirmation_004', warn: 'error_004',
+  menu: 'click_002', select: 'select_002', upgrade: 'maximize_008', complete: 'confirmation_001',
 };
 const buffers = new Map<Sfx, AudioBuffer | null>();
 async function loadBuffer(kind: Sfx): Promise<AudioBuffer | null> {
@@ -31,6 +36,8 @@ async function loadBuffer(kind: Sfx): Promise<AudioBuffer | null> {
   buffers.set(kind, buf);
   return buf;
 }
+
+export const sfx = (kind: Sfx) => play(kind);
 
 export function play(kind: Sfx) {
   const st = settingsStore.get();
@@ -81,8 +88,9 @@ function synth(kind: Sfx, volume: number) {
 export function sfxFor(prev: GameState, next: GameState): Sfx | null {
   if (next.badges.length > prev.badges.length) return 'badge';
   if (next.sim.day > prev.sim.day) return next.sim.log.slice(prev.sim.log.length).some((e) => e.kind === 'event' && /kesinti|baskını|dalgası/i.test(e.message)) ? 'warn' : 'day';
+  if (next.sim.buildings.length > prev.sim.buildings.length) return 'build';
   const lv = (s: GameState) => s.sim.buildings.reduce((a, b) => a + b.level, 0);
-  if (lv(next) > lv(prev)) return 'build';
+  if (lv(next) > lv(prev)) return 'upgrade';
   if (next.scores.length > prev.scores.length) return 'decision';
   return null;
 }

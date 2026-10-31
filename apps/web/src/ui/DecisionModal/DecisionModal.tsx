@@ -3,6 +3,8 @@ import { cityOf, completedTaskIds, scenarioSteps } from '../../state/city';
 import { useEffect, useState, type CSSProperties } from 'react';
 import { Speech } from '../Mascot';
 import { starsFor, themeOf } from '../theme/modules';
+import { ModuleScene, MODULE_CAST } from '../scenes/ModuleScene';
+import { Character } from '../characters/Avatar';
 import { playableById, food } from '../../data/scenarios';
 import { ASSUMED_COLLECTION_CAPACITY_KG, CARBON_NOTE, CITY_FLOOD_NOTE, COUNCIL_NOTE, ENERGY_RISK_NOTE, OCEAN_NOTE, SIMULATION_NOTICE, WASTE_RULE_NOTE } from '../../data/constants';
 import { gameStore, useGameState } from '../../state/gameStore';
@@ -130,8 +132,13 @@ export function DecisionModal() {
   return (
     <Modal titleId="dm-title" title={scenario.title} onClose={gameStore.closeDecision} active={!s.comparisonOpen} wide>
       <div style={{ '--mod': th.color, '--soft': th.soft } as CSSProperties}>
+        {(() => {
+          const last = [...s.scores].reverse().find((x) => x.scenarioId === scenario.id);
+          const tone = !last ? undefined : last.total >= 80 ? 'good' : last.total >= 60 ? 'ok' : 'bad';
+          return <ModuleScene module={th.id} phase={result ? 'result' : s.pendingChoiceId ? 'chosen' : 'brief'} tone={tone} />;
+        })()}
         <div className="dm-hero">
-          <span className="avatar" aria-hidden="true">{th.avatar}</span>
+          <Character id={MODULE_CAST[th.id]} size={64} expr={result ? 'joy' : s.pendingChoiceId ? 'think' : 'talk'} />
           <div className="bubble"><strong className="bubble-name" style={{ color: th.color }}>{th.character}</strong>{scenario.brief}</div>
         </div>
         {scenario.facts.length > 0 && (

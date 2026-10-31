@@ -26,6 +26,7 @@ import type { Resources } from '../../state/types';
 import { fallbackForComparison } from '../../ai/fallbackResponses';
 import { Modal } from '../Modal/Modal';
 import { Mascot, Speech } from '../Mascot';
+import { FutureSlider } from './FutureDiorama';
 
 type Metric = { key: string; label: string; unit: string; max: number; lowerIsBetter?: boolean; read: (r: Resources, choice: PlayableChoice) => number };
 
@@ -153,7 +154,12 @@ export function FutureComparison() {
         {scenario.shortTitle}: her iki gelecek de bu görevin başlangıcından hesaplanır
         {scenario.cross === 'waste-loop' ? ` (kantin gıda atığı ${num(liveFood)} kg/gün bu karşılaştırmada sabit)` : ''}.
       </p>
-      <Speech mood="think">İki kapıdan bakalım: Sol ve sağ, aynı okulun farklı kararlarla vardığı gelecekler. Hangisi daha dengeli? Sayılara ve nedenlerine bak!</Speech>
+      <Speech mood="think">Çizgiyi sürükle: solda A, sağda B. Aynı şehir, farklı kararlar. Hangisi daha dengeli? Sayılara ve nedenlerine de bak!</Speech>
+      {(() => {
+        const risk = metrics.find((m) => m.key === 'flood' || m.key === 'coast');
+        const p = (x: (typeof sides)[number]) => ({ score: x.score, after: x.after, flood: risk?.read(x.after, x.f), label: x.f.id === 'N' ? 'Kararlar yok' : x.f.label });
+        return <FutureSlider a={p(sides[0])} b={p(sides[1])} />;
+      })()}
       <div className="future-grid">
         {sides.map((x) => (
           <section key={x.slot} className={`future-card portal-${x.score >= 70 ? 'bright' : x.score >= 50 ? 'mid' : 'dim'}`} aria-labelledby={`fc-${x.slot}`}>

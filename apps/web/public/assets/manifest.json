@@ -1,12 +1,12 @@
 {
-  "version": 1,
+  "version": 2,
   "note": "Kılavuz §06 asset manifesti. file:null olanlar çalışma anında kodla üretilir.",
   "assets": [
     {
       "id": "tree",
       "file": null,
-      "generator": "apps/web/src/game/scenes/BootScene.ts",
-      "description": "Ağaç (Kenney paketlerinde yok)",
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "description": "Ağaç (koyu yeşil; hafif salınım)",
       "source": "custom-compatible-art",
       "license": "team-owned",
       "anchor": {
@@ -17,7 +17,8 @@
         1,
         1
       ],
-      "interactive": false
+      "interactive": false,
+      "category": "doga"
     },
     {
       "id": "shadow",
@@ -361,38 +362,6 @@
       "interactive": false
     },
     {
-      "id": "building_school",
-      "file": "/assets/kenney/buildings/buildingTiles_sheet.png",
-      "frameFrom": "apps/web/src/game/tiles/mapManifest.ts (BUILDING_FRAMES)",
-      "source": "https://kenney.nl/assets/isometric-tiles-buildings",
-      "license": "CC0",
-      "anchor": {
-        "x": 0.5,
-        "y": 1
-      },
-      "tileFootprint": [
-        3,
-        3
-      ],
-      "interactive": true
-    },
-    {
-      "id": "building_canteen",
-      "file": "/assets/kenney/buildings/buildingTiles_sheet.png",
-      "frameFrom": "apps/web/src/game/tiles/mapManifest.ts (BUILDING_FRAMES)",
-      "source": "https://kenney.nl/assets/isometric-tiles-buildings",
-      "license": "CC0",
-      "anchor": {
-        "x": 0.5,
-        "y": 1
-      },
-      "tileFootprint": [
-        3,
-        3
-      ],
-      "interactive": true
-    },
-    {
       "id": "mascot-yari",
       "file": null,
       "generator": "apps/web/src/ui/Mascot.tsx",
@@ -408,6 +377,906 @@
       "description": "WebAudio ile üretilen ses efektleri",
       "source": "custom",
       "license": "team-owned",
+      "interactive": false
+    },
+    {
+      "id": "campus-1",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-ana",
+      "description": "Okul kampüsü seviye 1 (3x2, iki kat; temel)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        3,
+        2
+      ],
+      "interactive": true
+    },
+    {
+      "id": "campus-2",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-ana",
+      "description": "Okul kampüsü seviye 2 (3x2, iki kat; bahçe+yağmur tankı)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        3,
+        2
+      ],
+      "interactive": true
+    },
+    {
+      "id": "campus-3",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-ana",
+      "description": "Okul kampüsü seviye 3 (3x2, iki kat; çatı GES)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        3,
+        2
+      ],
+      "interactive": true
+    },
+    {
+      "id": "campus-4",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-ana",
+      "description": "Okul kampüsü seviye 4 (3x2, iki kat; yeşil çatı+lab kubbesi+anten)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        3,
+        2
+      ],
+      "interactive": true
+    },
+    {
+      "id": "canteen",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-ana",
+      "description": "Kantin (sarı cephe, tente, tabela)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        2,
+        2
+      ],
+      "interactive": true
+    },
+    {
+      "id": "monitor",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-ana",
+      "description": "Enerji izleme merkezi (beyaz, turkuaz cam, çatı GES, anten)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        2,
+        2
+      ],
+      "interactive": true
+    },
+    {
+      "id": "townhall",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-ana",
+      "description": "Belediye (üç kat, turkuaz kubbe, bayrak)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        2,
+        2
+      ],
+      "interactive": true
+    },
+    {
+      "id": "barn",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-ana",
+      "description": "Çiftlik ambarı (mercan, beşik çatı)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        2,
+        2
+      ],
+      "interactive": true
+    },
+    {
+      "id": "recycle",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-ana",
+      "description": "Geri dönüşüm ve tamir atölyesi (testere çatı)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        2,
+        2
+      ],
+      "interactive": true
+    },
+    {
+      "id": "lighthouse",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-ana",
+      "description": "Kıyı kapısı deniz feneri",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": true
+    },
+    {
+      "id": "station",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-ana",
+      "description": "Kıyı araştırma istasyonu (kazıklar üstünde)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        2,
+        2
+      ],
+      "interactive": true
+    },
+    {
+      "id": "annex",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-insa",
+      "description": "Yalıtım ve LED ek binası",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": true
+    },
+    {
+      "id": "lab",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-insa",
+      "description": "İklim araştırma laboratuvarı (kubbe)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": true
+    },
+    {
+      "id": "repairshop",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-insa",
+      "description": "Tamir ve onarım merkezi",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": true
+    },
+    {
+      "id": "waterplant",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-insa",
+      "description": "Su arıtma ve geri kazanım (tank)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": true
+    },
+    {
+      "id": "busstop",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-insa",
+      "description": "Elektrikli otobüs durağı ve otobüs",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": true
+    },
+    {
+      "id": "house-0",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-dekor",
+      "description": "Konut varyant 1",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "house-1",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-dekor",
+      "description": "Konut varyant 2",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "house-2",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-dekor",
+      "description": "Konut varyant 3",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "shop-0",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-dekor",
+      "description": "Dükkân varyant 1 (tente)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "shop-1",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-dekor",
+      "description": "Dükkân varyant 2 (tente)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "shop-2",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-dekor",
+      "description": "Dükkân varyant 3 (tente)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "apartment-0",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-dekor",
+      "description": "Apartman varyant 1 (dört kat)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "apartment-1",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-dekor",
+      "description": "Apartman varyant 2 (dört kat)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "apartment-2",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-dekor",
+      "description": "Apartman varyant 3 (dört kat)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "silo",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "bina-dekor",
+      "description": "Tahıl silosu",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "tree-b",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "doga",
+      "description": "Ağaç (açık yeşil varyant)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "fruit",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "doga",
+      "description": "Meyve ağacı",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "pine",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "doga",
+      "description": "Çam",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "bush",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "doga",
+      "description": "Çalı",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "flowers",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "doga",
+      "description": "Çiçek tarhı",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "rock",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "doga",
+      "description": "Kaya",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "bench",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "sehir-dekor",
+      "description": "Bank",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "lamp",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "sehir-dekor",
+      "description": "Sokak lambası",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "pylon",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "sehir-dekor",
+      "description": "İletim direği",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "court",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "sehir-dekor",
+      "description": "Spor sahası (2x2)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        2,
+        2
+      ],
+      "interactive": false
+    },
+    {
+      "id": "badge-up",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "durum",
+      "description": "Geliştirilebilir rozeti (yeşil ok)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "badge-warn",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "durum",
+      "description": "Uyarı balonu",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "scaffold",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "durum",
+      "description": "Geliştirme iskelesi",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "dust",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "efekt",
+      "description": "İnşaat tozu parçacığı",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "spark",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "efekt",
+      "description": "Tamamlandı ışıltısı",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "bird",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "canli",
+      "description": "Kuş (sürü)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "student",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "canli",
+      "description": "Kampüste yürüyen öğrenci",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "plank",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "kiyi",
+      "description": "İskele tahtası",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": "taban üst köşesi",
+        "y": "taban üst köşesi"
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "buoy",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "kiyi",
+      "description": "Koruma alanı şamandırası",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "fish",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "canli",
+      "description": "Balık",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "turtle",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "canli",
+      "description": "Deniz kaplumbağası",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "seagrass",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "kiyi",
+      "description": "Deniz çayırı",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "litter",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "kiyi",
+      "description": "Denizde atık",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "reed",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "kiyi",
+      "description": "Saz",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
       "interactive": false
     }
   ]

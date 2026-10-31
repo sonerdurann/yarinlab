@@ -1,5 +1,7 @@
 import { useSyncExternalStore } from 'react';
 import { hotspotById } from '../game/tiles/hotspots';
+import { migrateSim } from './migrate';
+import { DEFAULT_PROFILE, sanitizeProfile, type Profile } from './profile';
 import { food, playableById } from '../data/scenarios';
 import { runDecision } from '../game/systems/DecisionEngine';
 import {
@@ -21,7 +23,7 @@ import { getTutorFeedback, type TutorOutcome } from '../ai/tutorClient';
 import { composeWorld } from './composeWorld';
 import {
   advanceDay, build as buildOn, demolish as demolishOn, earnedBadges, newSeed, newSim, scoreAttempt, upgrade as upgradeOn, xpForScore,
-  BADGES, type AttemptScore, type LogEntry, type SimState,
+  BADGES, buildingDef, type AttemptScore, type LogEntry, type SimState,
 } from '@yarinlab/shared';
 import { cityOf, completedTaskIds, deriveSystems, literacyOf, progressFacts, systemsOf, unlockCtx } from './city';
 import { nextTaskOf, moduleById, taskStatus } from '@yarinlab/shared';
@@ -106,7 +108,25 @@ export type GameState = {
   overlay: Overlay;
   /** İnşa panelinde seçili alan */
   buildZone: string | null;
+  /** Haritada seçili bina/bölge: bilgi kartı (prompt §3 bina durumları) */
+  inspect: Inspect | null;
+  /** Etkin harita: Yarın Şehri veya kıyı */
+  mapView: MapView;
+  /** Harita katmanı (sıcaklık, sel, enerji akışı, atık akışı) */
+  mapLayer: MapLayer;
+  /** Alt dock çekmecesi */
+  drawer: Drawer;
+  /** Oyuncu kimliği (avatar, takma ad) */
+  profile: Profile;
+  /** Yapay zekâ rehberi paneli */
+  guideOpen: boolean;
+  /** Karakter oluşturucu */
+  creatorOpen: boolean;
 };
+export type Drawer = 'none' | 'tasks' | 'report' | 'research';
+export type Inspect = { kind: 'zone'; id: string } | { kind: 'building'; id: string } | { kind: 'slot'; id: string };
+export type MapView = 'world' | 'coast';
+export type MapLayer = 'none' | 'heat' | 'flood' | 'energy' | 'waste' | 'under';
 
 const initial = (): GameState => ({
   sessionId: newSessionId(),
@@ -147,15 +167,22 @@ const initial = (): GameState => ({
   realWorldCount: 0,
   assessmentsPost: 0,
   assessments: [],
-  overlay: 'none',
+  overlay: 'menu',
   buildZone: null,
+  inspect: null,
+  mapView: 'world',
+  mapLayer: 'none',
+  drawer: 'none',
+  profile: DEFAULT_PROFILE,
+  guideOpen: false,
+  creatorOpen: false,
 });
 
 const isSim = (x: unknown): x is SimState => {
   if (!x || typeof x !== 'object') return false;
   const o = x as SimState;
   return Number.isInteger(o.seed) && Number.isInteger(o.day) && o.day >= 0 && typeof o.treasury === 'number' && Number.isFinite(o.treasury)
-    && Array.isArray(o.buildings) && o.buildings.every((b) => typeof b?.id === 'string' && typeof b.type === 'string' && typeof b.slot === 'string' && [1, 2, 3].includes(b.level))
+    && Array.isArray(o.buildings) && o.buildings.every((b) => typeof b?.id === 'string' && typeof b.type === 'string' && typeof b.slot === 'string' && Number.isInteger(b.level) && b.level >= 1 && b.level <= 4)
     && Array.isArray(o.log) && !!o.shock && typeof o.shock === 'object';
 };
 
@@ -211,7 +238,7 @@ function readSaved(): Partial<GameState> | null {
       overlay: history.length > 0 ? 'menu' : 'none',
       world: composeWorld(applied),
     };
-    if (isSim(p.sim)) patch.sim = { ...p.sim, log: p.sim.log.filter((e) => typeof e?.message === 'string').slice(-200) };
+    if (isSim(p.sim)) patch.sim = migrateSim({ ...p.sim, log: p.sim.log.filter((e) => typeof e?.message === 'string').slice(-200) });
     const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) && v >= 0 ? v : 0);
     patch.xp = num(p.xp);
     patch.greenEnergyDays = num(p.greenEnergyDays);
@@ -221,6 +248,7 @@ function readSaved(): Partial<GameState> | null {
     if (Array.isArray(p.assessments)) patch.assessments = (p.assessments as GameState['assessments']).filter((a) => typeof a?.moduleId === 'string' && (a.kind === 'PRE' || a.kind === 'POST') && typeof a.pct === 'number').slice(-200);
     if (Array.isArray(p.badges)) patch.badges = (p.badges as unknown[]).filter((x): x is string => typeof x === 'string');
     if (typeof p.sessionId === 'string') patch.sessionId = p.sessionId;
+    if (p.profile) patch.profile = sanitizeProfile(p.profile);
     return patch;
   } catch {
     return null;
@@ -254,6 +282,7 @@ function persist() {
         realWorldCount: state.realWorldCount,
         assessmentsPost: state.assessmentsPost,
         assessments: state.assessments,
+        profile: state.profile,
       }),
     );
   } catch {
@@ -436,6 +465,24 @@ export const gameStore = {
   openOverlay: (overlay: Overlay, buildZone: string | null = null) => set({ overlay, buildZone: buildZone ?? state.buildZone }),
   closeOverlay: () => set({ overlay: 'none' }),
   setBuildZone: (z: string | null) => set({ buildZone: z }),
+  inspectTarget: (t: Inspect | null) => set({ inspect: t }),
+  setMapView: (v: MapView) => set({ mapView: v, inspect: null }),
+  setMapLayer: (l: MapLayer) => set({ mapLayer: l }),
+  setDrawer: (d: Drawer) => set({ drawer: d, inspect: null }),
+  setProfile: (p: Profile) => set({ profile: p }),
+  openGuide: () => set({ guideOpen: true }),
+  openCreator: () => set({ creatorOpen: true }),
+  closeCreator: () => set({ creatorOpen: false }),
+  /** Başlık ekranından yeni oyun: şehir sıfırlanır, kimlik korunur; avatar seçilmediyse karakter oluşturucu açılır. */
+  newGame() {
+    const profile = state.profile;
+    try { storage()?.removeItem(SESSION_KEY); } catch { /* yoksay */ }
+    state = withWorld({ ...initial(), worldReady: state.worldReady, profile, overlay: 'none', creatorOpen: !profile.chosen });
+    persist();
+    persistListeners.forEach((l) => l());
+    listeners.forEach((l) => l());
+  },
+  closeGuide: () => set({ guideOpen: false }),
   /** Günü bitir: tohumlu hava, saatlik enerji, olaylar, gelir/bakım. */
   endDay() {
     const out = advanceDay(composeWorld(state.applied), systemsOf(state), state.sim, literacyOf(state));
@@ -482,7 +529,7 @@ export const gameStore = {
     try { storage()?.setItem(SESSION_KEY, JSON.stringify(payload)); } catch { return; }
     gameStore.reloadSession();
   },
-  hasSave: () => state.history.length > 0 || state.sim.day > 0 || state.sim.buildings.length > 0,
+  hasSave: () => state.history.length > 0 || state.sim.day > 0 || state.sim.buildings.some((b) => !buildingDef(b.type)?.fixed),
   onAttempt(l: (a: AttemptEvent) => void) { attemptListeners.add(l); return () => { attemptListeners.delete(l); }; },
   onPersist(l: () => void) { persistListeners.add(l); return () => { persistListeners.delete(l); }; },
   setCompare: (slot: 'A' | 'B', id: string) => set(slot === 'A' ? { compareA: id } : { compareB: id }),
@@ -499,7 +546,7 @@ export const gameStore = {
     } catch {
       /* yoksay */
     }
-    state = withWorld({ ...initial(), worldReady: state.worldReady });
+    state = withWorld({ ...initial(), worldReady: state.worldReady, profile: state.profile });
     persistListeners.forEach((l) => l());
     listeners.forEach((l) => l());
   },

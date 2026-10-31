@@ -1,15 +1,21 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import type Phaser from 'phaser';
 import { gameStore, useGameState } from './state/gameStore';
-import { TopBar } from './ui/Hud/Hud';
-import { CityIndicators, EndingPanel, EventLogPanel, MainMenu, ProgressPanel } from './ui/City/CityPanels';
+import { EndingPanel, EventLogPanel, ProgressPanel } from './ui/City/CityPanels';
+import { TopHud } from './ui/hud/TopHud';
+import { LeftHud } from './ui/hud/LeftHud';
+import { RightHud } from './ui/hud/RightHud';
+import { Dock, DockDrawer } from './ui/hud/Dock';
+import { BuildingCard } from './ui/City/BuildingCard';
+import { GuidePanel } from './ui/guide/GuidePanel';
+import { TitleScreen } from './ui/menu/TitleScreen';
+import { CharacterCreator } from './ui/menu/CharacterCreator';
 import { BuildPanel } from './ui/City/BuildPanel';
 import { HelpPanel } from './ui/City/HelpPanel';
 import { AssessmentPanel } from './ui/City/AssessmentPanel';
 import { AssignmentsPanel } from './ui/City/AssignmentsPanel';
 import { settingsStore } from './state/settingsStore';
 import { teacherStore } from './state/teacherStore';
-import { TaskPanel } from './ui/TaskPanel/TaskPanel';
 import { DecisionModal } from './ui/DecisionModal/DecisionModal';
 import { TeacherPanel } from './ui/TeacherPanel/TeacherPanel';
 import { SourcesPanel } from './ui/Sources/SourcesPanel';
@@ -22,6 +28,7 @@ import { AuthPanel } from './ui/Auth/AuthPanel';
 import { authStore } from './state/authStore';
 import { startSaveSync } from './state/saveSync';
 import { startSfx } from './audio/sfx';
+import { startAmbience } from './audio/ambience';
 import { SchoolPanel } from './ui/SchoolPanel/SchoolPanel';
 
 export function App() {
@@ -29,7 +36,6 @@ export function App() {
   const game = useRef<Phaser.Game | null>(null);
   const gs = useGameState();
   const { notice, decisionOpen } = gs;
-  const [sheet, setSheet] = useState(false);
 
   useEffect(() => {
     if (!host.current) return;
@@ -46,7 +52,7 @@ export function App() {
     };
   }, []);
 
-  useEffect(() => { startSaveSync(); startSfx(); void authStore.refresh(); }, []);
+  useEffect(() => { startSaveSync(); startSfx(); startAmbience(); void authStore.refresh(); }, []);
   // Bildirimler 8 sn sonra kendiliğinden kapanır (ekranda kalıp düğmeleri örtmesin).
   useEffect(() => {
     if (!notice) return;
@@ -54,7 +60,8 @@ export function App() {
     return () => clearTimeout(t);
   }, [notice]);
 
-  const zoom = (delta: number) => game.current?.scene.getScene('WorldScene')?.events.emit('zoom', delta);
+  const scene = () => game.current?.scene.getScene(gameStore.get().mapView === 'coast' ? 'CoastScene' : 'WorldScene');
+  const zoom = (delta: number) => scene()?.events.emit('zoom', delta);
 
   // Klavye: +/- ile yakınlaştırma (pencere açıkken devre dışı)
   useEffect(() => {
@@ -68,34 +75,29 @@ export function App() {
   }, []);
 
   const skipToZones = () => {
-    setSheet(true);
+    gameStore.setDrawer('tasks');
     setTimeout(() => document.getElementById('zones')?.focus(), 50);
   };
 
   const pick = (id: string) => {
     gameStore.selectHotspot(id);
-    game.current?.scene.getScene('WorldScene')?.events.emit('focus-hotspot', id);
+    if (gameStore.get().mapView === 'world') game.current?.scene.getScene('WorldScene')?.events.emit('focus-hotspot', id);
   };
 
   return (
-    <div className="app">
+    <div className={`app view-${gs.mapView}${gs.drawer !== 'none' ? ' has-drawer' : ''}`}>
       <div ref={host} className="world" />
       <PeriodTint />
       <button className="skip" onClick={skipToZones}>Bölge listesine geç</button>
-      <TopBar />
+      <TopHud />
       <PeriodSwitch />
-      <div className="zoom-btns">
-        <button aria-label="Yakınlaştır" onClick={() => zoom(0.1)}>+</button>
-        <button aria-label="Uzaklaştır" onClick={() => zoom(-0.1)}>−</button>
-      </div>
-      <div className={sheet ? 'dock open' : 'dock'}>
-        <div className="cta-bar">
-          <button aria-expanded={sheet} onClick={() => setSheet(!sheet)}>{sheet ? 'Gizle' : 'Görevler'}</button>
-          <span className="cta-text">🗺️ Görevler ve şehrim</span>
-        </div>
-        <TaskPanel onPick={pick} />
-        <CityIndicators />
-      </div>
+      <LeftHud />
+      <RightHud game={game} onZoom={zoom} />
+      <DockDrawer onPick={pick} />
+      <BuildingCard />
+      <Dock onMap={() => { gameStore.setMapView('world'); game.current?.scene.getScene('WorldScene')?.events.emit('focus-hotspot', 'school'); }} />
+      <GuidePanel />
+      <p className="rotate-hint" aria-hidden="true">📱↻ Daha geniş görünüm için cihazını yan çevir</p>
       {gs.schoolOpen && <SchoolPanel onPick={pick} />}
       {notice && !decisionOpen && (
         <aside role="status" className="panel toast">
@@ -109,7 +111,8 @@ export function App() {
         <p>Şehrin hazırlanıyor…</p>
         <span className="spinner" aria-hidden="true" />
       </div>
-      <MainMenu onSettings={settingsStore.open} onTeacher={teacherStore.openTeacher} onSources={teacherStore.openSources} />
+      <TitleScreen onSettings={settingsStore.open} onTeacher={teacherStore.openTeacher} onSources={teacherStore.openSources} />
+      <CharacterCreator />
       <BuildPanel />
       <EventLogPanel />
       <ProgressPanel />

@@ -42,11 +42,20 @@ export function SettingsPanel() {
       </fieldset>
       <fieldset className="setting">
         <legend>Ses</legend>
-        <label className="radio-row"><input type="checkbox" checked={s.sound} onChange={(e) => settingsStore.setSound(e.target.checked)} /> Ses efektleri açık</label>
-        <label className="radio-row">Ses seviyesi
-          <input type="range" min={0} max={100} step={5} value={Math.round(s.volume * 100)} disabled={!s.sound} aria-valuetext={`%${Math.round(s.volume * 100)}`} onChange={(e) => settingsStore.setVolume(Number(e.target.value) / 100)} />
-          <span>%{Math.round(s.volume * 100)}</span>
-        </label>
+        {([
+          ['Ses efektleri', s.sound, s.volume, settingsStore.setSound, settingsStore.setVolume],
+          ['Müzik', s.music, s.musicVolume, settingsStore.setMusic, settingsStore.setMusicVolume],
+          ['Ortam sesi (rüzgâr, kuş, dalga)', s.ambient, s.ambientVolume, settingsStore.setAmbient, settingsStore.setAmbientVolume],
+        ] as const).map(([label, on, v, setOn, setV]) => (
+          <div key={label} className="sound-row">
+            <label className="radio-row"><input type="checkbox" checked={on} onChange={(e) => setOn(e.target.checked)} /> {label} açık</label>
+            <label className="radio-row">{label} seviyesi
+              <input type="range" min={0} max={100} step={5} value={Math.round(v * 100)} disabled={!on} aria-valuetext={`%${Math.round(v * 100)}`} onChange={(e) => setV(Number(e.target.value) / 100)} />
+              <span>%{Math.round(v * 100)}</span>
+            </label>
+          </div>
+        ))}
+        <p className="hint">Müzik ve sesler kodla üretilir. Sınıfta kulaklıksız oynarken müziği kapalı tutmanızı öneririz.</p>
       </fieldset>
       <fieldset className="setting">
         <legend>Grafik</legend>

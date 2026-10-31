@@ -1,0 +1,5 @@
+# 017 · Yarın Şehri: 40×40 harita, pusula yerleşimi ve ayrı kıyı haritası (31 Ekim 2026)
+**Karar:** Harita 32×32'den 40×40'a (`world_v2.json`, `apps/web/scripts/generate-world-v2.mjs`) çıktı. İzometrik pusula: kuzey = ekran üstü. Merkez okul kampüsü, kuzey enerji vadisi, doğu şehir merkezi, batı tarım alanı, güney döngü atölyesi, güneydoğu kenarda kıyı kapısı (deniz feneri). Kıyı ayrı bir 24×24 sahnedir (`CoastScene`): kumsal, sığ/derin su, iskele, şamandıralı koruma alanı, araştırma istasyonu ve su altı inceleme katmanı.
+**Gerekçe:** Görsel tasarım promptu §2 “tek bir yaşayan şehir” ve yön düzeni. Kıyı modülü (Mavi Nöbet) su altı kesiti istediği için ayrı sahne daha okunaklı.
+**Kayıt uyumu:** Yapı alanı kimlikleri (en-1, ci-3, …) korundu; yalnızca koordinatlar değişti. `state/migrate.ts` eski kayıtları göç ettirir (bilinmeyen tür/alan atılır, seviye sınırlanır, hazır kampüs eklenir; test: `worldv2.test.ts`).
+**Karo geometrisi:** Prompt 128×64 önerir; Kenney zemininin gerçek ölçüsü 132×66 (2:1) olduğu için 132×66 korundu (oran aynı).

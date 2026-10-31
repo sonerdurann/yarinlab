@@ -7,6 +7,8 @@ import '@fontsource/baloo-2/600.css';
 import '@fontsource/baloo-2/800.css';
 import './index.css';
 import './theme.css';
+import './design/tokens.css';
+import './design/game-ui.css';
 import { App } from './App';
 
 createRoot(document.getElementById('root')!).render(

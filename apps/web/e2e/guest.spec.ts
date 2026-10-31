@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { decide, start } from './helpers';
+import { decide, openTasks, start } from './helpers';
 
 test.describe('misafir oyuncu', () => {
   test('görev zinciri, puan, gün döngüsü, inşa ve yeniden yükleme', async ({ page }) => {
@@ -30,11 +30,45 @@ test.describe('misafir oyuncu', () => {
     const budget = await budgetValue.textContent();
     await page.reload();
     await expect(page.locator('.loading.done')).toBeAttached({ timeout: 20_000 });
-    await expect(page.getByRole('dialog')).toContainText('Devam et');
-    await page.getByRole('button', { name: /Devam et/ }).click();
+    await expect(page.getByRole('dialog')).toContainText(/devam et/i);
+    await page.getByRole('button', { name: /devam et/i }).click();
     await expect(budgetValue).toHaveText(budget!);
     await expect(page.locator('.time-chip')).toContainText('Gün 2');
     expect(errors).toEqual([]);
+  });
+
+  test('harita: bölgeye tıklayınca bilgi kartı; kampüs geliştirilir; kıyıya geçilir ve geri dönülür', async ({ page }) => {
+    await start(page);
+    await openTasks(page);
+    await page.locator('#zones').getByRole('button', { name: 'Kıyı kapısı', exact: true }).click();
+    await expect(page.getByRole('dialog')).toContainText('Mavi Nöbet 1');
+    await page.keyboard.press('Escape');
+    // bilgi kartı klavyeyle de açılabilsin diye mini harita listesi yerine store üzerinden değil, kanvas ortasına tıklanır
+    await page.getByRole('navigation', { name: 'Oyun menüsü' }).getByRole('button', { name: /Harita/ }).click();
+    const box = (await page.locator('.world canvas').boundingBox())!;
+    await page.mouse.click(box.x + box.width / 2 + 40, box.y + box.height / 2 - 40);
+    const card = page.locator('.inspect-card');
+    await expect(card).toBeVisible();
+    await expect(card.getByRole('heading')).toHaveText('Okul kampüsü');
+    await card.getByRole('button', { name: /Geliştir/ }).click();
+    await expect(card.getByLabel('Seviye 2/4')).toBeVisible();
+    await card.getByRole('button', { name: 'Kartı kapat' }).click();
+    await page.getByRole('button', { name: /Sel riski/ }).click();
+    await expect(page.getByRole('button', { name: /Sel riski/ })).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('karakter ve rehber: avatar kaydedilir, Yarı ipucu verir', async ({ page }) => {
+    await start(page);
+    await page.getByRole('button', { name: /Yarı'ya sor/ }).click();
+    const guide = page.getByRole('region', { name: 'Yapay zekâ rehberi Yarı' });
+    await guide.getByRole('button', { name: 'İpucu iste' }).click();
+    await expect(guide).toContainText('İpucu');
+    await guide.getByRole('button', { name: 'Rehberi kapat' }).click();
+    await page.getByRole('button', { name: 'Ana menü' }).click();
+    await page.getByRole('button', { name: /Karakterim/ }).click();
+    await page.getByLabel(/Takma ad/).fill('GüneşAvcısı');
+    await page.getByRole('button', { name: /Hazırım/ }).click();
+    await expect(page.locator('.title-player')).toContainText('GüneşAvcısı');
   });
 
   test('klavye ile bölge listesi ve pencereler; Esc kapatır', async ({ page }) => {
@@ -44,7 +78,7 @@ test.describe('misafir oyuncu', () => {
     await page.keyboard.press('Enter');
     await expect(page.locator('#zones')).toBeFocused();
     await page.keyboard.press('Tab');
-    await page.keyboard.press('Enter'); // Okul
+    await page.keyboard.press('Enter'); // Okul kampüsü
     await expect(page.getByRole('dialog', { name: 'Okul kampüsü' })).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(page.getByRole('dialog')).toHaveCount(0);
@@ -62,7 +96,8 @@ test.describe('misafir oyuncu', () => {
     await start(page);
     const modules = ['Enerji Adası', 'Karbon Dedektifleri', 'KrizKenti', 'Son Tabak', 'Mavi Nöbet', 'Döngü Ustaları', 'Gelecek Meclisi'];
     for (const m of modules) {
-      await page.locator('#zones').getByRole('button', { name: 'Okul', exact: true }).click();
+      await openTasks(page);
+      await page.locator('#zones').getByRole('button', { name: 'Okul kampüsü', exact: true }).click();
       const school = page.getByRole('dialog', { name: 'Okul kampüsü' });
       await school.locator('li', { hasText: m }).getByRole('button', { name: 'Oyna' }).click();
       await expect(page.getByRole('dialog')).toContainText(`${m} 1`);
@@ -72,6 +107,7 @@ test.describe('misafir oyuncu', () => {
       await page.keyboard.press('Escape');
       await expect(page.getByRole('dialog')).toHaveCount(0);
     }
+    await openTasks(page);
     await expect(page.locator('.task-panel')).toContainText('7/35 görev tamamlandı');
   });
 });

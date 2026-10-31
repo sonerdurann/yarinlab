@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { gameStore, useGameState } from '../../state/gameStore';
 import { Modal } from '../Modal/Modal';
 import { Mascot, type Mood } from '../Mascot';
+import { Ada } from '../characters/Avatar';
 import { authStore, useAuth } from '../../state/authStore';
 
-type Scene = { cls: string; mood: Mood; big: string; text: React.ReactNode };
+type Scene = { cls: string; mood: Mood; big: string; text: React.ReactNode; ada?: boolean };
 const SCENES: Scene[] = [
-  { cls: 'scene-2040', mood: 'wave', big: '📡', text: <>Merhaba! Ben <b>Yarı</b>. 2040 yılından sana bir mesaj gönderiyorum!</> },
+  { cls: 'scene-2040', mood: 'wave', big: '📡', ada: true, text: <>Merhaba! Ben <b>Ada</b>. 2040 yılından, senin şehrinden bir hologram mesajı gönderiyorum!</> },
+  { cls: 'scene-yari', mood: 'wave', big: '🤖', text: <>Ben de <b>Yarı</b>, yapay zekâ rehberin. Takıldığında “Yarı'ya sor” düğmesine bas: ipucu veririm, cevabı söylemem!</> },
   { cls: 'scene-city', mood: 'worried', big: '🌡️ 💧 ⚡', text: <>Şehrimizde sıcak günler, kuraklık ve elektrik kesintileri arttı. Ama geleceğimiz <b>henüz kesinleşmedi</b>.</> },
   { cls: 'scene-choice', mood: 'think', big: '🏫 ☀️ 🌳', text: <>Yıl 2026. Okulun ve çevresi artık <b>senin ellerinde</b>. Her kararın şehri değiştirecek.</> },
   { cls: 'scene-go', mood: 'wow', big: '🚀', text: <>Tek bir sayıyı büyütmek yetmez: insanları, doğayı ve bütçeyi <b>birlikte</b> düşün. Hazır mısın?</> },
@@ -14,10 +16,10 @@ const SCENES: Scene[] = [
 
 /** Hikâye başlangıcı: 4 sahnelik çizgi roman + nasıl oynanır kartları. */
 export function Intro() {
-  const { introOpen } = useGameState();
+  const { introOpen, overlay, creatorOpen } = useGameState();
   const { user } = useAuth();
   const [i, setI] = useState(0);
-  if (!introOpen) return null;
+  if (!introOpen || overlay === 'menu' || creatorOpen) return null;
   const last = i === SCENES.length;
   const sc = SCENES[Math.min(i, SCENES.length - 1)];
   return (
@@ -27,7 +29,7 @@ export function Intro() {
           <div className={`comic-scene ${sc.cls}`}>
             <div>
               <div className="big" aria-hidden="true">{sc.big}</div>
-              <Mascot mood={sc.mood} size={110} />
+              {sc.ada ? <Ada size={96} /> : <Mascot mood={sc.mood} size={110} />}
               <p className="caption">{sc.text}</p>
             </div>
           </div>

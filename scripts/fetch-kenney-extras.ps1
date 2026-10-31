@@ -28,7 +28,7 @@ foreach ($slug in 'isometric-tiles-vehicles', 'interface-sounds', 'game-icons') 
 }
 
 # Sesler: oyundaki 5 olay icin secilen dosyalar (yoksa oyun kodla uretilen sesi calar)
-foreach ($f in 'confirmation_002', 'maximize_006', 'pluck_002', 'confirmation_004', 'error_004') {
+foreach ($f in 'confirmation_002', 'maximize_006', 'pluck_002', 'confirmation_004', 'error_004', 'click_002', 'select_002', 'maximize_008', 'confirmation_001') {
   $src = Get-ChildItem -Recurse -Path "$dest/interface-sounds" -Filter "$f.ogg" | Select-Object -First 1
   if ($src) { Copy-Item $src.FullName "$pub/sounds/" } else { Write-Warning "$f.ogg pakette yok (kod sesi kullanilacak)" }
 }

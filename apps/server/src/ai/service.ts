@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import {
-  fallbackFeedback, LEARNING_OUTCOMES, MODULES, REAL_WORLD_TASKS, TASKS, taskById, taskStatus, validateTutorResponse,
-  type FeedbackContext, type TutorResponse,
+  fallbackFeedback, guideFeedback, LEARNING_OUTCOMES, MODE_INSTRUCTION, MODE_TR, MODULES, REAL_WORLD_TASKS, TASKS, taskById, taskStatus, validateTutorResponse,
+  type FeedbackContext, type TutorMode, type TutorResponse,
 } from '@yarinlab/shared';
 import { z } from 'zod';
 import type { LlmProvider } from './provider.js';
@@ -78,9 +78,9 @@ export class AiService {
   }
 
   /** AI İklim Öğretmeni: seçimi ve gerekçeyi analiz eder, kavram yanılgısına ipucu ve soru verir. */
-  async tutor(userId: string, ctx: FeedbackContext): Promise<AiOutcome<TutorResponse>> {
+  async tutor(userId: string, ctx: FeedbackContext, mode: TutorMode = 'feedback'): Promise<AiOutcome<TutorResponse>> {
     const t = taskById(ctx.scenarioId);
-    const fb = () => fallbackFeedback(ctx);
+    const fb = () => guideFeedback(ctx, mode);
     if (!t) return { source: 'FALLBACK', data: fb(), reason: 'unknown_task' };
     const choice = ctx.choiceId === 'N' ? t.noDecision : t.choices.find((c) => c.id === ctx.choiceId);
     const reasoning = sanitizeStudentText(ctx.reasoning);
@@ -88,9 +88,10 @@ export class AiService {
       gorev: t.title, durum: t.brief, secim: choice?.label, odunlesim: choice?.tradeoff,
       olasiKavramYanilgisi: choice?.misconception ?? null, ogrenciGerekcesi: reasoning || null,
       once: ctx.before, sonra: ctx.after, kazanimlar: t.learningOutcomeIds.map((id) => LEARNING_OUTCOMES[id]), izinliKaynaklar: t.evidenceRefs,
+      istek: MODE_TR[mode], istek_yonergesi: MODE_INSTRUCTION[mode],
       gorev_yonergesi: 'summary: seçimin sonucunu verilen sayılarla bir cümlede özetle. tradeoff: ödünleşimi açıkla. question1/question2: düşündürücü sorular; kavram yanılgısı varsa nazikçe sorgulat. sourceIds: izinli kaynaklardan en fazla 2.',
     });
-    const key = createHash('sha256').update(`tutor|${t.id}|${ctx.choiceId}|${reasoning}|${JSON.stringify(ctx.after)}`).digest('hex');
+    const key = createHash('sha256').update(`tutor|${mode}|${t.id}|${ctx.choiceId}|${reasoning}|${JSON.stringify(ctx.after)}`).digest('hex');
     return this.run(userId, 'TUTOR', key, { system: SAFETY, user, schema: TUTOR_SCHEMA, maxTokens: 1200 },
       (x) => (validateTutorResponse(x, ctx, t.evidenceRefs) ? (x as TutorResponse) : null), fb);
   }

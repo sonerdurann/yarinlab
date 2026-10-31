@@ -1,4 +1,4 @@
-import { taskById, type ModuleId, type Resources5, type TaskDef } from '../content';
+import { LEARNING_OUTCOMES, moduleById, taskById, type ModuleId, type Resources5, type TaskDef } from '../content';
 
 /** Yapay zekâ öğretmeni çıktı sözleşmesi (kılavuz §18). Sayılar yalnızca motor sonucundan gelir. */
 export type TutorResponse = { summary: string; tradeoff: string; question1: string; question2: string; sourceIds: string[] };
@@ -85,4 +85,83 @@ export function validateTutorResponse(x: unknown, ctx: FeedbackContext, evidence
   if (!numbersIn(joined).every((n) => allowed.has(n))) return false;
   if (((o.question1 as string) + (o.question2 as string)).split('?').length - 1 > 2) return false;
   return true;
+}
+
+/** Yapay zekâ rehberi niyetleri (prompt §9): öğrencinin istediği yardım türü. */
+export const TUTOR_MODES = ['feedback', 'hint', 'why', 'alternative', 'explain', 'relearn', 'evaluate'] as const;
+export type TutorMode = (typeof TUTOR_MODES)[number];
+export const MODE_TR: Record<TutorMode, string> = {
+  feedback: 'Geri bildirim', hint: 'İpucu iste', why: 'Neden böyle oldu?', alternative: 'Farklı bir çözüm var mı?',
+  explain: 'Biraz daha açıkla', relearn: 'Konuyu tekrar öğren', evaluate: 'Benim kararımı değerlendir',
+};
+/** Model için mod yönergesi (sayı uydurma yasağı ve şema her modda aynıdır). */
+export const MODE_INSTRUCTION: Record<TutorMode, string> = {
+  feedback: 'Seçimin sonucunu özetle, ödünleşimi açıkla, iki düşündürücü soru sor.',
+  hint: 'Cevabı söyleme. Hangi göstergelere bakması gerektiğine dair küçük bir ipucu ver; soruların yönlendirici olsun.',
+  why: 'Göstergelerin neden böyle değiştiğini neden-sonuç zinciriyle, verilen sayılarla açıkla.',
+  alternative: 'Diğer seçeneklerin ödünleşimlerini karşılaştır; hiçbirini kesin doğru diye sunma.',
+  explain: 'Aynı sonucu daha basit kelimelerle ve gündelik bir örnekle açıkla.',
+  relearn: 'Görevin konusunu ve kazanımını kısa bir ders gibi anlat; sonunda öğrenciyi düşündüren iki soru sor.',
+  evaluate: 'Öğrencinin gerekçesini nazikçe değerlendir: güçlü yanı ve geliştirilebilir yanı; kavram yanılgısı varsa sorgulat.',
+};
+
+const noDigits = (t: string) => t.replace(/\d+([.,]\d+)?\s*%?/g, '').replace(/\s{2,}/g, ' ').trim();
+const clip = (t: string, n = 380) => (t.length > n ? `${t.slice(0, n - 1).trimEnd()}…` : t);
+/** Öğrenci metni geri yansıtılırken sayı, bağlantı ve iletişim bilgisi çıkarılır. */
+const safeEcho = (t: string) => clip(noDigits(t.replace(/https?:\/\/\S+|www\.\S+|@\w+/gi, '')), 120);
+
+/**
+ * Rehber yanıtı: istenen moda göre doğrulanmış içerikten (ödünleşim, kavram yanılgısı, diğer seçenekler, kazanım,
+ * gerçek dünya etkinliği, kaynak) üretilir. Sayılar yalnızca motor sonucundan gelir; doğrulayıcıdan geçer (test).
+ */
+export function guideFeedback(ctx: FeedbackContext, mode: TutorMode, taskOverride?: TaskDef): TutorResponse {
+  const base = fallbackFeedback(ctx, taskOverride);
+  const t = taskOverride ?? taskById(ctx.scenarioId);
+  if (!t || mode === 'feedback') return base;
+  const choice = ctx.choiceId === 'N' ? undefined : t.choices.find((c) => c.id === ctx.choiceId);
+  const others = t.choices.filter((c) => c.id !== ctx.choiceId);
+  const outcomes = t.learningOutcomeIds.map((id) => LEARNING_OUTCOMES[id]).filter(Boolean);
+  const src = t.evidenceRefs.slice(0, 2);
+  const [q1, q2] = QUESTIONS[t.module][Math.max(0, t.choices.findIndex((c) => c.id === ctx.choiceId)) % 3];
+  switch (mode) {
+    case 'hint':
+      return {
+        summary: clip(`İpucu: ${t.facts?.length ? `önce şu bilgilere bak: ${t.facts.map((f) => noDigits(f.label)).join(', ')}.` : 'göstergelerin hepsine birlikte bak.'} Tek bir sayıyı büyütmek yetmez.`),
+        tradeoff: clip(noDigits(t.reasoningOptions[0] ?? 'Bütçe, insanlar ve doğa arasında denge kur.')),
+        question1: 'Hangi seçenek birden çok göstergeyi birlikte iyileştiriyor olabilir?',
+        question2: 'Bu seçeneğin gözden kaçan bir yan etkisi var mı?',
+        sourceIds: src,
+      };
+    case 'why':
+      return { ...base, tradeoff: clip(`Neden-sonuç: ${noDigits(choice?.tradeoff ?? t.noDecision.tradeoff ?? '') || 'her kararın bir ödünleşimi vardır.'}`), question1: 'Hangi değişiklik seni en çok şaşırttı?', question2: 'Bu sonucun nedenini kendi cümlelerinle anlatabilir misin?' };
+    case 'alternative':
+      return {
+        summary: clip(`Diğer yollar: ${others.map((c) => `“${c.label}” — ${noDigits(c.tradeoff)}`).join(' · ')}`),
+        tradeoff: 'Hiçbir seçenek her şeyi aynı anda iyileştirmez; neyi öncelediğin sonucu değiştirir.',
+        question1: 'Hangi seçeneği denemek istersin, neden?',
+        question2: 'İki seçeneği birleştirmek mümkün olur muydu?',
+        sourceIds: src,
+      };
+    case 'explain':
+      return { ...base, tradeoff: clip(`Daha basit anlatırsak: ${noDigits(t.brief)}`), question1: q1, question2: q2 };
+    case 'relearn':
+      return {
+        summary: clip(`${moduleById(t.module)?.name ?? 'Bu modül'} konusu: ${outcomes.join(' ') || noDigits(t.brief)}`),
+        tradeoff: clip(`Gerçek hayatta dene: ${noDigits(t.realWorldAction.action)}`),
+        question1: 'Bu konuda gündelik hayattan bildiğin bir örnek var mı?',
+        question2: 'Okulunda bunu nasıl gözlemleyebilir ya da ölçebilirsin?',
+        sourceIds: src,
+      };
+    case 'evaluate': {
+      const r = (ctx.reasoning ?? '').trim();
+      const causal = /çünkü|için|bu yüzden|bu nedenle|sonucunda|eğer/i.test(r);
+      return {
+        summary: r ? clip(`Gerekçen: “${safeEcho(r)}”. ${causal ? 'Neden-sonuç bağı kurmuşsun, bu güçlü bir yan.' : 'Gerekçene bir “çünkü” eklersen daha güçlü olur.'}`) : 'Henüz gerekçe yazmadın. Kararını bir “çünkü” cümlesiyle açıklarsan değerlendirebilirim.',
+        tradeoff: choice?.misconception ? 'Dikkat: bu seçim yaygın bir yanılgıya dayanıyor olabilir; varsayımını kanıtla sına.' : clip(noDigits(choice?.tradeoff ?? '') || 'Kararının ödünleşimini de gerekçende anabilirsin.'),
+        question1: choice?.misconception ? 'Bu seçimin dayandığı fikir her durumda doğru mu?' : 'Kararın kimleri olumlu, kimleri olumsuz etkiler?',
+        question2: 'Hangi veri kararını değiştirirdi?',
+        sourceIds: src,
+      };
+    }
+  }
 }

@@ -1,0 +1,71 @@
+/* ===== YarınLab tasarım sistemi: belirteçler (docs/DESIGN_SYSTEM.md) =====
+   Palet prompt §1'den. Kontrast kuralı: beyaz metinli dolgu yalnızca --yl-deep (#176B58, ≈6.5:1) veya --yl-ink;
+   --yl-green (#26B887) ve --yl-teal (#41C9D1) yalnızca vurgu/dolgu, üzerinde koyu (--yl-ink) metin. */
+:root {
+  --yl-green: #26b887;
+  --yl-deep: #176b58;
+  --yl-teal: #41c9d1;
+  --yl-sun: #f6c453;
+  --yl-sky: #a5ddf2;
+  --yl-cloud: #f5f8f4;
+  --yl-ink: #243447;
+  --yl-coral: #ef795e;
+  --yl-leaf: #4dbe78;
+  --yl-ink-soft: #3d4e63;
+  --yl-line: #24344722;
+  --yl-white: #ffffff;
+  --yl-danger: #b13a17;
+
+  /* modül vurguları (beyaz zeminde AA) */
+  --yl-mod-energy: #8f5400;
+  --yl-mod-carbon: #6338c2;
+  --yl-mod-city: #ad3418;
+  --yl-mod-food: #16713d;
+  --yl-mod-ocean: #145a9e;
+  --yl-mod-waste: #0a6767;
+  --yl-mod-council: #3b3bae;
+
+  /* tipografi */
+  --yl-font-body: 'Nunito', system-ui, sans-serif;
+  --yl-font-display: 'Baloo 2', 'Nunito', sans-serif;
+  --yl-fs-xs: 0.78rem;
+  --yl-fs-sm: 0.88rem;
+  --yl-fs-md: 1rem;
+  --yl-fs-lg: 1.2rem;
+  --yl-fs-xl: 1.6rem;
+  --yl-fs-hero: clamp(2.6rem, 6vw, 4.6rem);
+
+  /* boşluk, yarıçap, gölge */
+  --yl-s1: 4px; --yl-s2: 8px; --yl-s3: 12px; --yl-s4: 16px; --yl-s5: 24px; --yl-s6: 32px;
+  --yl-r-sm: 10px; --yl-r-md: 16px; --yl-r-lg: 22px; --yl-r-pill: 999px;
+  --yl-shadow-1: 0 2px 0 #24344714, 0 6px 16px #2434471f;
+  --yl-shadow-2: 0 4px 0 #2434471a, 0 14px 34px #24344733;
+  --yl-shadow-press: 0 4px 0 #0f4a3c;
+  --yl-glass: #ffffffe8;
+
+  /* hareket */
+  --yl-fast: 120ms;
+  --yl-med: 220ms;
+  --yl-ease: cubic-bezier(0.2, 0.9, 0.3, 1.2);
+
+  /* katmanlar */
+  --yl-z-hud: 3;
+  --yl-z-drawer: 4;
+  --yl-z-card: 5;
+  --yl-z-toast: 6;
+  --yl-z-modal: 10;
+  --yl-z-title: 12;
+
+  /* eski adlar yeni palete bağlanır */
+  --climate-green: var(--yl-deep);
+  --ink: var(--yl-ink);
+  --night: var(--yl-ink);
+  --sun: var(--yl-sun);
+  --sky: var(--yl-sky);
+  --paper: #fbfcf9;
+  --leaf-bright: var(--yl-leaf);
+  --coral: var(--yl-coral);
+  --mint: #d3f2e5;
+  --water: var(--yl-teal);
+  --energy-gold: var(--yl-sun);
+}

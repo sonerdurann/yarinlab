@@ -12,10 +12,12 @@ Bu liste, test edilmemiş veya bu ortamda yapılamamış işleri açıkça bildi
 - **Uzak dallar silinemedi:** `feat/p1-p2-moduller` ve `claude/magical-gauss-g5xgy5` dalları GitHub'dan silinemedi (ortam izni yok). İçerikleri `main`'de.
 
 ## Bilinen sınırlamalar
-- Harita 32×32'dir. Bölgeler inşa alanları ve görev kilitleriyle açılır, ancak haritanın kendisi fiziksel olarak genişlemiyor (48×48 hedefi ertelendi).
-- Eksik binalar (güneş paneli, türbin, batarya, kutular, ekin, ağaç, araç, yaya, yağmur bahçesi, sera, kompost, sulak alan) Kenney stiline uygun, kodla üretilmiş basit şekillerdir. Profesyonel sanat geçişi yapılmadı.
+- Yarın Şehri 40×40 karodur ve ayrı bir 24×24 kıyı haritası vardır. Harita görev ilerledikçe fiziksel olarak büyümez; bölgeler görev kilitleri ve yapı alanlarıyla açılır.
+- **Binalar ve karakterler kodla üretilmiştir** (Phaser Graphics + SVG; tek ışık yönü ve palet). Bu bir “el çizimi premium sanat” değildir; kalite tavanı profesyonel illüstrasyonun altındadır. Zemin karoları Kenney'dir (CC0). Profesyonel sanatçı geçişi yapılmadı.
+- Görsel kalite yalnızca headless Chromium ekran görüntüleriyle (1920×1080, 1366×768) gözden geçirildi; gerçek ekranlarda ve çocuklarla kullanılabilirlik testi yapılmadı.
+- Harita katmanları (sıcaklık, sel, enerji ve atık akışı) bölge düzeyinde göstergelerden çizilir; karo düzeyinde fiziksel bir model değildir.
 - **Kenney destek paketleri (Vehicles, Interface Sounds, Game Icons) indirilemedi:** bu ortamın ağ politikası kenney.nl'e bağlantıyı engelliyor (403). Araç, ses ve simgeler kodla üretildi. İnternete açık bir bilgisayarda `./scripts/fetch-kenney-extras.sh` paketleri indirir, sesleri oyuna bağlar (dosya varsa Kenney sesi, yoksa kod sesi çalar), lisansları kopyalar ve manifesti günceller; ardından commit + push yapılır. Araç dokularının haritaya bağlanması bu indirmeden sonra yapılacak.
-- Ses efektleri kodla üretilmiş kısa tonlardır; müzik yok.
+- Ses efektleri kodla üretilmiş kısa tonlardır (Kenney sesleri eklenirse onlar çalar).
 - Gerekçe puanı sezgisel bir dil ölçüsüdür (bağlaç ve kanıt sözcükleri). Gerekçenin bilimsel doğruluğunu değerlendirmez; öğretmenin okuması gerekir.
 - Görev başlangıç değerleri her görevin kendi tabanından ölçülür. Ortak şehir durumu ise kararların toplamından hesaplanır, dolayısıyla “önce” sütunu şehir durumunu değil görev tabanını gösterir.
 - Çok sayıda karar bütçeyi negatife düşürebilir. Günlük gelir (“Günü bitir”) bütçeyi toparlar; denge ayarı gerçek kullanıcı verisiyle yapılmalı.

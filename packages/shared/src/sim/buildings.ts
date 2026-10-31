@@ -36,8 +36,8 @@ export type BuildingDef = {
   name: string;
   zone: ZoneId;
   description: string;
-  /** Seviye 1, 2, 3 için inşa/yükseltme maliyeti (puan) */
-  cost: [number, number, number];
+  /** Seviye 1..n için inşa/yükseltme maliyeti (puan); dizi uzunluğu en üst seviyedir. */
+  cost: number[];
   /** Seviye başına günlük bakım (puan) */
   upkeep: number;
   /** Seviye başına etki; seviye ile çarpılır */
@@ -45,9 +45,31 @@ export type BuildingDef = {
   unlock: UnlockRule;
   sourceIds: string[];
   sprite: string;
+  /** Seviyeye göre birikimli etki (verilirse perLevel yerine kullanılır; indeks = seviye-1). */
+  levelEffects?: BuildingEffects[];
+  /** Seviyeye göre günlük bakım (verilirse upkeep*seviye yerine). */
+  upkeepByLevel?: number[];
+  /** Haritada hazır gelir; inşa panelinden kurulmaz, yalnızca geliştirilir/yıkılmaz. */
+  fixed?: boolean;
+  /** Seviye adları (geliştirme kartında gösterilir). */
+  levelNames?: string[];
 };
 
+/** Okul kampüsü: oyunun merkezi; dört seviyede gelişir (prompt §3). Etkiler oyun varsayımıdır. */
+export const CAMPUS_TYPE = 'campus';
+export const CAMPUS_SLOT = 'campus';
+
 export const BUILDINGS: BuildingDef[] = [
+  { type: CAMPUS_TYPE, name: 'Okul kampüsü', zone: 'school', description: 'Seviye 1 temel okul; 2 okul bahçesi ve yağmur hasadı; 3 çatı güneş paneli ve verimlilik; 4 iklim laboratuvarı ve su yönetimi.',
+    cost: [0, 1200, 1800, 2400], upkeep: 0, upkeepByLevel: [0, 4, 10, 16], perLevel: {}, fixed: true,
+    levelNames: ['Temel okul', 'Bahçe ve yağmur hasadı', 'Çatı GES ve verimlilik', 'İklim laboratuvarı ve su yönetimi'],
+    levelEffects: [
+      {},
+      { greenShare: 3, rainShare: 6, waterSaveM3: 2, wellbeing: 2 },
+      { greenShare: 3, rainShare: 6, waterSaveM3: 2, wellbeing: 2, solarKw: 30, efficiency: 0.05 },
+      { greenShare: 3, rainShare: 10, waterSaveM3: 6, wellbeing: 3, solarKw: 30, efficiency: 0.05, literacy: 8 },
+    ],
+    unlock: {}, sourceIds: ['R-UNESCO-ESD', 'R-IEA-EFF'], sprite: 'campus' },
   { type: 'solar', name: 'Güneş paneli tarlası', zone: 'energy', description: 'Gündüz ve açık havada üretir; gece üretmez.',
     cost: [1200, 900, 900], upkeep: 10, perLevel: { solarKw: 40 }, unlock: {}, sourceIds: ['R-IEA-RENEW'], sprite: 'solar' },
   { type: 'wind', name: 'Rüzgâr türbini', zone: 'energy', description: 'Rüzgârlı ve fırtınalı günlerde, gece de üretebilir.',
@@ -55,23 +77,23 @@ export const BUILDINGS: BuildingDef[] = [
   { type: 'battery', name: 'Enerji depolama', zone: 'energy', description: 'Fazla üretimi saklar, akşam ve kesintide kullanır.',
     cost: [1400, 1000, 1000], upkeep: 8, perLevel: { storageKwh: 120 }, unlock: { moduleTask: 'energy' }, sourceIds: ['R-IEA-RENEW'], sprite: 'battery' },
   { type: 'retrofit', name: 'Yalıtım ve LED', zone: 'school', description: 'Talebi azaltır; en ucuz enerji kullanılmayandır.',
-    cost: [800, 700, 700], upkeep: 2, perLevel: { efficiency: 0.07, wellbeing: 1 }, unlock: {}, sourceIds: ['R-IEA-EFF'], sprite: 'building:buildingTiles_012.png' },
+    cost: [800, 700, 700], upkeep: 2, perLevel: { efficiency: 0.07, wellbeing: 1 }, unlock: {}, sourceIds: ['R-IEA-EFF'], sprite: 'annex' },
   { type: 'climateLab', name: 'İklim araştırma laboratuvarı', zone: 'school', description: 'Ölçüm ve proje kulübü; iklim okuryazarlığını artırır.',
-    cost: [1600, 1200, 1200], upkeep: 12, perLevel: { literacy: 6, extraDemandKwh: 15 }, unlock: { completedTasks: 3 }, sourceIds: ['R-UNESCO-ESD'], sprite: 'building:buildingTiles_010.png' },
+    cost: [1600, 1200, 1200], upkeep: 12, perLevel: { literacy: 6, extraDemandKwh: 15 }, unlock: { completedTasks: 3 }, sourceIds: ['R-UNESCO-ESD'], sprite: 'lab' },
   { type: 'compost', name: 'Kompost ünitesi', zone: 'canteen', description: 'Yenmeyen kısımları atık akışından ayırır; israfı önlemez.',
     cost: [600, 500, 500], upkeep: 4, perLevel: { wasteDivertKg: 4 }, unlock: { completedTasks: 1 }, sourceIds: ['R-UNEP-FWI'], sprite: 'compost' },
   { type: 'sorting', name: 'Ayrıştırma istasyonu', zone: 'waste', description: 'Geri kazanılabilir atığı ayırır.',
     cost: [700, 600, 600], upkeep: 6, perLevel: { wasteDivertKg: 3 }, unlock: {}, sourceIds: ['R-UNEP-WASTE'], sprite: 'bin' },
   { type: 'repair', name: 'Tamir ve onarım merkezi', zone: 'waste', description: 'Ürün ömrünü uzatır; atık oluşmadan önler.',
-    cost: [900, 700, 700], upkeep: 6, perLevel: { wasteDivertKg: 2, wellbeing: 2 }, unlock: { completedTasks: 2 }, sourceIds: ['R-UNEP-WASTE'], sprite: 'building:buildingTiles_003.png' },
+    cost: [900, 700, 700], upkeep: 6, perLevel: { wasteDivertKg: 2, wellbeing: 2 }, unlock: { completedTasks: 2 }, sourceIds: ['R-UNEP-WASTE'], sprite: 'repairshop' },
   { type: 'park', name: 'Cep parkı ve gölgelik', zone: 'city', description: 'Gölge ve geçirgen yüzey: sıcak ve sel riskini azaltır.',
     cost: [900, 800, 800], upkeep: 5, perLevel: { greenShare: 6, sealedShare: -4, shade: 5, wellbeing: 2 }, unlock: {}, sourceIds: ['R-UNEP-COOL', 'R-IPCC-AR6-WG2'], sprite: 'tree' },
   { type: 'rainTank', name: 'Yağmur suyu hasadı', zone: 'city', description: 'Yağmuru biriktirir: taşkını ve su kullanımını azaltır.',
     cost: [800, 700, 700], upkeep: 4, perLevel: { rainShare: 8, waterSaveM3: 4 }, unlock: { completedTasks: 1 }, sourceIds: ['R-IPCC-AR6-WG2'], sprite: 'raingarden' },
   { type: 'bus', name: 'Elektrikli otobüs hattı', zone: 'city', description: 'Toplu ulaşım payını artırır; enerji talebi ekler.',
-    cost: [2000, 1500, 1500], upkeep: 18, perLevel: { transitShare: 10, extraDemandKwh: 40, wellbeing: 2 }, unlock: { completedTasks: 4 }, sourceIds: ['R-IPCC-AR6-WG3'], sprite: 'building:buildingTiles_017.png' },
+    cost: [2000, 1500, 1500], upkeep: 18, perLevel: { transitShare: 10, extraDemandKwh: 40, wellbeing: 2 }, unlock: { completedTasks: 4 }, sourceIds: ['R-IPCC-AR6-WG3'], sprite: 'busstop' },
   { type: 'waterPlant', name: 'Su arıtma ve geri kazanım', zone: 'city', description: 'Gri suyu arıtıp sulamada kullanır.',
-    cost: [1800, 1400, 1400], upkeep: 14, perLevel: { waterSaveM3: 8, extraDemandKwh: 25 }, unlock: { completedTasks: 5 }, sourceIds: ['R-UNESCO-WATER'], sprite: 'building:buildingTiles_011.png' },
+    cost: [1800, 1400, 1400], upkeep: 14, perLevel: { waterSaveM3: 8, extraDemandKwh: 25 }, unlock: { completedTasks: 5 }, sourceIds: ['R-UNESCO-WATER'], sprite: 'waterplant' },
   { type: 'greenhouse', name: 'Damla sulamalı sera', zone: 'farm', description: 'Az suyla yerel sebze; kuraklıkta üretimi korur.',
     cost: [1100, 900, 900], upkeep: 8, perLevel: { waterSaveM3: 3, foodWasteCutKg: 1, wellbeing: 1 }, unlock: { completedTasks: 2 }, sourceIds: ['R-FAO-SOFA'], sprite: 'greenhouse' },
   { type: 'wetland', name: 'Kıyı sulak alan restorasyonu', zone: 'ocean', description: 'Habitatı korur, kıyı taşkınını tamponlar.',
@@ -83,17 +105,30 @@ export const buildingDef = (type: string) => BUILDINGS.find((b) => b.type === ty
 
 const MODULE_TR: Record<string, string> = { energy: 'Enerji Adası', carbon: 'Karbon Dedektifleri', city: 'KrizKenti', food: 'Son Tabak', ocean: 'Mavi Nöbet', waste: 'Döngü Ustaları', council: 'Gelecek Meclisi' };
 
-export type BuildSlot = { id: string; zone: ZoneId; x: number; y: number };
-/** Haritadaki boş yapı alanları (yol, dekor ve bina karosu dışında; test: decor/slot çakışma testi). */
+export type BuildSlot = { id: string; zone: ZoneId; x: number; y: number; /** Kıyı alanları ayrı haritadadır */ map?: 'world' | 'coast' };
+const slots = (prefix: string, zone: ZoneId, pts: readonly (readonly [number, number])[], map: 'world' | 'coast' = 'world'): BuildSlot[] =>
+  pts.map(([x, y], i) => ({ id: `${prefix}-${i + 1}`, zone, x, y, ...(map === 'coast' ? { map } : {}) }));
+/**
+ * Yapı alanları (Yarın Şehri 40x40 + kıyı 24x24). Kimlikler v1 haritasıyla aynıdır; kayıtlar göç gerektirmeden
+ * yeni koordinatlara taşınır. Yol, dekor ve ana bina tabanına denk gelmez (test: tests/citySim.test.ts).
+ */
 export const BUILD_SLOTS: BuildSlot[] = [
-  ...([[4, 3], [6, 3], [2, 6], [8, 6], [6, 9]] as const).map(([x, y], i) => ({ id: `en-${i + 1}`, zone: 'energy' as const, x, y })),
-  ...([[2, 17], [8, 17], [2, 22], [8, 22], [9, 19]] as const).map(([x, y], i) => ({ id: `wa-${i + 1}`, zone: 'waste' as const, x, y })),
-  ...([[25, 7], [29, 8], [25, 13], [29, 12], [22, 8]] as const).map(([x, y], i) => ({ id: `ci-${i + 1}`, zone: 'city' as const, x, y })),
-  ...([[10, 23], [16, 23], [16, 27], [10, 28], [17, 25]] as const).map(([x, y], i) => ({ id: `fa-${i + 1}`, zone: 'farm' as const, x, y })),
-  ...([[24, 25], [25, 24], [26, 25], [24, 28], [28, 24]] as const).map(([x, y], i) => ({ id: `oc-${i + 1}`, zone: 'ocean' as const, x, y })),
-  ...([[11, 13], [17, 11], [11, 11], [12, 17]] as const).map(([x, y], i) => ({ id: `sc-${i + 1}`, zone: 'school' as const, x, y })),
-  ...([[19, 16], [20, 19]] as const).map(([x, y], i) => ({ id: `ca-${i + 1}`, zone: 'canteen' as const, x, y })),
+  { id: CAMPUS_SLOT, zone: 'school', x: 18, y: 17 },
+  ...slots('en', 'energy', [[7, 4], [4, 7], [11, 6], [5, 9], [7, 12], [3, 11]]),
+  ...slots('wa', 'waste', [[34, 30], [36, 31], [28, 35], [30, 36], [35, 33], [27, 29]]),
+  ...slots('ci', 'city', [[36, 5], [31, 2], [30, 11], [32, 10], [36, 12], [28, 7]]),
+  ...slots('fa', 'farm', [[3, 28], [3, 31], [8, 31], [7, 35], [5, 32], [7, 37]]),
+  ...slots('oc', 'ocean', [[10, 4], [4, 10], [9, 7], [7, 9], [12, 6]], 'coast'),
+  ...slots('sc', 'school', [[15, 18], [19, 14], [16, 22], [25, 20], [19, 23]]),
+  ...slots('ca', 'canteen', [[25, 22], [21, 25]]),
 ];
+
+/** Bir yapının en üst seviyesi. */
+export const maxLevel = (def: BuildingDef) => def.cost.length;
+/** Verilen seviyedeki toplam etki (gösterim ve hesap aynı kaynaktan). */
+export const effectsAt = (def: BuildingDef, level: number): BuildingEffects =>
+  def.levelEffects ? def.levelEffects[level - 1] ?? {} : Object.fromEntries(Object.entries(def.perLevel).map(([k, v]) => [k, (v as number) * level]));
+export const upkeepAt = (def: BuildingDef, level: number) => (def.upkeepByLevel ? def.upkeepByLevel[level - 1] ?? 0 : def.upkeep * level);
 
 export type PlacedBuilding = { id: string; type: string; level: number; slot: string; builtDay: number };
 
@@ -120,6 +155,7 @@ export type BuildResult =
 export function build(buildings: PlacedBuilding[], type: string, slotId: string, budget: number, day: number, ctx: UnlockContext): BuildResult {
   const def = buildingDef(type);
   if (!def) return { ok: false, error: 'unknown_type', message: 'Bilinmeyen yapı.' };
+  if (def.fixed) return { ok: false, error: 'locked', message: `${def.name} haritada hazırdır; geliştirebilirsin.` };
   if (!isUnlocked(def, ctx)) return { ok: false, error: 'locked', message: `${def.name} kilitli: ${unlockText(def)}.` };
   const slot = BUILD_SLOTS.find((s) => s.id === slotId);
   if (!slot || slot.zone !== def.zone) return { ok: false, error: 'wrong_zone', message: 'Bu yapı bu alana kurulamaz.' };
@@ -133,7 +169,7 @@ export function upgrade(buildings: PlacedBuilding[], id: string, budget: number)
   const b = buildings.find((x) => x.id === id);
   const def = b && buildingDef(b.type);
   if (!b || !def) return { ok: false, error: 'not_found', message: 'Yapı bulunamadı.' };
-  if (b.level >= 3) return { ok: false, error: 'max_level', message: 'En üst seviyede.' };
+  if (b.level >= maxLevel(def)) return { ok: false, error: 'max_level', message: 'En üst seviyede.' };
   const cost = def.cost[b.level];
   if (budget < cost) return { ok: false, error: 'no_budget', message: `Bütçe yetmiyor (${cost} puan gerekir).` };
   return { ok: true, cost, buildings: buildings.map((x) => (x.id === id ? { ...x, level: x.level + 1 } : x)), message: `${def.name} seviye ${b.level + 1} (−${cost} puan).` };
@@ -143,18 +179,23 @@ export function upgrade(buildings: PlacedBuilding[], id: string, budget: number)
 export function demolish(buildings: PlacedBuilding[], id: string): { buildings: PlacedBuilding[]; refund: number } {
   const b = buildings.find((x) => x.id === id);
   const def = b && buildingDef(b.type);
-  if (!b || !def) return { buildings, refund: 0 };
+  if (!b || !def || def.fixed) return { buildings, refund: 0 };
   const spent = def.cost.slice(0, b.level).reduce((a, c) => a + c, 0);
   return { buildings: buildings.filter((x) => x.id !== id), refund: Math.round(spent * 0.3) };
 }
+
+/** Haritada hazır gelen yapılar (kampüs seviye 1). Eski kayıtlara da eklenir (ensureFixedBuildings). */
+export const FIXED_BUILDINGS: PlacedBuilding[] = [{ id: `${CAMPUS_TYPE}-${CAMPUS_SLOT}`, type: CAMPUS_TYPE, level: 1, slot: CAMPUS_SLOT, builtDay: 0 }];
+export const ensureFixedBuildings = (bs: PlacedBuilding[]): PlacedBuilding[] =>
+  FIXED_BUILDINGS.every((f) => bs.some((b) => b.id === f.id)) ? bs : [...FIXED_BUILDINGS.filter((f) => !bs.some((b) => b.id === f.id)), ...bs];
 
 export function buildingEffects(buildings: PlacedBuilding[]): Required<BuildingEffects> & { upkeep: number } {
   const out = { solarKw: 0, windKw: 0, storageKwh: 0, efficiency: 0, extraDemandKwh: 0, wasteDivertKg: 0, foodWasteCutKg: 0, greenShare: 0, rainShare: 0, sealedShare: 0, shade: 0, habitatCare: 0, waterSaveM3: 0, transitShare: 0, wellbeing: 0, literacy: 0, upkeep: 0 };
   for (const b of buildings) {
     const def = buildingDef(b.type);
     if (!def) continue;
-    out.upkeep += def.upkeep * b.level;
-    for (const [k, v] of Object.entries(def.perLevel)) (out as Record<string, number>)[k] += (v as number) * b.level;
+    out.upkeep += upkeepAt(def, b.level);
+    for (const [k, v] of Object.entries(effectsAt(def, b.level))) (out as Record<string, number>)[k] += v as number;
   }
   out.efficiency = Math.min(0.4, out.efficiency);
   return out;
