@@ -44,7 +44,7 @@ Ayrıntı: [docs/SETUP.md](docs/SETUP.md) · Docker: `docker compose up -d --bui
 | [docs/SIMULATION_ASSUMPTIONS.md](docs/SIMULATION_ASSUMPTIONS.md) | Tüm katsayılar, varsayımlar ve bilimsel dayanaklar |
 | [docs/sources/SOURCES.md](docs/sources/SOURCES.md) · [docs/licenses/licenses.md](docs/licenses/licenses.md) | Kaynaklar ve asset lisansları |
 | [docs/KNOWN_ISSUES.md](docs/KNOWN_ISSUES.md) · [docs/TEST_RESULTS.md](docs/TEST_RESULTS.md) | Dürüstlük kaydı ve test sonuçları |
-| [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md) · [docs/ASSET_INVENTORY.md](docs/ASSET_INVENTORY.md) | Tasarım sistemi ve tüm görsel/ses varlıkları (kaynak, lisans) |
+| [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md) · [docs/ASSET_INVENTORY.md](docs/ASSET_INVENTORY.md) · [docs/GORSEL_UYUM.md](docs/GORSEL_UYUM.md) | Tasarım sistemi, görsel/ses varlıkları ve görsel tasarım promptu uyum tablosu |
 | docs/PLAN.md, ROADMAP.md, ACCEPTANCE.md, decision-log/ | Creathon P0 dönemine ait tarihsel kayıtlar |
 
 ## Yapı
