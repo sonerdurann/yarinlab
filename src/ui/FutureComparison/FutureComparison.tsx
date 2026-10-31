@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react';
 import { food } from '../../data/scenarios';
 import { SIMULATION_NOTICE } from '../../data/constants';
 import { applyChoice } from '../../game/systems/DecisionEngine';
@@ -6,6 +5,7 @@ import { scenarioImpactScore } from '../../game/systems/ClimateEngine';
 import { gameStore, useGameState } from '../../state/gameStore';
 import type { Resources } from '../../state/types';
 import { fallbackForComparison } from '../../ai/fallbackResponses';
+import { Modal } from '../Modal/Modal';
 
 const futures = [food.noDecision, ...food.choices];
 const futureById = (id: string) => futures.find((f) => f.id === id) ?? futures[0];
@@ -23,16 +23,6 @@ const num = (n: number) => n.toLocaleString('tr-TR');
 /** Aynı başlangıç koşulunda iki geleceği yan yana gösterir (kılavuz §11). */
 export function FutureComparison() {
   const s = useGameState();
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!s.comparisonOpen) return;
-    ref.current?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && gameStore.closeComparison();
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [s.comparisonOpen]);
-
   if (!s.comparisonOpen) return null;
 
   // Karar yok her zaman; seçenekler yalnızca denendiyse karşılaştırılabilir.
@@ -47,14 +37,7 @@ export function FutureComparison() {
   });
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal wide" role="dialog" aria-modal="true" aria-labelledby="fc-title" tabIndex={-1} ref={ref}>
-        <div className="modal-head">
-          <h2 id="fc-title">Aynı okul, iki farklı gelecek</h2>
-          <button onClick={gameStore.closeComparison} aria-label="Kapat">
-            ✕
-          </button>
-        </div>
+    <Modal titleId="fc-title" title="Aynı okul, iki farklı gelecek" onClose={gameStore.closeComparison} wide>
         <p className="hint">Her iki gelecek de aynı başlangıç koşullarından (atık {food.baseline.foodWasteKg} kg/gün, bütçe {num(food.baseline.budget)}) hesaplanır.</p>
 
         <div className="future-grid">
@@ -133,7 +116,6 @@ export function FutureComparison() {
             Tamam
           </button>
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

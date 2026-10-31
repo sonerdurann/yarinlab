@@ -1,8 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type Phaser from 'phaser';
 import { createGame } from './game/createGame';
 import { hotspots } from './game/tiles/hotspots';
-import { gameStore, useGameState } from './state/gameStore';
+import { gameStore, taskSteps, useGameState } from './state/gameStore';
 import { TopBar, WorldStatus } from './ui/Hud/Hud';
 import { TaskPanel } from './ui/TaskPanel/TaskPanel';
 import { DecisionModal } from './ui/DecisionModal/DecisionModal';
@@ -13,7 +13,10 @@ import { FutureComparison } from './ui/FutureComparison/FutureComparison';
 export function App() {
   const host = useRef<HTMLDivElement>(null);
   const game = useRef<Phaser.Game | null>(null);
-  const { selectedHotspotId, notice, decisionOpen } = useGameState();
+  const gs = useGameState();
+  const { selectedHotspotId, notice, decisionOpen } = gs;
+  const [sheet, setSheet] = useState(false);
+  const next = taskSteps(gs).find((t) => !t.done);
   const selected = hotspots.find((h) => h.id === selectedHotspotId);
 
   useEffect(() => {
@@ -25,6 +28,24 @@ export function App() {
     };
   }, []);
 
+  const zoom = (delta: number) => game.current?.scene.getScene('WorldScene')?.events.emit('zoom', delta);
+
+  // Klavye: +/- ile yakınlaştırma (pencere açıkken devre dışı)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (document.querySelector('[role=dialog]') || (e.target as HTMLElement)?.matches?.('input, textarea, select')) return;
+      if (e.key === '+' || e.key === '=') zoom(0.1);
+      if (e.key === '-' || e.key === '_') zoom(-0.1);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  const skipToZones = () => {
+    setSheet(true);
+    setTimeout(() => document.getElementById('zones')?.focus(), 50);
+  };
+
   const pick = (id: string) => {
     gameStore.selectHotspot(id);
     game.current?.scene.getScene('WorldScene')?.events.emit('focus-hotspot', id);
@@ -33,9 +54,25 @@ export function App() {
   return (
     <div className="app">
       <div ref={host} className="world" />
+      <button className="skip" onClick={skipToZones}>Bölge listesine geç</button>
       <TopBar />
-      <TaskPanel onPick={pick} />
-      <WorldStatus />
+      <div className="zoom-btns">
+        <button aria-label="Yakınlaştır" onClick={() => zoom(0.1)}>+</button>
+        <button aria-label="Uzaklaştır" onClick={() => zoom(-0.1)}>−</button>
+      </div>
+      <div className={sheet ? 'dock open' : 'dock'}>
+        <div className="cta-bar">
+          <button aria-expanded={sheet} onClick={() => setSheet(!sheet)}>{sheet ? 'Gizle' : 'Görevler'}</button>
+          <span className="cta-text">Görev: {next ? next.label : 'Tamamlandı'}</span>
+          {!decisionOpen && (
+            <button className="primary" onClick={gameStore.openDecision}>
+              {gs.canteenVisited ? 'Devam' : 'Göreve başla'}
+            </button>
+          )}
+        </div>
+        <TaskPanel onPick={pick} />
+        <WorldStatus />
+      </div>
       {(notice || (selected && selected.id !== 'canteen')) && !decisionOpen && (
         <aside role="status" className="panel toast">
           {selected && !notice ? (

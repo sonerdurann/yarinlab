@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
 import { food } from '../../data/scenarios';
 import { SIMULATION_NOTICE } from '../../data/constants';
 import { gameStore, useGameState } from '../../state/gameStore';
 import type { Resources } from '../../state/types';
 import { TutorCard } from '../TutorCard/TutorCard';
+import { Modal } from '../Modal/Modal';
 
 const rows: { key: keyof Resources; label: string; unit: string; lowerIsBetter?: boolean }[] = [
   { key: 'foodWasteKg', label: 'Gıda atığı', unit: 'kg/gün', lowerIsBetter: true },
@@ -16,30 +16,13 @@ const sign = (n: number) => (n > 0 ? `+${n.toLocaleString('tr-TR')}` : n.toLocal
 /** Kantin / Görev 01 karar ve sonuç ekranı (kılavuz §10). */
 export function DecisionModal() {
   const s = useGameState();
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!s.decisionOpen) return;
-    ref.current?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && !gameStore.get().comparisonOpen && gameStore.closeDecision();
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [s.decisionOpen]);
-
   if (!s.decisionOpen) return null;
   const { result } = s;
   const chosen = food.choices.find((c) => c.id === (result?.choiceId ?? s.pendingChoiceId));
   const ctx = food.context;
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal" role="dialog" aria-modal="true" aria-labelledby="dm-title" tabIndex={-1} ref={ref}>
-        <div className="modal-head">
-          <h2 id="dm-title">{food.title}</h2>
-          <button onClick={gameStore.closeDecision} aria-label="Kapat">
-            ✕
-          </button>
-        </div>
+    <Modal titleId="dm-title" title={food.title} onClose={gameStore.closeDecision} active={!s.comparisonOpen}>
         <p>{food.brief}</p>
         <ul className="facts">
           <li>Öğrenci: {ctx.students}</li>
@@ -155,7 +138,6 @@ export function DecisionModal() {
             </div>
           </>
         )}
-      </div>
-    </div>
+    </Modal>
   );
 }

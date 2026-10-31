@@ -8,8 +8,8 @@
 | T04 | Karar A B C | Farklı sonuçlar; ilk state her seferinde korunur | ☐ |
 | T05 | Yüksek/negatif değer girdisi | 0 altı atık yok; 0-100 puan sınırı | ☐ (otomatik) |
 | T06 | API bağlantısını kes | Yedek açıklama; görev tamamlanabilir | ☐ |
-| T07 | Ekran 360 px genişlik | Taşma veya gizli eylem yok | ☐ |
-| T08 | Klavyeyle gezin | Temel işlemler erişilebilir | ☐ |
+| T07 | Ekran 360 px genişlik | Taşma veya gizli eylem yok | ☑ emülasyon (gerçek cihaz ☐) |
+| T08 | Klavyeyle gezin | Temel işlemler erişilebilir | ◐ Tab tuzağı, Esc, atlama düğmesi doğrulandı; tam tur ☐ |
 | T09 | Yeni oturum aç | Örnek öğrenci verisi sıfırlanabilir | ☐ |
 | T10 | Kaynak listesi görüntüle | Lisans ve kaynak bağlantıları açık | ☐ |
 | T11 | Build al | `npm run build` başarılı; `dist` üretilir | ☐ |

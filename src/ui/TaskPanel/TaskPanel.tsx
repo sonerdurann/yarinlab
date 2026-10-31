@@ -24,7 +24,7 @@ export function TaskPanel({ onPick }: Props) {
           {s.canteenVisited ? 'Göreve devam et' : 'Göreve başla'}
         </button>
       )}
-      <nav aria-label="Bölge Listesi">
+      <nav id="zones" tabIndex={-1} aria-label="Bölge Listesi">
         <h3>Bölgeler</h3>
         {hotspots.map((h) => (
           <button key={h.id} className={h.locked ? 'zone locked' : 'zone'} onClick={() => onPick(h.id)}>

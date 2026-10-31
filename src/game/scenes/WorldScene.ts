@@ -149,7 +149,7 @@ export class WorldScene extends Phaser.Scene {
     const cam = this.cameras.main;
     const c = iso(14.5, 14.5);
     cam.centerOn(c.x, c.y);
-    cam.setZoom(clampZoom(1));
+    cam.setZoom(clampZoom(this.scale.width < 700 ? 0.8 : 1)); // dar ekranda daha geniş görünüm
     this.input.on('pointerdown', () => {
       this.dragged = false;
     });
