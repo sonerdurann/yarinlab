@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react';
 import { chapterFor, MODULES, taskStatus, tasksOfModule } from '@yarinlab/shared';
 import { hotspots } from '../../game/tiles/hotspots';
 import { gameStore, useGameState } from '../../state/gameStore';
-import { completedTaskIds } from '../../state/city';
+import { completedTaskIds, isFullyComplete } from '../../state/city';
 import { DirectorTip } from './DirectorTip';
 import { MODULE_THEME, starsFor } from '../theme/modules';
 
@@ -62,6 +62,7 @@ export function TaskPanel({ onPick }: Props) {
                         <span className="step" aria-hidden="true">{st.status === 'locked' ? '🔒' : t.order}</span>
                         <span>{short(t.title)}</span>
                         {st.status === 'done' && <span className="stars" aria-label={`${stars} yıldız`}>{'★'.repeat(stars)}{'☆'.repeat(3 - stars)}</span>}
+                        {isFullyComplete(s, t.id) && <span aria-label="tam tamamlandı" title="4 adımın hepsi bitti">🏆</span>}
                         <span className="sr-only">{st.status === 'done' ? ' (tamamlandı)' : st.status === 'locked' ? ` (kilitli: ${st.reason})` : ' (oynanabilir)'}</span>
                       </button>
                     </li>

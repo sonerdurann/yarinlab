@@ -189,11 +189,26 @@ export function scoreAssessment(moduleId: ModuleId, answers: Record<string, numb
 
 /** Gerçek dünya etkinlikleri (öğretmen atar; sonuçlar "Ölçülmüş" etiketiyle kaydedilir). */
 export const REAL_WORLD_TASKS = [
-  { key: 'food-waste', title: 'Okulun gıda atığını ölçme', unit: 'kg/gün', module: 'food' },
+  { key: 'food-waste', title: 'Okulun gıda atığını ölçme (tartım)', unit: 'kg', module: 'food', perStudent: true },
   { key: 'energy-watch', title: 'Enerji tasarrufu gözlemi (boşken açık cihaz)', unit: 'adet', module: 'energy' },
   { key: 'reuse', title: 'Yeniden kullanım etkinliği (onarılan/paylaşılan eşya)', unit: 'adet', module: 'waste' },
   { key: 'water', title: 'Su tüketimi farkındalığı (sayaç okuması)', unit: 'm³/hafta', module: 'city' },
   { key: 'shade', title: 'Gölgelik ve yeşil alan incelemesi (gölgede/güneşte sıcaklık farkı)', unit: '°C', module: 'city' },
   { key: 'sorting', title: 'Atık ayrıştırma gözlemi (yanlış atılan parça)', unit: 'adet', module: 'waste' },
   { key: 'consumption', title: 'Bilinçli tüketim araştırması (kanıtlı çevreci iddia)', unit: 'adet', module: 'carbon' },
+] as const satisfies readonly { key: string; title: string; unit: string; module: string; perStudent?: boolean }[];
+
+/**
+ * Öğretmen rubriği (kılavuz §02, §12): oyun puanlarının öğrenme düzeyine çevrilmesi. Not değildir; görünür ölçütler.
+ */
+export type RubricLevel = 'baslangic' | 'gelisen' | 'yetkin';
+export const RUBRIC_LEVEL_TR: Record<RubricLevel, string> = { baslangic: 'Başlangıç', gelisen: 'Gelişen', yetkin: 'Yetkin' };
+export const RUBRIC = [
+  { id: 'reasoning', name: 'Gerekçe kalitesi', levels: ['Gerekçe yok veya tek kelime', 'Neden-sonuç bağlacı var, kanıt sınırlı', 'Nedensellik + veri/risk/ödünleşim sözcükleri'], cut: [40, 70] },
+  { id: 'balance', name: 'Karar dengesi', levels: ['Birden çok gösterge belirgin düştü', 'Bir göstergede belirgin düşüş', 'Göstergeler dengeli'], cut: [50, 80] },
+  { id: 'compare', name: 'Seçenekleri karşılaştırma', levels: ['Tek seçenek denendi', 'Bazı görevlerde ikinci seçenek denendi', 'Görevlerin çoğunda alternatif karşılaştırıldı'], cut: [1, 50] },
+  { id: 'field', name: 'Gerçek dünya ölçümü', levels: ['Ölçüm yok', 'Başlangıç ölçümü var', 'Başlangıç ve sonuç ölçümü var'], cut: [1, 2] },
 ] as const;
+export function rubricLevel(value: number, cut: readonly [number, number]): RubricLevel {
+  return value >= cut[1] ? 'yetkin' : value >= cut[0] ? 'gelisen' : 'baslangic';
+}

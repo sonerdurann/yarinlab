@@ -1,5 +1,6 @@
 import { useGameState } from '../../state/gameStore';
 import { levelForXp, xpForLevel } from '@yarinlab/shared';
+import { cityOf } from '../../state/city';
 import { teacherStore } from '../../state/teacherStore';
 import { useCountUp } from '../useCountUp';
 import { Logo } from '../Logo';
@@ -28,6 +29,7 @@ import { syncLabel, useSync } from '../../state/saveSync';
 export function TopBar() {
   const st = useGameState();
   const { world } = st;
+  const city = cityOf(st);
   const { user } = useAuth();
   const sync = useSync();
   const lvl = levelForXp(st.xp), lo = xpForLevel(lvl), hi = xpForLevel(lvl + 1);
@@ -40,6 +42,8 @@ export function TopBar() {
       <TimeChip />
       <span className="pills" aria-label="Kaynaklar">
         <span className="pill" title="Kasa (oyun puanı, gerçek para değil)"><span className="ico" aria-hidden="true">💰</span><span className="sr-only">Bütçe </span><Num value={world.budget} /></span>
+        <span className="pill" title="Enerji göstergesi (0-100)"><span className="ico" aria-hidden="true">⚡</span><span className="sr-only">Enerji </span><Num value={world.energyScore} /></span>
+        <span className="pill" title="Okulun günlük çöpü (kg, varsayım)"><span className="ico" aria-hidden="true">🗑️</span><span className="sr-only">Atık </span><Num value={Math.round(city.indicators.wasteKg)} /> kg</span>
         <span className="pill hide-sm" title="Mutluluk"><span className="ico" aria-hidden="true">😊</span><span className="sr-only">Refah </span><Num value={world.wellbeing} /></span>
         <span className="pill level" title={`${st.xp} XP`}><span className="ico" aria-hidden="true">⭐</span>Seviye {lvl}
           <span className="xpbar" aria-hidden="true"><span style={{ width: `${Math.round((100 * (st.xp - lo)) / Math.max(1, hi - lo))}%` }} /></span>

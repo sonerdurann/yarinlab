@@ -1,5 +1,5 @@
 import { MODULES, nextTaskOf } from '@yarinlab/shared';
-import { cityOf, completedTaskIds } from '../../state/city';
+import { cityOf, completedTaskIds, scenarioSteps } from '../../state/city';
 import { useEffect, useState, type CSSProperties } from 'react';
 import { Speech } from '../Mascot';
 import { starsFor, themeOf } from '../theme/modules';
@@ -99,6 +99,19 @@ function EvidenceCards() {
 
 const sign = (n: number) => (n > 0 ? `+${n.toLocaleString('tr-TR')}` : n.toLocaleString('tr-TR'));
 
+/** Görevin 4 adımı (kılavuz §20); hepsi bitince görev 🏆 tam tamamlanır. */
+function StepList({ scenarioId }: { scenarioId: string }) {
+  const s = useGameState();
+  const steps = scenarioSteps(s, scenarioId);
+  const all = steps.every((x) => x.done);
+  return (
+    <ol className="step-list" aria-label="Görev adımları">
+      {steps.map((x, k) => <li key={x.id} className={x.done ? 'done' : ''}><span aria-hidden="true">{x.done ? '✓' : k + 1}</span>{x.label}<span className="sr-only">{x.done ? ' (tamam)' : ''}</span></li>)}
+      {all && <li className="trophy" role="status">🏆 Görev tam tamamlandı!</li>}
+    </ol>
+  );
+}
+
 const ROW_ICON: Record<string, string> = { budget: '💰', foodWasteKg: '🍎', energyScore: '⚡', waterScore: '💧', wellbeing: '😊' };
 
 /** Görev ekranı: karakter durumu anlatır, büyük seçim kartları, fikir kartı gerekçeler, yıldızlı sonuç. */
@@ -124,6 +137,7 @@ export function DecisionModal() {
         {scenario.facts.length > 0 && (
           <ul className="facts">{scenario.facts.map((f) => <li key={f.label}><b>{f.label}:</b> {f.value}</li>)}</ul>
         )}
+        <StepList scenarioId={scenario.id} />
         {scenario.module === 'council' && <EvidenceCards />}
 
         {!result ? (

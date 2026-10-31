@@ -39,6 +39,10 @@ export function reportToPdf(r: ClassReport): Promise<Buffer> {
     const outs = r.outcomes.filter((o) => o.evidence);
     if (!outs.length) line('Henüz kanıt yok.');
     else table(['Kazanım', 'Düzey %', 'Kanıt'], outs.map((o) => [`${o.id} ${o.text}`, o.pct ?? '–', o.evidence]), [390, 60, 50]);
+    h('Özet');
+    line(`Katılan öğrenci ${r.kpis.students} · oynamaya başlayan ${r.kpis.activeStudents} · tamamlanan görev ${r.kpis.completedTasks} · ön+son test çifti ${r.kpis.prePostPairs} · ort. gerekçe ${r.kpis.avgReasoning ?? '–'}`);
+    h('Rubrik dağılımı (öğrenci sayısı)');
+    table(['Ölçüt', 'Başlangıç', 'Gelişen', 'Yetkin'], r.rubric.map((x) => [x.name, x.counts.baslangic, x.counts.gelisen, x.counts.yetkin]), [215, 100, 100, 100]);
     h('Kavram yanılgısı raporu');
     if (!r.misconceptions.length) line('Yanılgı işaretli seçim yok.');
     else table(['Yanılgı', 'Görev', 'Öğrenci', 'Gerekçesiz', 'Sonra düzeltti'], r.misconceptions.slice(0, 15).map((m) => [m.text, m.title, m.students, m.withoutReasoning, m.laterCorrected]), [190, 160, 50, 55, 55]);
@@ -48,7 +52,7 @@ export function reportToPdf(r: ClassReport): Promise<Buffer> {
     h('Gerçek dünya görevleri (Ölçülmüş)');
     const rw = r.realWorld.filter((x) => x.nBaseline || x.nFollowup);
     if (!rw.length) line('Henüz ölçüm girilmedi.');
-    else table(['Etkinlik', 'Birim', 'Başlangıç', 'Sonuç', 'Fark', 'n'], rw.map((x) => [x.title, x.unit, x.baseline ?? '–', x.followup ?? '–', x.change ?? '–', `${x.nBaseline}/${x.nFollowup}`]), [210, 60, 65, 65, 55, 50]);
+    else table(['Etkinlik', 'Birim', 'Başlangıç', 'Sonuç', 'Fark', 'g/öğr./gün', 'n'], rw.map((x) => [x.title, x.unit, x.baseline ?? '–', x.followup ?? '–', x.change ?? '–', x.perStudent ? `${x.perStudent.baselineGps ?? '–'}→${x.perStudent.followupGps ?? '–'}` : '', `${x.nBaseline}/${x.nFollowup}`]), [170, 40, 60, 55, 45, 95, 50]);
     h('Öğrenci ilerlemesi');
     table(['Takma ad', 'Grup', 'Görev', 'Modül', 'Ort. puan', 'Gerekçe', 'Denge', 'Yanılgı'], r.students.map((s) => [s.nickname, s.group ?? '–', s.completedTasks, s.modulesPlayed, s.avgTotal ?? '–', s.avgReasoning ?? '–', s.avgBalance ?? '–', s.misconceptionChoices]), [110, 70, 45, 45, 60, 60, 55, 55]);
     h('Notlar');

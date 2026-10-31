@@ -137,3 +137,28 @@ describe('rapor saf fonksiyonu', () => {
     expect(reportToCsv(r)).toContain('Takma ad');
   });
 });
+
+describe('rubrik, özet kartları, tartım ve okul özeti', () => {
+  it('tartım öğrenci ve gün sayısıyla gram/öğrenci/gün olur; okul özeti tüm sınıfları gösterir; rubrik düzeyleri hesaplanır', async () => {
+    const t = await c.teacher(`${tag}r`, 'r');
+    const a = await c.classroom(t, '5-A'); const b = await c.classroom(t, '5-B');
+    const st = await c.student(a.joinCode, `Rub${tag}`.slice(0, 18));
+    await c.post('/api/attempts', attempt('food_001', 'B', 'Esnek porsiyon çünkü veriye göre atık ve bütçe dengesi', 85), st.cookie);
+    await c.post('/api/attempts', attempt('food_001', 'C', 'çünkü tahmin riski', 60), st.cookie);
+    await c.post(`/api/classrooms/${a.id}/measurements`, { taskKey: 'food-waste', phase: 'BASELINE', value: 42, students: 280, days: 5 }, t);
+    await c.post(`/api/classrooms/${a.id}/measurements`, { taskKey: 'food-waste', phase: 'FOLLOWUP', value: 28, students: 280, days: 5 }, t);
+    expect((await c.post(`/api/classrooms/${a.id}/measurements`, { taskKey: 'food-waste', phase: 'BASELINE', value: 1, students: 0, days: 5 }, t)).statusCode).toBe(400);
+    const r = (await c.get(`/api/classrooms/${a.id}/report`, t)).json();
+    expect(r.kpis).toMatchObject({ students: 1, activeStudents: 1, completedTasks: 1 });
+    expect(r.realWorld.find((x: { key: string }) => x.key === 'food-waste').perStudent).toEqual({ baselineGps: 30, followupGps: 20 });
+    expect(r.students[0].rubric.compare).toBe('yetkin');
+    expect(r.rubric.find((x: { id: string }) => x.id === 'reasoning').counts).toBeDefined();
+    const o = (await c.get('/api/school/overview', t)).json();
+    expect(o.totals).toMatchObject({ classes: 2, students: 1 });
+    expect(o.classes.find((x: { id: string }) => x.id === a.id).foodWaste).toMatchObject({ baselineGps: 30, followupGps: 20 });
+    expect(o.classes.map((x: { id: string }) => x.id)).toContain(b.id);
+    expect((await c.get('/api/school/overview', st.cookie)).statusCode).toBe(403);
+    const other = (await c.get('/api/school/overview', t2)).json();
+    expect(other.classes.map((x: { id: string }) => x.id)).not.toContain(a.id);
+  });
+});

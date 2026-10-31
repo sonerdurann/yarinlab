@@ -175,6 +175,8 @@ model RealWorldMeasurement {
   phase       String // BASELINE | FOLLOWUP
   value       Float
   unit        String
+  students    Int?     // gıda atığı tartımında öğrenci sayısı (kişisel veri değil, toplam)
+  days        Int?     // tartım gün sayısı
   note        String?
   createdAt   DateTime @default(now())
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)

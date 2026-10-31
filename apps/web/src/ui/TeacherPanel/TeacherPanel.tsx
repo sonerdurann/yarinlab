@@ -14,15 +14,18 @@ type Detail = {
 };
 type Report = {
   studentsCount: number;
-  students: { id: string; nickname: string; group: string | null; completedTasks: number; modulesPlayed: number; attempts: number; avgTotal: number | null; avgReasoning: number | null; avgBalance: number | null; misconceptionChoices: number; lastActive: string | null }[];
+  kpis: { students: number; activeStudents: number; completedTasks: number; prePostPairs: number; avgReasoning: number | null };
+  rubric: { id: string; name: string; levels: readonly string[]; counts: { baslangic: number; gelisen: number; yetkin: number } }[];
+  students: { id: string; nickname: string; group: string | null; rubric: Record<string, 'baslangic' | 'gelisen' | 'yetkin' | null>; completedTasks: number; modulesPlayed: number; attempts: number; avgTotal: number | null; avgReasoning: number | null; avgBalance: number | null; misconceptionChoices: number; lastActive: string | null }[];
   outcomes: { id: string; text: string; pct: number | null; evidence: number }[];
   misconceptions: { taskId: string; title: string; choiceId: string; text: string; students: number; withoutReasoning: number; laterCorrected: number }[];
   modules: { id: string; name: string; tasks: number; startedPct: number; completedPct: number; avgDone: number; pre: number | null; post: number | null; prePostN: number }[];
   reasonings: { nickname: string; title: string; choice: string; reasoning: string; total: number | null; reasoningScore: number | null; misconception: boolean; at: string }[];
   assignments: { id: string; title: string; dueAt: string | null; target: number; completed: number; pct: number; overdue: boolean; pending: string[]; groupId: string | null }[];
-  realWorld: { key: string; title: string; unit: string; baseline: number | null; followup: number | null; change: number | null; nBaseline: number; nFollowup: number }[];
+  realWorld: { key: string; title: string; unit: string; baseline: number | null; followup: number | null; change: number | null; nBaseline: number; nFollowup: number; perStudent: { baselineGps: number | null; followupGps: number | null } | null }[];
   notes: string[];
 };
+const LEVEL = { baslangic: '🌱 Başlangıç', gelisen: '🌿 Gelişen', yetkin: '🌳 Yetkin' } as const;
 type Tab = 'class' | 'assign' | 'progress' | 'learning' | 'field' | 'reports';
 
 const Bar = ({ value, label }: { value: number | null; label: string }) => (
@@ -61,6 +64,7 @@ function Dashboard() {
   const [sel, setSel] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [err, setErr] = useState('');
+  const [school, setSchool] = useState(false);
   const load = useCallback(async () => {
     try {
       const r = await api<{ classrooms: Classroom[] }>('/api/classrooms');
@@ -88,9 +92,10 @@ function Dashboard() {
           <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Yeni sınıf adı (ör. 7-A)" aria-label="Yeni sınıf adı" minLength={2} maxLength={60} required />
           <button type="submit">Sınıf oluştur</button>
         </form>
+        <button aria-pressed={school} onClick={() => setSchool(!school)}>🏫 {school ? 'Sınıfa dön' : 'Okul özeti'}</button>
       </div>
       {err && <p role="alert" className="form-error">{err}</p>}
-      {sel ? <ClassView key={sel} id={sel} onChanged={load} onDeleted={() => { setSel(null); void load(); }} /> : <p>Başlamak için bir sınıf oluşturun.</p>}
+      {school ? <SchoolOverview /> : sel ? <ClassView key={sel} id={sel} onChanged={load} onDeleted={() => { setSel(null); void load(); }} /> : <p>Başlamak için bir sınıf oluşturun.</p>}
     </Modal>
   );
 }
@@ -120,6 +125,13 @@ function ClassView({ id, onChanged, onDeleted }: { id: string; onChanged: () => 
         <button onClick={() => void refresh()} aria-label="Verileri yenile">↻ Yenile</button>
       </div>
       {msg && <p role="status" className="notice">{msg}</p>}
+      <div className="kpis" aria-label="Sınıf özeti">
+        <div><b>{r.kpis.students}</b><span>Katılan öğrenci</span></div>
+        <div><b>{r.kpis.activeStudents}</b><span>Oynamaya başlayan</span></div>
+        <div><b>{r.kpis.completedTasks}</b><span>Tamamlanan görev</span></div>
+        <div><b>{r.kpis.prePostPairs}</b><span>Ön + son test çifti</span></div>
+        <div><b>{r.kpis.avgReasoning ?? '–'}</b><span>Ort. gerekçe puanı</span></div>
+      </div>
       {tab === 'class' && <ClassTab d={d} act={act} onDeleted={onDeleted} />}
       {tab === 'assign' && <AssignTab id={id} d={d} r={r} act={act} />}
       {tab === 'progress' && <ProgressTab r={r} />}
@@ -266,6 +278,18 @@ function LearningTab({ r }: { r: Report }) {
         <table className="result"><thead><tr><th>Kazanım</th><th>Düzey</th><th>Kanıt</th></tr></thead>
           <tbody>{outs.map((o) => <tr key={o.id}><td><strong>{o.id}</strong> {o.text}</td><td><Bar value={o.pct} label={o.id} /></td><td>{o.evidence}</td></tr>)}</tbody></table>
       )}
+      <h3>Rubrik (öğrenme düzeyleri)</h3>
+      <table className="result"><thead><tr><th>Ölçüt</th><th>Başlangıç</th><th>Gelişen</th><th>Yetkin</th></tr></thead>
+        <tbody>{r.rubric.map((x) => (
+          <tr key={x.id}><th scope="row">{x.name}</th>
+            <td><small>{x.levels[0]}</small><br /><b>{x.counts.baslangic}</b> öğrenci</td>
+            <td><small>{x.levels[1]}</small><br /><b>{x.counts.gelisen}</b> öğrenci</td>
+            <td><small>{x.levels[2]}</small><br /><b>{x.counts.yetkin}</b> öğrenci</td></tr>
+        ))}</tbody></table>
+      {r.students.length > 0 && (
+        <table className="result"><thead><tr><th>Takma ad</th>{r.rubric.map((x) => <th key={x.id}>{x.name}</th>)}</tr></thead>
+          <tbody>{r.students.map((st) => <tr key={st.id}><td>{st.nickname}</td>{r.rubric.map((x) => <td key={x.id}>{st.rubric[x.id] ? LEVEL[st.rubric[x.id]!] : '–'}</td>)}</tr>)}</tbody></table>
+      )}
       <h3>Kavram yanılgısı raporu</h3>
       {r.misconceptions.length === 0 ? <p>Yanılgıya işaret eden seçim yok.</p> : (
         <table className="result"><thead><tr><th>Olası yanılgı</th><th>Görev</th><th>Öğrenci</th><th>Gerekçesiz</th><th>Sonra düzeltti</th></tr></thead>
@@ -283,20 +307,27 @@ function LearningTab({ r }: { r: Report }) {
 }
 
 function FieldTab({ id, r, act }: { id: string; r: Report; act: Act }) {
-  const [f, setF] = useState({ taskKey: REAL_WORLD_TASKS[0].key as string, phase: 'BASELINE', value: '', note: '' });
+  const [f, setF] = useState({ taskKey: REAL_WORLD_TASKS[0].key as string, phase: 'BASELINE', value: '', note: '', students: '', days: '' });
+  const perStudent = f.taskKey === 'food-waste';
   return (
     <section>
       <p className="notice">Bu bölümdeki değerler <span className="tag measured">Ölçülmüş</span> verilerdir. Başlangıç ve sonuç farkı tek başına çevresel fayda kanıtı değildir; ölçüm koşullarını not edin.</p>
-      <table className="result"><thead><tr><th>Etkinlik</th><th>Birim</th><th>Başlangıç</th><th>Sonuç</th><th>Fark</th><th>n</th></tr></thead>
-        <tbody>{r.realWorld.map((x) => <tr key={x.key}><td>{x.title}</td><td>{x.unit}</td><td>{x.baseline ?? '–'}</td><td>{x.followup ?? '–'}</td><td>{x.change ?? '–'}</td><td>{x.nBaseline}/{x.nFollowup}</td></tr>)}</tbody></table>
+      <table className="result"><thead><tr><th>Etkinlik</th><th>Birim</th><th>Başlangıç</th><th>Sonuç</th><th>Fark</th><th>g/öğrenci/gün</th><th>n</th></tr></thead>
+        <tbody>{r.realWorld.map((x) => <tr key={x.key}><td>{x.title}</td><td>{x.unit}</td><td>{x.baseline ?? '–'}</td><td>{x.followup ?? '–'}</td><td>{x.change ?? '–'}</td>
+          <td>{x.perStudent ? `${x.perStudent.baselineGps ?? '–'} → ${x.perStudent.followupGps ?? '–'}` : ''}</td><td>{x.nBaseline}/{x.nFollowup}</td></tr>)}</tbody></table>
       <h3>Sınıf ölçümü ekle</h3>
-      <form className="inline-form" onSubmit={(e) => { e.preventDefault(); void act(() => api(`/api/classrooms/${id}/measurements`, { body: { taskKey: f.taskKey, phase: f.phase, value: Number(f.value), note: f.note || undefined } }), 'Ölçüm kaydedildi.').then(() => setF({ ...f, value: '', note: '' })); }}>
+      <form className="inline-form" onSubmit={(e) => { e.preventDefault(); void act(() => api(`/api/classrooms/${id}/measurements`, { body: { taskKey: f.taskKey, phase: f.phase, value: Number(f.value), note: f.note || undefined, ...(perStudent && f.students && f.days ? { students: Number(f.students), days: Number(f.days) } : {}) } }), 'Ölçüm kaydedildi.').then(() => setF({ ...f, value: '', note: '' })); }}>
         <select aria-label="Etkinlik" value={f.taskKey} onChange={(e) => setF({ ...f, taskKey: e.target.value })}>{REAL_WORLD_TASKS.map((x) => <option key={x.key} value={x.key}>{x.title} ({x.unit})</option>)}</select>
         <select aria-label="Aşama" value={f.phase} onChange={(e) => setF({ ...f, phase: e.target.value })}><option value="BASELINE">Başlangıç</option><option value="FOLLOWUP">Sonuç</option></select>
         <input aria-label="Değer" type="number" min={0} step="0.01" value={f.value} onChange={(e) => setF({ ...f, value: e.target.value })} required />
+        {perStudent && <>
+          <input aria-label="Öğrenci sayısı" placeholder="Öğrenci sayısı" type="number" min={1} max={5000} required value={f.students} onChange={(e) => setF({ ...f, students: e.target.value })} />
+          <input aria-label="Tartım gün sayısı" placeholder="Gün sayısı" type="number" min={1} max={365} required value={f.days} onChange={(e) => setF({ ...f, days: e.target.value })} />
+        </>}
         <input aria-label="Not" placeholder="Not (koşullar, kişisel bilgi yok)" maxLength={200} value={f.note} onChange={(e) => setF({ ...f, note: e.target.value })} />
         <button type="submit">Kaydet</button>
       </form>
+      {perStudent && <p className="hint">Gıda atığı: tartılan toplam kg, öğrenci sayısı ve gün sayısıyla girilir; rapor gram/öğrenci/gün hesaplar.</p>}
     </section>
   );
 }
@@ -325,6 +356,29 @@ function ReportsTab({ id, r }: { id: string; r: Report }) {
           <ul>{advice.advice.activities.map((a) => <li key={a.key}>{REAL_WORLD_TASKS.find((x) => x.key === a.key)?.title}: {a.why}</li>)}</ul>
         </div>
       )}
+    </section>
+  );
+}
+
+type Overview = { totals: { classes: number; students: number; completedTasks: number }; note: string;
+  classes: { id: string; name: string; students: number; active: number; completedTasks: number; startedModules: number; foodWaste: { baselineGps: number | null; followupGps: number | null; nBaseline: number; nFollowup: number } | null }[] };
+
+/** Okul yöneticisi görünümü (kılavuz §02): tüm sınıflar yan yana, toplu gıda atığı tartımı ve sınıf bazlı izleme. */
+function SchoolOverview() {
+  const [o, setO] = useState<Overview | null>(null);
+  useEffect(() => { void api<Overview>('/api/school/overview').then(setO).catch(() => setO(null)); }, []);
+  if (!o) return <p role="status">Yükleniyor…</p>;
+  return (
+    <section>
+      <div className="kpis"><div><b>{o.totals.classes}</b><span>Sınıf</span></div><div><b>{o.totals.students}</b><span>Öğrenci</span></div><div><b>{o.totals.completedTasks}</b><span>Tamamlanan görev</span></div></div>
+      <table className="result">
+        <thead><tr><th>Sınıf</th><th>Öğrenci</th><th>Aktif</th><th>Görev</th><th>Başlanan modül</th><th>Gıda atığı g/öğrenci/gün (başlangıç → sonuç)</th></tr></thead>
+        <tbody>{o.classes.map((c) => (
+          <tr key={c.id}><td>{c.name}</td><td>{c.students}</td><td>{c.active}</td><td>{c.completedTasks}</td><td>{c.startedModules}/7</td>
+            <td>{c.foodWaste && (c.foodWaste.baselineGps !== null || c.foodWaste.followupGps !== null) ? `${c.foodWaste.baselineGps ?? '–'} → ${c.foodWaste.followupGps ?? '–'}` : 'tartım yok'}</td></tr>
+        ))}</tbody>
+      </table>
+      <p className="hint"><span className="tag measured">Ölçülmüş</span> {o.note}</p>
     </section>
   );
 }

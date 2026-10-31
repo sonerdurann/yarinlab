@@ -148,7 +148,7 @@ export async function teacherRoutes(app: FastifyInstance, opts: { ai: AiService 
     const { id } = idParam.parse(req.params);
     const b = measurementBody.parse(req.body);
     if (!(await ownClass(req.user!.id, id, reply))) return;
-    const m = await prisma.realWorldMeasurement.create({ data: { userId: req.user!.id, classroomId: id, taskKey: b.taskKey, phase: b.phase, value: b.value, unit: unitOf(b.taskKey), note: b.note || null } });
+    const m = await prisma.realWorldMeasurement.create({ data: { userId: req.user!.id, classroomId: id, taskKey: b.taskKey, phase: b.phase, value: b.value, unit: unitOf(b.taskKey), students: b.students ?? null, days: b.days ?? null, note: b.note || null } });
     return reply.code(201).send({ measurement: m });
   });
 
@@ -190,6 +190,27 @@ export async function teacherRoutes(app: FastifyInstance, opts: { ai: AiService 
     return { source: out.source === 'MODEL' ? 'ai' : 'fallback', advice: out.data };
   });
 
+  /**
+   * Okul özeti (okul yöneticisi görünümü, kılavuz §02): öğretmenin tüm sınıfları yan yana; toplu gıda atığı tartımı
+   * ve sınıf bazlı izleme. Yalnızca kendi sınıfları; öğrenci adı içermez.
+   */
+  app.get('/api/school/overview', teacher, async (req) => {
+    const classes = await prisma.classroom.findMany({ where: { teacherId: req.user!.id }, orderBy: { name: 'asc' } });
+    const rows = [];
+    for (const c of classes) {
+      const r = buildClassReport(await loadReportData(c.id));
+      const fw = r.realWorld.find((x) => x.key === 'food-waste');
+      rows.push({
+        id: c.id, name: c.name, students: r.studentsCount, active: r.kpis.activeStudents, completedTasks: r.kpis.completedTasks,
+        startedModules: r.modules.filter((m) => m.startedPct > 0).length,
+        prePost: r.modules.filter((m) => m.pre !== null).map((m) => ({ module: m.id, pre: m.pre, post: m.post })),
+        foodWaste: fw ? { baselineGps: fw.perStudent?.baselineGps ?? null, followupGps: fw.perStudent?.followupGps ?? null, nBaseline: fw.nBaseline, nFollowup: fw.nFollowup } : null,
+      });
+    }
+    const totals = { classes: rows.length, students: rows.reduce((a, x) => a + x.students, 0), completedTasks: rows.reduce((a, x) => a + x.completedTasks, 0) };
+    return { totals, classes: rows, note: 'Gıda atığı değerleri öğretmenlerin girdiği tartımlardır (Ölçülmüş), gram/öğrenci/gün olarak normalize edilir.' };
+  });
+
   // ---- Öğrenci tarafı: ödevlerim ve gerçek dünya ölçümlerim ----
   app.get('/api/me/assignments', { preHandler: requireAuth }, async (req) => {
     const e = await prisma.enrollment.findUnique({ where: { userId: req.user!.id } });
@@ -200,7 +221,7 @@ export async function teacherRoutes(app: FastifyInstance, opts: { ai: AiService 
 
   app.post('/api/me/measurements', { preHandler: requireAuth }, async (req, reply) => {
     const b = measurementBody.parse(req.body);
-    const m = await prisma.realWorldMeasurement.create({ data: { userId: req.user!.id, taskKey: b.taskKey, phase: b.phase, value: b.value, unit: unitOf(b.taskKey), note: b.note || null } });
+    const m = await prisma.realWorldMeasurement.create({ data: { userId: req.user!.id, taskKey: b.taskKey, phase: b.phase, value: b.value, unit: unitOf(b.taskKey), students: b.students ?? null, days: b.days ?? null, note: b.note || null } });
     return reply.code(201).send({ measurement: m });
   });
 
@@ -212,5 +233,6 @@ export async function teacherRoutes(app: FastifyInstance, opts: { ai: AiService 
 const measurementBody = z.object({
   taskKey: z.enum(RW_KEYS), phase: z.enum(['BASELINE', 'FOLLOWUP']),
   value: z.number().finite().min(0).max(100000), note: z.string().trim().max(200).optional(),
+  students: z.number().int().min(1).max(5000).optional(), days: z.number().int().min(1).max(365).optional(),
 });
 const unitOf = (k: string) => REAL_WORLD_TASKS.find((r) => r.key === k)!.unit;

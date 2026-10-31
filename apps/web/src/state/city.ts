@@ -96,3 +96,19 @@ export const unlockCtx = (s: GameState) => ({
   modulesPlayed: [...new Set(completedTaskIds(s).map(moduleOf))],
   level: levelOf(s),
 });
+
+/**
+ * Kılavuz §20 görev tamamlama şartları (her görev için): seçenek seçilip simülasyon çalıştı, karar gerekçelendirildi,
+ * farklı bir seçeneğin sonucu karşılaştırıldı, simülasyon-gerçek ölçüm sorusu cevaplandı.
+ */
+export function scenarioSteps(s: Pick<GameState, 'history' | 'transferAnswer' | 'transferByScenario'>, scenarioId: string) {
+  const hist = s.history.filter((h) => h.scenarioId === scenarioId);
+  const transfer = scenarioId === 'food_001' ? s.transferAnswer : (s.transferByScenario[scenarioId] ?? '');
+  return [
+    { id: 'choose', label: 'Bir seçenek dene', done: hist.length > 0 },
+    { id: 'explain', label: 'Nedenini söyle', done: hist.some((h) => !!h.reasoning) },
+    { id: 'compare', label: 'Başka bir yolu karşılaştır', done: new Set(hist.map((h) => h.choiceId)).size >= 2 },
+    { id: 'transfer', label: 'Gerçek hayat sorusunu cevapla', done: transfer.trim().length > 0 },
+  ];
+}
+export const isFullyComplete = (s: Parameters<typeof scenarioSteps>[0], id: string) => scenarioSteps(s, id).every((x) => x.done);

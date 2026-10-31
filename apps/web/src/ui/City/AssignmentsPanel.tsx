@@ -15,7 +15,7 @@ export function AssignmentsPanel() {
   const { user } = useAuth();
   const [list, setList] = useState<Assignment[]>([]);
   const [ms, setMs] = useState<Measurement[]>([]);
-  const [f, setF] = useState<{ key: string; phase: 'BASELINE' | 'FOLLOWUP'; value: string; note: string }>({ key: REAL_WORLD_TASKS[0].key, phase: 'BASELINE', value: '', note: '' });
+  const [f, setF] = useState<{ key: string; phase: 'BASELINE' | 'FOLLOWUP'; value: string; note: string; students: string; days: string }>({ key: REAL_WORLD_TASKS[0].key, phase: 'BASELINE', value: '', note: '', students: '', days: '' });
   const [msg, setMsg] = useState('');
   const open = s.overlay === 'tasks';
   useEffect(() => {
@@ -27,7 +27,7 @@ export function AssignmentsPanel() {
   const done = completedTaskIds(s);
   const save = async () => {
     try {
-      await api('/api/me/measurements', { body: { taskKey: f.key, phase: f.phase, value: Number(f.value), note: f.note || undefined } });
+      await api('/api/me/measurements', { body: { taskKey: f.key, phase: f.phase, value: Number(f.value), note: f.note || undefined, ...(f.key === 'food-waste' && f.students && f.days ? { students: Number(f.students), days: Number(f.days) } : {}) } });
       gameStore.recordRealWorld();
       setMsg('Ölçüm kaydedildi.');
       setF({ ...f, value: '', note: '' });
@@ -64,6 +64,10 @@ export function AssignmentsPanel() {
             <select aria-label="Etkinlik" value={f.key} onChange={(e) => setF({ ...f, key: e.target.value })}>{REAL_WORLD_TASKS.map((r) => <option key={r.key} value={r.key}>{r.title} ({r.unit})</option>)}</select>
             <select aria-label="Aşama" value={f.phase} onChange={(e) => setF({ ...f, phase: e.target.value as 'BASELINE' | 'FOLLOWUP' })}><option value="BASELINE">Başlangıç</option><option value="FOLLOWUP">Sonuç</option></select>
             <input aria-label="Değer" type="number" min={0} step="0.01" required value={f.value} onChange={(e) => setF({ ...f, value: e.target.value })} />
+            {f.key === 'food-waste' && <>
+              <input aria-label="Öğrenci sayısı" placeholder="Öğrenci sayısı" type="number" min={1} value={f.students} onChange={(e) => setF({ ...f, students: e.target.value })} />
+              <input aria-label="Gün sayısı" placeholder="Gün" type="number" min={1} value={f.days} onChange={(e) => setF({ ...f, days: e.target.value })} />
+            </>}
             <input aria-label="Not" placeholder="Koşullar (ör. aynı saat)" maxLength={200} value={f.note} onChange={(e) => setF({ ...f, note: e.target.value })} />
             <button type="submit">Kaydet</button>
           </form>

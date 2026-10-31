@@ -1,4 +1,4 @@
-import { ASSESSMENTS, LEARNING_OUTCOMES, MODULES, REAL_WORLD_TASKS, taskById, TASKS, type ModuleId } from '@yarinlab/shared';
+import { ASSESSMENTS, LEARNING_OUTCOMES, MODULES, REAL_WORLD_TASKS, RUBRIC, RUBRIC_LEVEL_TR, rubricLevel, taskById, TASKS, type ModuleId, type RubricLevel } from '@yarinlab/shared';
 
 export type Score = { outcome: number; reasoning: number; balance: number; total: number };
 export type ReportData = {
@@ -6,7 +6,7 @@ export type ReportData = {
   students: { id: string; nickname: string; groupId: string | null; groupName: string | null }[];
   attempts: { userId: string; taskId: string; choiceId: string; reasoning: string | null; score: Score | null; createdAt: Date }[];
   assessments: { userId: string; moduleId: string; kind: string; answers: Record<string, number>; score: number; createdAt: Date }[];
-  measurements: { userId: string; classroomId: string | null; taskKey: string; phase: string; value: number; unit: string; createdAt: Date }[];
+  measurements: { userId: string; classroomId: string | null; taskKey: string; phase: string; value: number; unit: string; students?: number | null; days?: number | null; createdAt: Date }[];
   assignments: { id: string; title: string; taskIds: string[]; moduleId: string | null; realWorldTaskId: string | null; groupId: string | null; dueAt: Date | null }[];
 };
 
@@ -32,7 +32,15 @@ export function buildClassReport(d: ReportData, now = new Date()) {
     const scores = mine.map((a) => a.score).filter((x): x is Score => !!x);
     const done = completed.get(s.id) ?? new Set<string>();
     const mis = mine.filter((a) => taskById(a.taskId)?.choices.find((c) => c.id === a.choiceId)?.misconception).length;
+    const byTask = new Map<string, Set<string>>();
+    for (const a of mine) (byTask.get(a.taskId) ?? byTask.set(a.taskId, new Set()).get(a.taskId)!).add(a.choiceId);
+    const comparePct = byTask.size ? Math.round((100 * [...byTask.values()].filter((c) => c.size >= 2).length) / byTask.size) : 0;
+    const myM = d.measurements.filter((m) => m.userId === s.id);
+    const field = (myM.some((m) => m.phase === 'BASELINE') ? 1 : 0) + (myM.some((m) => m.phase === 'FOLLOWUP') ? 1 : 0);
+    const values: Record<string, number> = { reasoning: avg(scores.map((x) => x.reasoning)) ?? 0, balance: avg(scores.map((x) => x.balance)) ?? 0, compare: comparePct, field };
+    const rubric = Object.fromEntries(RUBRIC.map((r) => [r.id, mine.length || r.id === 'field' ? rubricLevel(values[r.id], r.cut) : null])) as Record<string, RubricLevel | null>;
     return {
+      rubric,
       id: s.id, nickname: s.nickname, group: s.groupName,
       completedTasks: done.size,
       modulesPlayed: new Set([...done].map((t) => t.split('_')[0])).size,
@@ -108,11 +116,26 @@ export function buildClassReport(d: ReportData, now = new Date()) {
     const b = ms.filter((m) => m.phase === 'BASELINE').map((m) => m.value), f = ms.filter((m) => m.phase === 'FOLLOWUP').map((m) => m.value);
     const mean = (xs: number[]) => (xs.length ? Math.round((xs.reduce((a, c) => a + c, 0) / xs.length) * 100) / 100 : null);
     const bm = mean(b), fm = mean(f);
-    return { key: r.key, title: r.title, unit: r.unit, baseline: bm, followup: fm, change: bm !== null && fm !== null ? Math.round((fm - bm) * 100) / 100 : null, nBaseline: b.length, nFollowup: f.length, label: 'Ölçülmüş' as const };
+    // Tartım: toplam kg, öğrenci ve gün sayısıyla gram/öğrenci/gün'e çevrilir (kılavuz §19: gerçek tartım + öğrenci + öğün).
+    const norm = (phase: string) => mean(ms.filter((m) => m.phase === phase && m.students && m.days).map((m) => (m.value * 1000) / (m.students! * m.days!)));
+    const per = 'perStudent' in r && r.perStudent ? { baselineGps: norm('BASELINE'), followupGps: norm('FOLLOWUP') } : null;
+    return { key: r.key, title: r.title, unit: r.unit, baseline: bm, followup: fm, change: bm !== null && fm !== null ? Math.round((fm - bm) * 100) / 100 : null, nBaseline: b.length, nFollowup: f.length, label: 'Ölçülmüş' as const, perStudent: per };
   });
 
+  const rubricSummary = RUBRIC.map((r) => {
+    const lv = students.map((st) => st.rubric[r.id]).filter((x): x is RubricLevel => !!x);
+    return { id: r.id, name: r.name, levels: r.levels, counts: { baslangic: lv.filter((x) => x === 'baslangic').length, gelisen: lv.filter((x) => x === 'gelisen').length, yetkin: lv.filter((x) => x === 'yetkin').length } };
+  });
+  const kpis = {
+    students: n,
+    activeStudents: students.filter((st) => st.attempts > 0).length,
+    completedTasks: students.reduce((a, st) => a + st.completedTasks, 0),
+    prePostPairs: modules.reduce((a, m) => a + m.prePostN, 0),
+    avgReasoning: avg(students.map((st) => st.avgReasoning).filter((x): x is number => x !== null)),
+  };
   return {
     generatedAt: now.toISOString(),
+    kpis, rubric: rubricSummary, rubricLevelNames: RUBRIC_LEVEL_TR,
     classroom: { id: d.classroom.id, name: d.classroom.name },
     studentsCount: n,
     students, outcomes, misconceptions, modules, reasonings, assignments, realWorld,
@@ -135,12 +158,12 @@ export const csvCell = (v: unknown) => {
 /** Excel uyumlu (noktalı virgül, UTF-8 BOM) öğrenci ilerleme CSV'si. */
 export function reportToCsv(r: ClassReport): string {
   const mods = MODULES.map((m) => m.id);
-  const head = ['Takma ad', 'Grup', 'Tamamlanan görev', 'Oynanan modül', 'Deneme', 'Ort. puan', 'Ort. gerekçe', 'Ort. denge', 'Yanılgı seçimi', 'Son etkinlik',
+  const head = ['Takma ad', 'Grup', ...RUBRIC.map((x) => `Rubrik: ${x.name}`), 'Tamamlanan görev', 'Oynanan modül', 'Deneme', 'Ort. puan', 'Ort. gerekçe', 'Ort. denge', 'Yanılgı seçimi', 'Son etkinlik',
     ...mods.flatMap((m) => [`${m} ön %`, `${m} son %`])];
-  const rows = r.students.map((s) => [s.nickname, s.group ?? '', s.completedTasks, s.modulesPlayed, s.attempts, s.avgTotal ?? '', s.avgReasoning ?? '', s.avgBalance ?? '', s.misconceptionChoices, s.lastActive ?? '',
+  const rows = r.students.map((s) => [s.nickname, s.group ?? '', ...RUBRIC.map((x) => (s.rubric[x.id] ? RUBRIC_LEVEL_TR[s.rubric[x.id]!] : '')), s.completedTasks, s.modulesPlayed, s.attempts, s.avgTotal ?? '', s.avgReasoning ?? '', s.avgBalance ?? '', s.misconceptionChoices, s.lastActive ?? '',
     ...mods.flatMap((m) => [s.prePost[m].pre ?? '', s.prePost[m].post ?? ''])]);
   const out = [head, ...rows].map((row) => row.map(csvCell).join(';')).join('\r\n');
   const outcomes = ['', 'Kazanım;Düzey %;Kanıt sayısı', ...r.outcomes.filter((o) => o.evidence).map((o) => [o.id + ' ' + o.text, o.pct ?? '', o.evidence].map(csvCell).join(';'))].join('\r\n');
-  const rw = ['', 'Gerçek dünya (Ölçülmüş);Birim;Başlangıç ort.;Sonuç ort.;Fark;n başlangıç;n sonuç', ...r.realWorld.filter((x) => x.nBaseline || x.nFollowup).map((x) => [x.title, x.unit, x.baseline ?? '', x.followup ?? '', x.change ?? '', x.nBaseline, x.nFollowup].map(csvCell).join(';'))].join('\r\n');
+  const rw = ['', 'Gerçek dünya (Ölçülmüş);Birim;Başlangıç ort.;Sonuç ort.;Fark;g/öğrenci/gün başlangıç;g/öğrenci/gün sonuç;n başlangıç;n sonuç', ...r.realWorld.filter((x) => x.nBaseline || x.nFollowup).map((x) => [x.title, x.unit, x.baseline ?? '', x.followup ?? '', x.change ?? '', x.perStudent?.baselineGps ?? '', x.perStudent?.followupGps ?? '', x.nBaseline, x.nFollowup].map(csvCell).join(';'))].join('\r\n');
   return '﻿' + out + '\r\n' + outcomes + '\r\n' + rw + '\r\n\r\n' + r.notes.map(csvCell).join('\r\n') + '\r\n';
 }
