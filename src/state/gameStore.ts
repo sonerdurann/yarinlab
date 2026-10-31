@@ -7,7 +7,11 @@ import { getTutorFeedback, type TutorOutcome } from '../ai/tutorClient';
 
 export type Period = 'today' | 'future-none' | 'future-mine';
 
+/** Anonim oturum kimliği: kişisel veri değil, yalnızca çift sayım kontrolü için. */
+const newSessionId = () => (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `s-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`);
+
 export type GameState = {
+  sessionId: string;
   /** Harita dönemi görünümü (görsel yorum) */
   period: Period;
   /** Açılış: 2040 mesajı penceresi */
@@ -43,6 +47,7 @@ export type GameState = {
 };
 
 const initial = (): GameState => ({
+  sessionId: newSessionId(),
   period: 'today',
   introOpen: true,
   worldReady: false,

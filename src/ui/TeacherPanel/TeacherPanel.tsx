@@ -5,6 +5,7 @@ import { perStudentPerDay, summarize } from '../../teacher/report';
 import { gameStore, isTaskComplete, useGameState } from '../../state/gameStore';
 import { teacherStore, useTeacherState } from '../../state/teacherStore';
 import { Modal } from '../Modal/Modal';
+import { buildSessionReport, reportToCsv } from '../../teacher/sessionReport';
 
 /** Yatay çubuk satırı (görsel); anlam sayı ve etiketle de verilir. */
 function Bar({ label, value, max, display, tone = 'water' }: { label: string; value: number | null; max: number; display: string; tone?: 'water' | 'green' | 'gold' }) {
@@ -18,6 +19,18 @@ function Bar({ label, value, max, display, tone = 'water' }: { label: string; va
       <span className="hbar-val">{display}</span>
     </div>
   );
+}
+
+/** Dosyayı tarayıcıda indirtir (sunucuya gönderilmez). */
+function download(name: string, mime: string, text: string) {
+  const url = URL.createObjectURL(new Blob([text], { type: mime }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 const fmt = (n: number | null, unit = '') => (n === null ? '–' : `${n.toLocaleString('tr-TR')}${unit}`);
@@ -134,6 +147,30 @@ export function TeacherPanel() {
           </table>
         </>
       )}
+
+      <h3>Oturum raporunu indir</h3>
+      <p className="hint">Bu cihazdaki oturumun anonim raporu (kararlar, gerekçeler, cevaplar). Tarayıcıdan indirilir, sunucuya gönderilmez. Gerekçe ve cevaplar öğrencinin yazdığı metindir; paylaşmadan önce gözden geçir.</p>
+      <div className="actions left">
+        <button
+          disabled={g.history.length === 0}
+          onClick={() => {
+            const r = buildSessionReport({ sessionId: g.sessionId, generatedAt: new Date().toISOString(), scenario: { id: food.id, version: food.version }, history: g.history, reflection: g.reflection, transferAnswer: g.transferAnswer, taskComplete: isTaskComplete(g), guideSource: g.tutor.outcome?.source ?? null, schoolMeasure: m });
+            download(`yarinlab-oturum-${g.sessionId.slice(0, 8)}.json`, 'application/json', JSON.stringify(r, null, 2));
+          }}
+        >
+          JSON indir
+        </button>
+        <button
+          disabled={g.history.length === 0}
+          onClick={() => {
+            const r = buildSessionReport({ sessionId: g.sessionId, generatedAt: new Date().toISOString(), scenario: { id: food.id, version: food.version }, history: g.history, reflection: g.reflection, transferAnswer: g.transferAnswer, taskComplete: isTaskComplete(g), guideSource: g.tutor.outcome?.source ?? null, schoolMeasure: m });
+            download(`yarinlab-oturum-${g.sessionId.slice(0, 8)}.csv`, 'text/csv;charset=utf-8', '\ufeff' + reportToCsv(r));
+          }}
+        >
+          CSV indir (Excel)
+        </button>
+      </div>
+      {g.history.length === 0 && <p className="hint">Rapor için önce Kantin görevinde bir karar ver.</p>}
 
       <h3>Gerçek okul görevi: ölçüm girişi</h3>
       <p className="hint">Yalnızca toplam kg, öğrenci sayısı ve gün sayısı. Ad, fotoğraf veya konum girme. Veri bu cihazda yerel saklanır.</p>

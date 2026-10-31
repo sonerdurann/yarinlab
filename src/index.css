@@ -216,3 +216,6 @@ html[data-motion='reduce'] *, html[data-motion='reduce'] *::before, html[data-mo
 .size input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .size:focus-within { outline: 3px solid var(--water); outline-offset: 2px; }
 @media (max-width: 760px) { .brand strong { display: none; } }
+
+.actions.left { justify-content: flex-start; }
+button:disabled { opacity: 0.55; cursor: not-allowed; }
