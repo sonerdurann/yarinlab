@@ -5,7 +5,11 @@ import { runDecision } from '../game/systems/DecisionEngine';
 import type { DecisionResult, Resources } from './types';
 import { getTutorFeedback, type TutorOutcome } from '../ai/tutorClient';
 
+export type Period = 'today' | 'future-none' | 'future-mine';
+
 export type GameState = {
+  /** Harita dönemi görünümü (görsel yorum) */
+  period: Period;
   /** Açılış: 2040 mesajı penceresi */
   introOpen: boolean;
   /** Harita sahnesi hazır (yükleme ekranı kapanır) */
@@ -39,6 +43,7 @@ export type GameState = {
 };
 
 const initial = (): GameState => ({
+  period: 'today',
   introOpen: true,
   worldReady: false,
   selectedHotspotId: null,
@@ -97,6 +102,7 @@ export const gameStore = {
     if (id === 'canteen') return set({ selectedHotspotId: id, notice: null, decisionOpen: true, canteenVisited: true });
     set({ selectedHotspotId: id, notice: null });
   },
+  setPeriod: (p: Period) => set({ period: p }),
   closeIntro: () => set({ introOpen: false }),
   openIntro: () => set({ introOpen: true }),
   setWorldReady: () => set({ worldReady: true }),

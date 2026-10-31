@@ -1,0 +1,1116 @@
+
+
+===== PAGE 1 =====
+İLK PROTOTİP + YEDİ MODÜLLÜ GENİŞLEME MİMARİSİ
+31 Ekim 2026  ·  Uygulama sürümü 1.0
+Teknik tasarım belgesi  |  Kaynaklar ve bağlantılar son bölümde
+COP31 / İKLİM TEKNOLOJİLERİ CREATHONU
+YARINLAB
+Geleceği Sen Tasarla
+Modern 2.5D izometrik oyun
+Tasarım + asset + harita + ekran + geliştirme + yarışma planı
+
+
+===== PAGE 2 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+02
+01 / Yönetici özeti ve kesin karar
+Ürün: YarınLab, 6-8. sınıf öğrencilerinin iklimle bağlantılı kararlar verdiği, sonuçlarını ortak bir şehir simülasyonunda
+gördüğü ve geri bildirim aldığı web tabanlı eğitim oyunudur. Görsel yaklaşım modern 2.5D izometrik olarak
+kesinleştirilmiştir.
+Teknik karar: Phaser 4.2.1 + React + TypeScript + Vite; Tiled JSON haritalar; Kenney Isometric Tiles
+ailesi; önce yerel senaryolar, ardından güvenli sunucu üzerinden yapay zekâ.
+Çalışan prototipin omurgası
+ • 32 × 32 izometrik okul/şehir haritası ve dört aktif erişim noktası: Okul, Kantin, Enerji, Atık.
+ • Tam çalışan Son Tabak / Kaybolan Öğünler kararı: seçenek  simülasyon  kaynak değişimi  açıklama  karşılaştırma.
+ • Gıda israfı ile atık yönetimi arasında en az bir çapraz-modül etkileşimi.
+ • Karar gerekçesi ve öğrenme sonucu toplayan, başlangıçta yerel saklamalı öğretmen ekranı.
+ • Canlı yapay zekâ kesilse bile çalışabilen doğrulanmış görev ve açıklama yedeği.
+ 
+Kapsam kilidi
+COP31 son başvuru: 2 Kasım 2026, 23.59. Final: 15-16 Kasım 2026; 24 saat geliştirme, 5 dakika sunum + 3 dakika
+soru-cevap. Başvuruda prototip zorunlu değil; finalde kritik işlevin çalışması ve saha görevi önemli [K1].
+İlk sürüm / P0
+Gelişmiş prototip / P1
+Sonraki ürün / P2
+1 oynanabilir kantin görevi; harita; temel
+sonuç paneli
+Enerji ve atık senaryosu; öğretmen özet
+paneli; yapay zekâ rehberi
+Yedi tam bölge; gelişmiş simülasyon; sınıf
+ve okul yönetimi
+
+
+===== PAGE 3 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+03
+02 / Oyun vizyonu, hedef kullanıcı ve öğrenme
+Temel deneyim
+Başlangıç hikâyesi: 2040 yılından gelen bir mesaj öğrenciyi bugünkü okulunun geleceğini değiştirmeye çağırır. Oyuncu
+bütçe, su, enerji, atık ve toplumsal refah arasında seçim yapar. İyi çözümler tek metrikle değil, gerekçeli dengeyle
+değerlendirilir.
+Kullanıcı
+İhtiyaç
+Üründeki karşılığı
+Öğrenci (11-14 yaş)
+Oyunla karar verme, anında anlaşılır geri bildirim
+8-12 dakikalık görev, iki gelecek sahnesi, geri alma
+Öğretmen
+Öğrenme kanıtı; sınıfta uygulanabilir etkinlik
+Ön/son ölçüm, görev raporu, rubrik, çıktılar
+Okul yöneticisi
+Uygulanabilir gerçek okul görevi
+Toplu gıda atığı ölçümü ve sınıf bazlı izleme
+Ölçülebilir öğrenme çıktıları
+ • L1 - Gıda israfının çevre, bütçe ve sosyal etkileri arasında neden-sonuç ilişkisi kurar.
+ • L2 - En az iki çözüm seçeneğini veri ve gerekçe ile karşılaştırır.
+ • L3 - Çevresel kararların ödünleşmelerini açıklar; tek metriğin yeterli olmadığını kavrar.
+ • L4 - Gerçek okulda ölçülebilir bir atık azaltma önerisi geliştirir.
+ • L5 - Simülasyon sonucu ile gerçek saha verisini ayırt eder.
+ 
+Pedagojik tasarım ilkesi
+Her modülde görev  karar  sonuç  yapay zekâ / kural tabanlı açıklama  yeni durumda transfer döngüsü vardır.
+Bilgi soruları tek başına ilerleme sağlamaz. UNESCO iklim eğitimi rehberi, eylem odaklı ve yaşa uygun öğrenme sonuçlarını
+destekler [R9].
+
+
+===== PAGE 4 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+04
+03 / Yedi modül tek oyun dünyasında
+Bölge / alt oyun
+Oyuncu kararı
+Ortak duruma etkisi
+P0-P2
+01 - Son Tabak
+Porsiyon, stok, öğün üretimi
+Atık, bütçe, memnuniyet
+P0
+02 - Enerji Adası
+Güneş, rüzgâr, batarya
+Enerji, bütçe, emisyon göstergesi
+P1
+03 - Döngü Ustaları
+Önleme, yeniden kullanım, ayırma
+Atık sistemi maliyeti ve kaynak kullanımı
+P1
+04 - KrizKenti
+Yeşil alan, yağmur suyu, altyapı
+Su, risk, refah, bütçe
+P2
+05 - Karbon Dedektifleri
+Ürün iddiası ve yaşam döngüsü analizi
+Tüketim davranışı / bilgi puanı
+P2
+06 - Mavi Nöbet
+Kıyı atığı, habitat yönetimi
+Kıyı ekosistem riski
+P2
+07 - Gelecek Meclisi
+Kanıtla müzakere ve ortak karar
+Öğrenme/karar gerekçesi puanı
+P2
+Çapraz bağlantı kuralı
+Kantin modülünde gıda atığı miktarı değiştiğinde atık modülünün toplama/işleme yükü de değişir. Enerji modülünde
+depolama yapılmadan yenilenebilir kaynak payı artırıldığında kesinti riski yükseltilen bir senaryo doğabilir. Her çapraz
+etkinin hesaplama kuralı ayrı tanımlanır, kaynaklandırılır ve test edilir.
+Yedi modülün varlığını ana haritada göstermek mümkündür; fakat “tamamı çalışıyor” iddiası
+yalnızca test edilmiş işlevler için kullanılacaktır.
+
+
+===== PAGE 5 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+05
+04 / Görsel sanat yönetimi ve stil kilidi
+Oyun dili: 2.5D izometrik, temiz geometrili, yumuşak gölgeli, kolay okunur pastel yüzeyler. Harita modern ve davetkâr;
+arayüz kurumsal ve sakin. Aşırı gerçekçi 3D, retro pixel-art ve fotogerçekçi öğeler ana stilde karıştırılmaz.
+Gece mavi
+İklim yeşili
+Nane
+Su mavisi
+Enerji altın
+Kırık beyaz
+Varlık türü
+Standart
+Örnek
+Harita zeminleri
+1 temel 2:1 izometrik oran, tek tileset grubu
+Çim, yol, su, park, kıyı
+Binalar
+Aynı ışık yönü ve yumuşak gölge
+Okul, kantin, enerji binası
+Özel simgeler
+Kalınlığı tutarlı SVG/PNG, küçük boyutta okunur
+Güneş, atık, su, karbon
+Arayüz
+Köşeler 10-14 px, sade yüzey ve yeterli kontrast
+Bütçe kartı, görev paneli
+Metin
+Noto Sans / sistem sans, Türkçe karakter desteği
+Görev, diyalog, seçenek
+Animasyon
+150-250 ms geçiş, 1-2 saniye karar efekti
+Bina vurgusu, kaynak sayaçları
+Nelerin özel üretileceği
+ • YarınLab logo ve simgesi; okul kimliği; okul kantini tabelası; yapay zekâ rehber karakteri.
+ • Güneş paneli, batarya, yağmur bahçesi ve geri dönüşüm alanı için eksik isometrik parçalar.
+ • Haritanın dönemler arası değişimini gösterecek iki renklendirme/tasarım varyasyonu.
+ Bu özel öğeler Kenney sanat diliyle aynı perspektif, renk paleti, kontur ve gölge yaklaşımı korunarak üretilir. Assetlerin
+lisans/kaynak kaydı tutulur; sadece prompt veya görsel benzerliği nedeniyle üçüncü taraf eserlerinin yeniden üretilmesi
+istenmez.
+
+
+===== PAGE 6 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+06
+05 / Kesin asset alışveriş listesi - ücretsiz / CC0
+Birbirine en uyumlu çekirdek set, Kenney’nin Isometric Tiles ailesidir. Aşağıdaki bağlantılar doğrulanmış üretici sayfalarıdır.
+İndirme sonrasında paket içindeki dosya lisansı ve tile ölçüleri ayrıca kontrol edilir [R1-R6].
+ZORUNLU / Isometric Tiles City
+Şehir parselleri, yollar ve kent dokusu · CC0, 128 dosya
+https://kenney.nl/assets/isometric-tiles-city
+ZORUNLU / Isometric Tiles Buildings
+Okul/kantin için yapı tabanı · CC0, 128 dosya
+https://kenney.nl/assets/isometric-tiles-buildings
+ZORUNLU / Isometric Tiles Landscape
+Çim, arazi, yeşil alan, su çevresi · CC0, 128 dosya
+https://kenney.nl/assets/isometric-tiles-landscape
+DESTEK / Isometric Tiles Vehicles
+Kent/ulaşım objeleri · CC0, 540 dosya
+https://kenney.nl/assets/isometric-tiles-vehicles
+ZORUNLU / UI Pack
+Buton, panel, kart, arayüz · CC0, 430 dosya
+https://kenney.nl/assets/ui-pack
+DESTEK / Interface Sounds
+Tıklama, başarı, hata, karar sesi · CC0, 100 dosya
+https://kenney.nl/assets/interface-sounds
+DESTEK / Game Icons
+Görev ve durum simgeleri · CC0, 105 dosya
+https://kenney.nl/assets/game-icons
+OPSİYON / Input Prompts
+Fare, dokunmatik, klavye yönlendirmesi · CC0, 1500 dosya
+https://kenney.nl/assets/input-prompts
+Lisans notu: Kenney, ilgili asset sayfalarında CC0 kullanımını ve ticari projelerde kullanılabileceğini doğruluyor. Kaynak belirtme zorunluluğu
+bulunmasa da oyun içinde kaynak listesi önerilir [R5].
+
+
+===== PAGE 7 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+07
+06 / Asset indirme, dönüştürme ve kalite kontrolü
+Adım adım varlık işleme
+ • Üretici sayfasını aç; “Download” üzerinden arşivi indir. Gerekiyorsa bağış penceresindeki ücretsiz devam yolunu kullan.
+ • İndirilen ZIP dosyasını design/third_party/kenney/ klasörüne aç. ZIP ve lisans dosyasını orijinal tut.
+ • Paket içindeki tilemap.txt ve örnek haritalardan gerçek sprite/tile ölçülerini öğren [R7]. Önceden rastgele 128×64
+ varsayma.
+• Özel objelerin arka planını şeffaf PNG olarak kaydet; isimlerini İngilizce ASCII ve tireli standarda göre düzenle.
+ • Kare ikonlar için 128×128 kaynak kullan, arayüz içinde daha küçük boyutlarda göster. Görsellerde metin gömme, metni
+ React içinde tut.
+• Her paketi önce örnek haritada karşılaştır: perspektif, gölge, renk, piksel yoğunluğu ve telif etiketi uyumunu kontrol et.
+ • Tileset çok sayıda küçük dosyadan oluşuyorsa atlası TexturePacker benzeri bir yöntemle veya basit build adımıyla
+ birleştir; dosya numaraları için manifest üret.
+Asset manifest örneği
+ {
+  "id": "building_school",
+  "file": "/assets/custom/school.png",
+  "source": "custom-compatible-art",
+  "license": "team-owned",
+  "anchor": {"x": 0.5, "y": 1},
+  "tileFootprint": [3, 3],
+  "interactive": true
+}
+Kaynak paketlerin görselleri PDF içine kopyalanmamıştır; bağlantılar doğrudan hak sahibinin sayfasına gider. Harita ve
+ekran çizimleri bu doküman için hazırlanmış şematik tasarım çizimleridir.
+
+
+===== PAGE 8 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+08
+07 / İlk okul-şehir haritası: görsel yerleşim
+DÜNYA HARİTASI / 32 × 32 KARO - ALFA YERLEŞİMİ
+Şematik izometrik görünüm. Nihai asset ölçekleri Tiled içinde ayarlanır.
+01
+02
+03
+04
+05
+06
+07
+01
+Okul
+02
+Kantin
+03
+Enerji
+04
+Şehir
+05
+Atık
+06
+Tarım
+07
+Kıyı
+Tiled dosyası için başlangıç parametreleri
+Alan
+Değer
+Açıklama
+Harita
+32 × 32 hücre
+0 tabanlı x=0..31, y=0..31
+Yönelim
+Isometric / Diamond
+Eğim oranı 2:1; geçişli ortografik ekran
+Tile boyutu
+128 × 64 hedef
+Kaynak Kenney paketinin ölçüsü doğrulanınca kesinleştir
+Çıkış
+world_alpha.json
+Tiled JSON export; görseller göreli yol
+Çizim katmanları
+ground, roads, decoration, buildings,
+markers, interaction
+Her katmana tek sorumluluk
+Etkileşim
+Object layer: hotspots
+İnteraktif alanlar tekil id taşır
+Haritadaki 01-07 alan işaretleri konumlama önerisidir. İlk uygulamada 01 Okul, 02 Kantin, 03 Enerji ve 05 Atık tıklanabilir;
+diğer bölgeler “Yakında” durumunda görünebilir.
+
+
+===== PAGE 9 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+09
+08 / Harita koordinatları ve sahne yerleşimi
+Tüm sınırlar 0 tabanlı ve kapsayıcıdır. Çakışan alt alanlar üst sahnede ayrı etkileşim objeleri olarak çizilir. Harita tasarımı
+Tiled’de bu bölge aralıkları izlenerek yapılmalıdır.
+Obje
+Karo merkezi (x,y)
+Yaklaşık alan
+Tıklayınca
+Ana okul
+(14,14)
+x 11-17 / y 11-17
+school.overview
+Kantin
+(17,18)
+x 15-20 / y 16-19
+food.intro
+Enerji alanı
+(5,6)
+x 2-8 / y 3-9
+energy.preview
+Kentsel meydan
+(25,10)
+x 22-29 / y 6-14
+city.locked
+Atık döngü alanı
+(5,19)
+x 2-9 / y 16-23
+waste.preview
+Topluluk bostanı
+(12,25)
+x 8-17 / y 22-29
+farm.locked
+Kıyı istasyonu
+(27,27)
+x 24-31 / y 24-31
+ocean.locked
+Kamera, kontrol ve görsel hiyerarşi
+ • Çalışma çözünürlüğü: mantıksal 1440×900; görünüm FIT veya RESIZE seçimi oyun performansına göre test edilir.
+ • Kamera: sahne merkezi okula odaklanır; fare sürükleme/touch pan; fare tekeri veya +/- ile 0.8–1.4 yakınlaştırma.
+ • Çizim: zemin ve yol katmanları altta; bina/sprite katmanında derinlik = y ekran koordinatı; üstünde görev vurgusu ve
+ HUD.
+• Tıklama: sprite üzerine kaba bounding box yerine Tiled object layer polygonları; seçilen alan parıltı + tooltip ile
+ belirginleşir.
+• Kolaylık: tıklanamayan bölgeler tamamen görünmez olmaz; “Henüz açılmadı” mesajı verir.
+ 
+Harita veri dosyası önerisi
+ hotspots: [
+  { id: 'school', tileX: 14, tileY: 14, scene: 'school.overview' },
+  { id: 'canteen',tileX: 17, tileY: 18, scene: 'food.intro' },
+  { id: 'energy', tileX:  5, tileY:  6, scene: 'energy.preview' },
+  { id: 'waste',  tileX:  5, tileY: 19, scene: 'waste.preview' }
+]
+
+
+===== PAGE 10 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+10
+09 / Ekran 01 - Ana dünya ve HUD taslağı
+YARINLAB  /  2040
+Enerji 76   |   Atık 24   |   Bütçe 8.450
+GÖREVLER
+1. Kantini incele
+2. Porsiyon seç
+3. Kararını açıkla
+4. Geleceği karşılaştır
+OKUL
+KANTİN
+ATIK
+ENERJİ
+DÜNYA DURUMU
+Gıda atığı
+30 kg
+Enerji
+76/100
+Su
+81/100
+Refah
+74/100
+EKRAN 01 - Masaüstü ana dünya / 1440 × 900 tasarım temeli
+1440×900 masaüstü yerleşim ölçüleri
+Alan
+Önerilen ölçü
+İşlev
+Üst durum çubuğu
+Yükseklik 72 px
+Dönem/enerji/atık/bütçe/ayarlar
+Sol görev paneli
+Genişlik 260 px
+Görevler, ipucu, ilerleme
+Orta oyun alanı
+Kalan esnek genişlik
+İzometrik harita / bina tıklama
+Sağ sonuç paneli
+Genişlik 290 px
+Kaynaksal değişim ve durum
+Alt eylem alanı
+72 px mobilde sabitlenebilir
+Göreve başla / kararı değerlendir
+React HUD arayüzü Phaser canvas üzerinde konumlanabilir; tıklamalar ve oyun durumu EventBus yerine ortak state
+adapter üzerinden paylaşılır. Görsel dünya Phaser, erişilebilir formlar ve metinler React tarafında tutulur.
+
+
+===== PAGE 11 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+11
+10 / Ekran 02 - Kantin görev ve karar ekranı
+YARINLAB  /  2040
+Enerji 76   |   Atık 24   |   Bütçe 8.450
+KANTİN  /  GÖREV 01
+30 kg/gün örnek atık
+Öğün talebi: 280
+Bütçe: 12.000 puan
+Hedef: denge kurmak
+KARAR VER
+Aynı porsiyon
+Düşük hazırlık
+Esnek porsiyon
+Ek servis planı
+Tahmine göre üretim
+Talep riski
+EKRAN 02 - Görev ve karar paneli
+Bu ekranın etkileşim akışı
+ • Ekran açıldığında problem / koşullar görünür: öğrenci sayısı, yemek talebi, örnek atık ve bütçe.
+ • Kullanıcı üç karardan birini seçer; seçmeden simülasyon başlatılamaz.
+ • Seçimden sonra en az üç gösterge değişir: atık, hizmet/memnuniyet ve bütçe.
+ • Oyuncu “Bu seçimi neden yaptın?” alanında kısa gerekçe girer veya yaş grubuna uygun seçenek seçer.
+ • “Tekrar dene” ile alternatif kararı aynı başlangıç koşullarında deneyebilir.
+ • Sonuçlarda açık bir “Simülasyon - gerçek saha sonucu değildir” ibaresi bulunur.
+ 
+İlk test için karar seçenekleri
+Seçenek
+Örnek sonuç mekanizması
+Pedagojik yorum
+A / tek porsiyon
+Hizmet kolay; tercihlere uyum düşük olabilir
+Tek metrikli çözüm yetmeyebilir
+B / esnek porsiyon
+İsraf düşebilir; servis maliyeti artabilir
+Denge ve yan etki
+C / talep tahmini
+İsraf azalabilir; yanlış tahmin riski
+Belirsizlik ve erişilebilirlik
+
+
+===== PAGE 12 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+12
+11 / Ekran 03 - İki gelecek ve geri bildirim
+YARINLAB  /  2040
+Enerji 76   |   Atık 24   |   Bütçe 8.450
+AYNI OKUL  /  İKİ FARKLI GELECEK
+SENARYO A - KARARLAR YOK
+SENARYO B - İYİLEŞTİRME
+İsraf: yüksek
+Maliyet: artabilir
+Refah: düşük
+İsraf: azalabilir
+Maliyet: dengeli
+Refah: daha yüksek
+EKRAN 03 - İki gelecek karşılaştırması
+Karşılaştırmanın tasarımı
+İki farklı strateji aynı başlangıç koşuluyla çalıştırılmalı. Sonuç kartları değerlerin neden değiştiğini açıklamalı; yalnızca “Yeşil
+iyi / kırmızı kötü” gösterimi yapılmamalı. Senaryo A ve B kullanıcı tarafından seçilerek karşılaştırılabilir.
+• Karar özeti ve risk/ödünleşme açıklaması
+ • Atık, bütçe, memnuniyet veya enerji için yan yana çubuk grafikler
+ • Yapay zekâ rehberi: iki soruluk yansıtma; hazır doğrulanmış fallback
+ • “Gerçek okulda ne yapabilirim?” eylem önerisi ve ölçüm planı
+ 
+Karbon değerleri bilimsel katsayı olmadan kesin kgCO₂e olarak gösterilmez. Çalışan ilk prototipte
+“atık kg” ile “senaryo etki puanı” birbirinden ayrılır.
+
+
+===== PAGE 13 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+13
+12 / Ekran 04 - Öğretmen yönetim ekranı
+YARINLAB  /  2040
+Enerji 76   |   Atık 24   |   Bütçe 8.450
+ÖĞRETMEN
+Sınıflarım
+Görevler
+Öğrenme
+Saha verisi
+Katılan öğrenci
+24
+Tamamlanan görev
+19
+Ön/son test
+Ayrı ölçüm
+ÖĞRENME GÖSTERGELERİ
+Atık ölçümü
+Gerekçe kalitesi
+Karar dengesi
+EKRAN 04 - Öğretmen paneli (öğrenci verileri temsili)
+İlk rapor alanları
+Alan
+Kaynak
+Doğrulama
+Oturum sayısı
+Anonim/yerel oyun oturumu
+Çifte sayımı kontrol et
+Öğrenme ön/son testi
+Ayrı soru setleri
+Güçlük dengesi; ham puanla ver
+Karar gerekçesi
+Öğrenci cevabı veya seçenek
+AI çıktısı öğretmen incelemesine açık
+Gerçek okul görevi
+Öğretmen tarafından girilen toplam veri
+Kişisel fotoğraf/konum isteme
+Final gösteriminde öğretmen paneli gerçek öğrenci verisi varmış gibi sunulmayacak. Örnek kayıtlar açıkça “DEMO VERİSİ”
+olarak etiketlenecek.
+
+
+===== PAGE 14 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+14
+13 / Mobil ekran ve erişilebilir kullanım
+YARINLAB
+01
+02
+03
+Görev: Kantini incele
+GÖREVE BAŞLA
+MOBİL UYARLAMA
+• Harita dokunarak kaydırılır
+• Paneller tam ekran açılır
+• Alt CTA 44px ve üstü
+• Metinler cihazda ölçeklenir
+• Yatay ekran zorunlu değildir
+• Önce masaüstü gösterimi tamamlanır; mobil uyarlama en az 360 px ekran genişliğinde çalışır.
+ • Mobilde yan paneller gizlenir; görevler alttan açılan sheet, grafikler tam ekran modal olur.
+ • Dokunmatik hedefler en az 44×44 px; önemli işlevler yalnızca renkle belirtilmez.
+ • Haritaya alternatif erişilebilir “Bölge Listesi” ve klavyeyle gezinme bulunur.
+ • Animasyon azaltma tercihi (prefers-reduced-motion), yeterli kontrast ve Türkçe altyazı/metin desteklenir.
+ 
+
+===== PAGE 15 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+15
+14 / Yazılım mimarisi ve veri akışı
+React Arayüz
+ HUD / kararlar
+Phaser Sahne
+harita / etkileşim
+Karar Motoru
+ kural / durum
+Yerel Kayıt
+oturum / ilerleme
+Yapay Zekâ API
+ öğretmen rehberi
+Öğretmen Paneli
+ öğrenme analitiği
+Sorumlulukların ayrılması
+Bileşen
+Sorumluluk
+Sınır
+Phaser scenes
+Harita, sprite, efekt, hotspot
+Bilimsel etki hesabı yapmaz
+React UI
+Görev, karar, rapor, erişilebilirlik
+Phaser nesnelerini doğrudan yönetmez
+DecisionEngine
+Karar seçeneklerini geçerli değişime çevirir
+Deterministik; test edilebilir
+ClimateEngine
+Kaynak durumunu günceller; kısıt kontrolü
+Model/dönüşüm katsayısı kaynaklı
+AI Tutor
+Öğrenciye açıklama, soru ve yansıtma
+Numerik hesap yapmaz; API yedeği var
+Store
+Oturum, sürüm, öğretmen raporu
+MVP: yerel; sonrası güvenli veritabanı
+Yapay zekâ entegrasyon tercihi
+Üçüncü taraf model anahtarı istemci JS paketine asla konulmaz. Cloudflare Worker/Pages Functions gibi sunucu uç
+noktasında saklanan secret kullanılır [R12]. P0 sürümü model servisi olmadan da başarıyla bitirilebilir.
+
+
+===== PAGE 16 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+16
+15 / Klasör mimarisi ve kurulum
+Kurulum için gerekli araçlar
+ • Node.js LTS + npm
+ • Visual Studio Code
+ • Tiled Map Editor
+ • Git / GitHub
+ • Kenney varlık arşivleri
+ • Cloudflare Pages hesabı (yayın aşamasında)
+ 
+İlk komutlar
+ npm create @phaserjs/game@latest yarinlab
+cd yarinlab
+npm install
+npm run dev
+# Oluşturucuda React + TypeScript + uygun bundler seç.
+# Şablon varyasyonlarını package.json / README.md üzerinden doğrula.
+Resmî Phaser proje oluşturucusu farklı şablonları seçim ekranında sunar; ilgili varyant React + TypeScript + Vite ile
+uyuşmuyorsa resmî React TypeScript şablonundan başlanır [R10].
+Klasör ağacı
+ yarinlab/
+  public/assets/{kenney,custom,maps,audio}/
+  src/game/scenes/{Boot,World,Food,Future}.ts
+  src/game/systems/{DecisionEngine,ClimateEngine}.ts
+  src/game/tiles/{mapManifest,hotspots}.ts
+  src/modules/{food,energy,waste,city,carbon,ocean}/
+  src/ui/{Hud,TaskPanel,DecisionModal,TeacherPanel}/
+  src/ai/{tutorClient,fallbackResponses}.ts
+  src/data/{scenarios,constants,learningOutcomes}/
+  src/state/{gameStore,types}.ts
+  src/tests/
+  docs/{sources,licenses,decision-log}/
+
+
+===== PAGE 17 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+17
+16 / Veri modeli - çalışan karar motoru sözleşmesi
+Her görev version id ve başlangıç koşulu taşır. Senaryo sonuçları elle kodlanmış bir durum tablosu olabilir; daha sonra
+bilimsel modelle değiştirilir. Farklı oynama oturumlarının karşılaştırılabilirliği için aynı seed ve koşullar saklanır.
+ type Resources = {
+  budget: number;      // oyun puanı; gerçek para değil
+  foodWasteKg: number; // senaryoda ölçülen/tahmini kg
+  energyScore: number; // 0..100 oyun göstergesi
+  waterScore: number;  // 0..100 oyun göstergesi
+  wellbeing: number;   // 0..100 oyun göstergesi
+};
+type Choice = { id: string; label: string;
+  deltas: Partial<Resources>; tradeoff: string; };
+type Scenario = { id: string; version: string;
+  baseline: Resources; choices: Choice[];
+  learningOutcomeIds: string[]; evidenceRefs: string[]; };
+type DecisionResult = { scenarioId: string; choiceId: string;
+  before: Resources; after: Resources;
+  reasoning?: string; modelVersion: string; };
+Saf fonksiyon prototipi
+ export function applyChoice(before: Resources, choice: Choice): Resources {
+  const next = { ...before };
+  for (const [key, delta] of Object.entries(choice.deltas)) {
+    const k = key as keyof Resources;
+    next[k] = before[k] + (delta ?? 0);
+  }
+  next.foodWasteKg = Math.max(0, next.foodWasteKg);
+  for (const key of ['energyScore','waterScore','wellbeing'] as const)
+    next[key] = Math.max(0, Math.min(100, next[key]));
+  return next;
+}
+Bu fonksiyon örnek başlangıç kodudur, tam iklim modeli değildir. Gerçek karbon hesapları için uygun ürün bazlı katsayı ve
+yaşam döngüsü kapsamı tanımlanmadan emisyon değeri üretilmez.
+
+
+===== PAGE 18 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+18
+17 / Tiled  Phaser harita entegrasyonu
+Tiled içinde harita kurma
+ • New Map  Orientation: Isometric; width/height 32×32; tile boyutunu indirilmiş paketin örnek metadata bilgisine göre
+ ayarla.
+• New Tileset  görsel atlası ekle; margin, spacing ve tile offset değerlerini paketten doğrula.
+ • Katmanları ground  roads  decorations  buildings  hotspotObjects sırasıyla oluştur.
+ • Hotspot objelerini rectangle/polygon olarak yerleştir; properties: id, scene, locked, label.
+ • Export As JSON  public/assets/maps/world_alpha.json; image URL referanslarını public köküne uygun hâle getir.
+ • İlk testte tek bina ve 1 etkileşim noktası yükleniyorsa kalan objeleri ekle.
+ 
+Phaser sahnesi - kavramsal iskelet
+ class WorldScene extends Phaser.Scene {
+  constructor() { super('WorldScene'); }
+  preload() {
+    this.load.tilemapTiledJSON('world', '/assets/maps/world_alpha.json');
+    this.load.image('cityTiles', '/assets/kenney/city/tiles.png');
+  }
+  create() {
+    const map = this.make.tilemap({ key: 'world' });
+    const tileset = map.addTilesetImage('TiledCityTileset', 'cityTiles');
+    if (!tileset) throw new Error('Tileset adı eşleşmiyor');
+    map.createLayer('ground', tileset, 0, 0);
+    // roads ve buildings katmanları, sonra hotspots eklenir.
+  }
+}
+Yukarıdaki TiledCityTileset adı Tiled’deki isimle birebir aynı olmalıdır. Ayrıca Kenney paketi doğrudan “tiles.png”
+sağlamıyorsa atlas hazırlama adımı gerekir. API şablonu Tiled JSON + Phaser Tilemap kullanımını temel alır [R8].
+
+
+===== PAGE 19 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+19
+18 / Yapay zekâ tasarımı: kontrollü rehber
+Çekirdek kullanım alanları
+ • Açıklama üretme: öğrenci seçiminin ödünleşmesini yaşa uygun dille açıklar.
+ • İpucu üretme: doğrudan cevabı söylemeden 1-2 soruyla yönlendirir.
+ • Uyarlama: öğrenme hedefine bağlı açıklama düzeyini değiştirir.
+ • Öğretmen özeti: kişisel hüküm vermeden ölçülen görev performansını betimler.
+ 
+İstem / prompt sözleşmesi
+ ROLE: Turkish climate learning tutor (ages 11-14).
+INPUT: verified scenario JSON, selected option, rule-engine result,
+       learning goal, student explanation (optional).
+RULES:
+- Never invent kgCO2e, real-world savings or scientific coefficients.
+- Only quote numerical values from verified engine result.
+- Clearly distinguish simulated outcomes from measurements.
+- Ask at most 2 short guiding questions.
+- Be respectful, accessible, age-appropriate.
+OUTPUT: { summary, tradeoff, question1, question2, sourceIds }
+Güvenilirlik ve maliyet
+İstemler sunucu tarafında tutulur; yanıt şekli JSON şemasıyla doğrulanır; 5-8 saniyelik ağ gecikmesinde fallback yanıt
+gösterilir. Rate limiting, bütçe kotası, kısa yanıt ve cache uygulanır. API olmadan oyun oynanabilir kalmalıdır.
+Risk
+Tedbir
+Yanlış iklim iddiası
+Katsayılar AI yerine kural motorunda; kaynak ve sürüm zorunlu
+Çocuk verisi
+Anonim oturum, veri minimizasyonu, öğretmen kontrolü
+Uygunsuz sohbet
+Serbest sohbet yerine senaryo bağlamlı kısa yanıt
+API kesintisi
+Hazır pedagojik geri bildirim ve görev akışı
+Model maliyeti
+İstek sınırı, max token, önbellek
+
+
+===== PAGE 20 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+20
+19 / Simülasyon kuralları ve etki dürüstlüğü
+Örnek sonuç tablosu - tamamen temsili
+Gösterge
+Başlangıç
+A: tek porsiyon
+B: esnek
+C: tahmin
+Gıda atığı (kg/gün)
+30
+29
+20
+18
+Bütçe (oyun puanı)
+12.000
+11.900
+11.300
+12.200
+Memnuniyet puanı
+75
+65
+87
+58
+Uyarı: Tablo oyun mekaniğini göstermek için uydurulmuş temsilî değerlerden oluşur; saha deneyi, bilimsel etki veya karbon
+azaltımı iddiası değildir. Hedef; bu mekanizmayı daha sonra açık varsayım, gerçek okul ölçümleri ve güvenilir literatürle
+kalibre etmektir.
+Sıfır atık modülüyle çapraz etki
+ wasteLoadKg = foodWasteKg + otherSchoolWasteKg;
+collectionNeed = ceil(wasteLoadKg / assumedCollectionCapacityKg);
+// assumedCollectionCapacityKg: simülasyon varsayımı,
+// gerçek veri değil; ekran dipnotunda açıkça gösterilir.
+Gözlem ile tahminin ayrımı
+ • Oyun göstergesi: amaç karar sonuçlarını öğretmek; gerçek dünyaya doğrudan eşit değildir.
+ • Okul saha verisi: gerçek tartım, öğrenci sayısı ve öğün sayısıyla kayıt altına alınır.
+ • Emisyon hesabı: yalnız doğrulanmış ürün-bazlı emisyon katsayısı ve sistem sınırları mevcutsa oluşturulur.
+ • Etki iddiası: oyun içi tasarrufu doğrudan gerçek dünya tasarrufu gibi duyurma.
+ Gıda israfının iklimle ilişkisi için UNEP Food Waste Index Report 2024 kaynak alınabilir; küresel istatistikler ürünün
+kanıtlanmış etkisi olarak sunulamaz [R11].
+
+
+===== PAGE 21 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+21
+20 / Öğrenci akışı, hikâye ve görev senaryosu
+Dakika
+Sahne
+Oyuncu eylemi
+Sistem olayı
+00:00-00:45
+Giriş
+2040 mesajını açar
+Hedef ve kontrol anlatımı
+00:45-02:00
+Dünya
+Okulu ve kantini bulur
+Hotspot ve görev paneli
+02:00-04:00
+Kantin
+Verileri okur; karar verir
+Karar motoru yeni durum üretir
+04:00-05:30
+Geri bildirim
+Gerekçe yazar / seçer
+AI veya doğrulanmış fallback
+05:30-07:00
+Karşılaştırma
+Başka kararla yeniden dener
+A/B sonuç karşılaştırması
+07:00-09:00
+Gerçek görev
+Okul için bir çözüm önerir
+Öğrenme ve eylem kaydı
+İlk görev metni / oyun içi
+“Bugün okulumuzun yemekhanesinde 280 öğrenci için öğün hazırlanıyor. Son bir haftadan alınmış örnek olayda tabak
+artıkları ve hazırlık fazlası önemli bir sorun. Tek hedefin atığı sıfırlamak değil; öğrencilerin ihtiyacını karşılayarak kaynakları
+daha akıllıca kullanmak.”
+Görev tamamlama şartları
+ • En az bir seçenek seçilip simülasyon çalıştırılmalı.
+ • Öğrenci ilk kararını gerekçelendirmeli.
+ • Farklı bir seçeneğin sonucunu karşılaştırmalı.
+ • Simülasyon ile gerçek ölçüm arasındaki fark sorusunu cevaplamalı.
+ 
+
+===== PAGE 22 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+22
+21 / Üç kişilik ekip ve görev dağılımı
+Rol dağılımı kişi isimlerine değil yetkinliklere göre hazırlanmıştır. Mevcut disiplinler arası ekibin gerçek katkısına göre
+güncellenmelidir.
+Rol
+Çekirdek sorumluluk
+Somut teslim
+Eğitim / AI lideri
+Öğrenme hedefi, görev metni, AI geri bildirimi,
+rubrik
+Gıda görev paketi ve AI doğrulama testleri
+Oyun / ürün lideri
+Phaser sahneleri, React ekranları, mobil
+etkileşim
+Tıklanabilir dünya ve kantin UI
+Altyapı / veri lideri
+Tiled export, devlet/durum motoru, build, kayıt
+ve yayın
+Karar motoru, test ve yayımlanmış uygulama
+Geliştirme sürecini hızlandıracak iş kuralları
+ • Her iş bir kart: amaç, kabul ölçütü, ekran görüntüsü/test, tahmini bağımlılık.
+ • Her gün bir çalışan main sürümü; kırık derleme ile gün bitirilmez.
+ • Proje kararlarını docs/decision-log altında tarih ve gerekçe ile sakla.
+ • AI ile üretilen kod merge edilmeden insan tarafından okunur, lint/typecheck/test yapılır.
+ • Son saatlerde yeni özellik yerine kararlılık ve jüri akışı önceliklidir.
+ 
+
+===== PAGE 23 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+23
+22 / Geliştirme takvimi - somut iş paketleri
+Tarih
+Yapılacak
+Çıkış kontrolü
+31 Eki
+Repo + şablon; Kenney asset; Tiled 32×32; temel harita
+Ana dünya açılır, en az 1 hotspot tıklanır
+1 Kas
+Kantin senaryosu; 3 karar; kaynak paneli; 2 gelecek
+Karar değişince sonuç doğru güncellenir
+2 Kas
+PDF başvuru; oyun tasarım görselleri; iddia doğrulama
+Başvuru tamam; hayalî pilot iddiası yok
+3-5 Kas
+Karar motoru testleri; harita temizliği; responsive
+Temel testler geçer, mobil açılır
+6-8 Kas
+AI fallback; öğretmen raporu; gerçek kullanıcı denemesi
+Ağ kapalıyken oyun bitirilebilir
+9-13 Kas
+Mentor notları; sunum provaları; ölçüm planı
+5 dk sunum, 3 dk S/C prova
+14 Kas
+Offline kopya, yedek cihaz planı, freeze
+Prod ve yerel sürüm aynı
+15-16 Kas
+Final geliştirmesi; 3 saha görüşmesi; 1 revizyon
+Geliştirme kayıtları + canlı işlev
+Finalde sahada üç kurum/firma görüşmesi yapılıp en az bir geri bildirim uygulama/iş modeline yansıtılmalıdır. Şartname,
+final öncesi geliştirmelere izin verir ama finalde yapılanların ayrıca belirtilmesini ister [K1].
+
+
+===== PAGE 24 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+24
+23 / Kabul testleri: gerçekten bitmiş sayılma koşulları
+ID
+Test
+Beklenen
+T01
+Oyun URL tarayıcıda açılır
+Başlangıç, dünya ve görev yüklenir
+T02
+Tüm aktif hotspotlara tıkla
+Doğru sahne açılır; kilitli sahne yönlendirilir
+T03
+Aynı karar aynı başlangıçta 3× çalışır
+Aynı ölçülebilir sonucu üretir
+T04
+Karar A  B  C
+Farklı sonuçlar; ilk state her seferinde korunur
+T05
+Yüksek/negatif değer girdisi
+0 altı atık yok; 0-100 puan sınırı var
+T06
+API bağlantısını kes
+Yedek açıklama; görev tamamlanabilir
+T07
+Ekran 360 px genişlik
+Taşma veya gizli eylem yok
+T08
+Klavyeyle gezin
+Temel işlemler erişilebilir
+T09
+Yeni oturum aç
+Örnek öğrenci verisi sıfırlanabilir
+T10
+Kaynak listesi görüntüle
+Lisans ve kaynak bağlantıları açık
+T11
+Build al
+npm run build başarılı; dist üretilir
+T12
+Jüri demosu
+90 sn içinde karar ve sonuç gösterilir
+Performans hedefleri - teknik hedef, ölçülmüş sonuç değil
+ • Temel oyun öğeleri masaüstü Chrome/Edge üzerinde akıcı görünmeli; FPS/ilk yükleme süreleri cihazda ölçülmeli.
+ • Atlas birleştirme ve yalnızca gereken assetleri ön yükleme; büyük modülleri sahne açıldığında yükleme.
+ • İnternet yoksa oyun çekirdeği çalışmalı; servis worker/PWA ileri fazda eklenebilir.
+ • Jüri sunumu için ekran paylaşımı, tam ekran ve ekran görüntüsü alma testleri yapılmalı.
+ 
+
+===== PAGE 25 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+25
+24 / Yayınlama, güvenlik ve veri yönetimi
+Cloudflare Pages üzerinden yayın
+ • GitHub deposunda main dalı hazır olsun.
+ • Cloudflare Pages  yeni proje  GitHub deposunu bağla.
+ • Build command: npm run build; output directory: dist [R13].
+ • Üretim URL ve rastgele bir gizli pencerede giriş/durum testi yap.
+ • İleride AI endpoint için Pages Functions / Workers kur; API key secret olarak tanımla [R12].
+ 
+Gizlilik ve telif kontrolü
+ • Çocuklardan ad, fotoğraf, tam konum, e-posta, sağlık verisi toplama: P0 kapsamında yok.
+ • Sınıf raporunda anonim test oturumları veya kurum tarafından onaylı kodlar kullanılır.
+ • Gerçek okul uygulamasında kurum/veli izinleri ve KVKK değerlendirmesi ayrıca yürütülür.
+ • Her asset için paket, URL, lisans ve indirme tarihi kaydı tutulur.
+ • Üçüncü taraf API anahtarları repository, public dosyalar ve ekran görüntüsünde bulunmaz.
+ 
+
+===== PAGE 26 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+26
+25 / COP31 sunum planı ve savunma
+Süre
+İçerik
+Jüriye kanıt
+0:00-0:40
+Sorun: iklim eğitimi davranışa dönüşmüyor
+Gıda israfı ve eğitsel boşluk kaynakları
+0:40-1:20
+Çözüm: bağlı karar simülasyonu
+Yedi modül + P0 odağı harita
+1:20-2:50
+Canlı demo: kantin kararı
+Harita  karar  sonuç  karşılaştırma
+2:50-3:35
+AI ve öğretmen öğrenme ölçümü
+FallBack + öğretmen görünümü
+3:35-4:20
+Kullanıcı, iş modeli, yaygınlaşma
+İlk okul pilotu / lisans varsayımı
+4:20-5:00
+Ekip, doğrulama, sonraki adım
+Somut geliştirilenler ve etki planı
+Jüri sorularına hazırlık
+ • “Bu sadece oyun mu?”  Gerçek karar ve öğretmen görev analitiği yapan etkileşimli eğitim teknolojisi.
+ • “Yapay zekâ gerçekten nerede?”  Senaryo bazlı açıklama, ipucu ve öğretmen özeti; numerik çekirdek doğrulanmış
+ kurallarla.
+• “Karbonu nasıl azaltıyorsunuz?”  İlk kanıt öğrenme ve davranış; saha ölçümü olmadan doğrudan emisyon azalması iddia
+ edilmiyor.
+• “Yedi modül çok geniş değil mi?”  Bir derin P0 modül, çapraz bağ, kalan modüller versiyonlanmış mimari.
+ • “Okullar ödeme yapar mı?”  İş modeli hipotezi; saha görüşmesiyle doğrulanacak.
+ 
+
+===== PAGE 27 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+27
+26 / Risk tablosu ve geri çekilme planı
+Risk
+Olasılık / etki
+Çözüm / geri çekilme
+Tiled asset uyumsuzluğu
+Orta / yüksek
+Tek atlasla başla; olmazsa sabit sahne sprite tabanlı harita
+Phaser 4 API farkı
+Orta / orta
+Resmî React TS şablonu ve 4.2.1 pin; küçük spike
+AI servis hatası
+Yüksek / orta
+Rule-based fallback, fail-open oyun akışı
+Çok fazla modül
+Yüksek / yüksek
+P0 dondur; diğerlerini poster/harita seviyesinde göster
+Gerçek veri bulunmaması
+Yüksek / yüksek
+Simülasyon etiketi; ölçüm planı ve dürüst etki sınırı
+Görsel stil çakışması
+Orta / orta
+Tek Kenney ailesi; özel objeleri stil rehberine göre üret
+Mobil performans
+Orta / orta
+Küçük harita, sınırlı efekt, atlas ve önbellek
+Sunum interneti
+Orta / yüksek
+Yerel çalıştırma; ekran kaydı yedeği
+Kesin “GO / NO-GO” eşikleri
+GO: Ana harita tıklanır, karar motoru çalışır, iki geleceği karşılaştırır, fallback açıklama gelir ve 90
+saniyelik demo bir kez baştan sona hatasız tamamlanır. NO-GO: Bunlardan biri kırıkken yeni modüle
+geçilmez.
+
+
+===== PAGE 28 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+28
+27 / Doğrudan başlangıç kontrol listesi
+ 01 Proje ana klasörünü yarinlab olarak oluştur.
+ 02 Resmî Phaser React + TypeScript başlangıç şablonunu kur.
+ 03 Kenney City, Buildings, Landscape, UI Pack indir ve lisanslarını sakla.
+ 04 Tiled’de 32×32 isometrik harita aç; tile metadata dosyasını oku.
+ 05 Okul ve kantin binalarını haritaya yerleştir.
+ 06 Kantin için hotspot objesi ve açılan React görev paneli yap.
+ 07 3 seçenek ve kaynak değişimi içeren saf karar motorunu yaz.
+ 08 İki gelecek karşılaştırmasını ekle.
+ 09 Fallback AI öğretmen açıklamasını ve gerekçe alanını bağla.
+ 10 Öğretmen özetini ve kaynak / lisans sayfasını ekle.
+ 11 12 kabul testini çalıştır; production build al.
+ 12 COP31 sunumunda P0 tamamlananlarla P1-P2 yol haritasını ayır.
+İlk görev dosyaları
+world_alpha.json, food_001.json, ClimateEngine.ts, WorldScene.ts, DecisionModal.tsx,
+aiFallback.tr.json, licenses.md.
+
+
+===== PAGE 29 =====
+YARINLAB   /   COP31
+2.5D İZOMETRİK UYGULAMA KILAVUZU
+Tasarım hedefi: çalışan prototip + ölçülebilir öğrenme
+29
+28 / Kaynaklar, resmî bağlantılar ve lisans notları
+[K1] COP31 İklim Teknolojileri Creathonu Şartnamesi · Kullanıcı tarafından paylaşılan resmî şartname; 8 sayfa; 2026
+https://mth.tc/cop31trcreathon
+[R1] Kenney Isometric Tiles City · Asset / CC0 / 128 dosya
+https://kenney.nl/assets/isometric-tiles-city
+[R2] Kenney Isometric Tiles Buildings · Asset / CC0 / 128 dosya
+https://kenney.nl/assets/isometric-tiles-buildings
+[R3] Kenney Isometric Tiles Landscape · Asset / CC0 / 128 dosya
+https://kenney.nl/assets/isometric-tiles-landscape
+[R4] Kenney Isometric Tiles Vehicles · Asset / CC0 / 540 dosya
+https://kenney.nl/assets/isometric-tiles-vehicles
+[R5] Kenney License/Support · CC0 ve ticari kullanım açıklaması
+https://kenney.nl/support
+[R6] Kenney UI Pack · UI asset / CC0 / 430 dosya
+https://kenney.nl/assets/ui-pack
+[R7] Kenney Tilemaps Import Guide · Ölçü, margin ve spacing açıklaması
+https://kenney.nl/knowledge-base/game-assets-2d/importing-and-using-tilemaps
+[R8] Phaser Tilemap Editor Docs · Tiled JSON ve izometrik yönelim
+https://docs.phaser.io/phaser-editor/scene-editor/game-objects/tilemap-object
+[R9] UNESCO Greening Curriculum · İklim eğitimi pedagojik çerçeve
+https://www.unesco.org/en/sustainable-development/education/greening-future/curriculum
+[R10] Create Phaser Game · Resmî CLI ve şablonlar
+https://phaser.io/tutorials/create-game-app
+[R11] UNEP Food Waste Index 2024 · Küresel gıda israfı problemi
+https://wedocs.unep.org/bitstream/handle/20.500.11822/45275/Food-Waste-Index-2024-key-messages.pdf
+[R12] Cloudflare Workers Secrets · Sunucuda API anahtarı saklama
+https://developers.cloudflare.com/workers/configuration/environment-variables/
+[R13] Cloudflare Pages React · React/Vite build ve dist
+https://developers.cloudflare.com/pages/framework-guides/deploy-a-react-site/
+[R14] Tiled Map Editor · Ücretsiz açık kaynak harita editörü
+https://www.mapeditor.org/
+[R15] Phaser 4 download · v4.2.1 durumu
+https://phaser.io/download
+[R16] Interface Sounds · CC0 ses paketi
+https://kenney.nl/assets/interface-sounds
+[R17] Game Icons · CC0 ikon paketi
+https://kenney.nl/assets/game-icons
+[R18] Input Prompts · CC0 input ikonları
+https://kenney.nl/assets/input-prompts
+Kaynaklar 31 Ekim 2026 itibarıyla erişilebilir sayfa/veri olarak kontrol edildi. Fiyat, sürüm ve paket içerikleri zamanla
+değişebilir. Bu kılavuzun görsel maketleri şematik tasarımdır; gerçek oyundan alınmış ekran görüntüsü veya geliştirilmiş
+ürün kanıtı değildir.

@@ -70,3 +70,14 @@ describe('açılış ve yükleme', () => {
     expect(gameStore.get().worldReady).toBe(true);
   });
 });
+
+
+describe('dönem görünümü', () => {
+  it('varsayılan bugün; seçilir; yeni oturumda bugüne döner', () => {
+    expect(gameStore.get().period).toBe('today');
+    gameStore.setPeriod('future-none');
+    expect(gameStore.get().period).toBe('future-none');
+    gameStore.resetSession();
+    expect(gameStore.get().period).toBe('today');
+  });
+});

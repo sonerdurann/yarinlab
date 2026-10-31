@@ -10,6 +10,7 @@ import { SourcesPanel } from './ui/Sources/SourcesPanel';
 import { FutureComparison } from './ui/FutureComparison/FutureComparison';
 import { Intro } from './ui/Intro/Intro';
 import { Logo } from './ui/Logo';
+import { PeriodSwitch, PeriodTint } from './ui/PeriodSwitch/PeriodSwitch';
 import { wasteCollection } from './game/systems/ClimateEngine';
 
 export function App() {
@@ -62,8 +63,10 @@ export function App() {
   return (
     <div className="app">
       <div ref={host} className="world" />
+      <PeriodTint />
       <button className="skip" onClick={skipToZones}>Bölge listesine geç</button>
       <TopBar />
+      <PeriodSwitch />
       <div className="zoom-btns">
         <button aria-label="Yakınlaştır" onClick={() => zoom(0.1)}>+</button>
         <button aria-label="Uzaklaştır" onClick={() => zoom(-0.1)}>−</button>
