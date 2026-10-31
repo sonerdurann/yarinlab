@@ -67,11 +67,11 @@ const og = (id, name, objects) => ({ id, name, type: 'objectgroup', draworder: '
 const map = {
   type: 'map', version: '1.10', tiledversion: '1.11.0',
   orientation: 'isometric', renderorder: 'right-down', infinite: false,
-  width: N, height: N, tilewidth: 128, tileheight: 64, nextlayerid: 7, nextobjectid: 200,
-  properties: [{ name: 'tilesetNote', type: 'string', value: 'Geçici prosedürel zemin; Kenney atlası eklenince tileset güncellenecek' }],
+  width: N, height: N, tilewidth: 132, tileheight: 66, nextlayerid: 7, nextobjectid: 200,
+  properties: [{ name: 'tilesetNote', type: 'string', value: 'Zemin Kenney landscape atlasından; gid->kare eşlemesi src/game/tiles/mapManifest.ts' }],
   tilesets: [{
-    firstgid: 1, name: 'TiledCityTileset', tilewidth: 128, tileheight: 64, tilecount: 7, columns: 7,
-    image: 'tiles-placeholder.png', imagewidth: 896, imageheight: 64, margin: 0, spacing: 0,
+    firstgid: 1, name: 'TiledCityTileset', tilewidth: 132, tileheight: 66, tilecount: 7, columns: 7,
+    image: '../kenney/landscape/landscapeTiles_sheet.png', imagewidth: 1024, imageheight: 2048, margin: 0, spacing: 0,
   }],
   layers: [
     tl(1, 'ground', ground), tl(2, 'roads', roads), tl(3, 'decoration', decoration),
