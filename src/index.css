@@ -1,0 +1,17 @@
+:root {
+  --night: #12263a;
+  --climate-green: #2e9e6b;
+  --mint: #bfeadb;
+  --water: #4aa8d8;
+  --energy-gold: #e8b73a;
+  --paper: #f7f5ef;
+  --radius: 12px;
+  font-family: 'Noto Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--night);
+}
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; height: 100%; background: var(--paper); }
+button { min-height: 44px; min-width: 44px; font: inherit; }
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
