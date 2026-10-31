@@ -11,7 +11,7 @@ export const DECOR: Decor[] = [
   // Enerji bölgesi: güneş panelleri, batarya, rüzgâr türbinleri
   ...at('solar', [[3, 4], [3, 5], [3, 6], [3, 7], [7, 4], [7, 5], [7, 6], [7, 7]]),
   ...at('battery', [[4, 8], [6, 8]]),
-  ...at('turbine', [[2, 3], [8, 3], [3, 9], [7, 9]]),
+  ...at('turbine', [[2, 3], [8, 3], [2, 9], [8, 9]]),
   // Atık döngü bölgesi: ayrıştırma kutuları
   ...at('bin', [[3, 18], [3, 20], [7, 18], [7, 20], [4, 22], [6, 22]]),
   // Topluluk bostanı: ekin sıraları (tek x'li karolar; yol x=14 ve bina çevresi hariç)

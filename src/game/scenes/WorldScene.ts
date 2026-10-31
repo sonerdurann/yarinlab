@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { BUILDING_FRAMES, GROUND_FRAMES, GROUND_SPRITE_HEIGHT, MAP, ROAD_FRAMES, TREE_GID } from '../tiles/mapManifest';
+import { BUILDING_FRAMES, GROUND_FRAMES, GROUND_SPRITE_HEIGHT, MAP, ROAD_FRAMES, TREE_GID, WATER_DROP, WATER_GID } from '../tiles/mapManifest';
 import { hotspots, type Hotspot } from '../tiles/hotspots';
 import { DECOR } from '../tiles/decor';
 import { gameStore } from '../../state/gameStore';
@@ -20,6 +20,7 @@ const diamond = (x: number, y: number, w = 1, h = 1) => {
 };
 
 const area = (h: Hotspot) => (h.bounds[1] - h.bounds[0] + 1) * (h.bounds[3] - h.bounds[2] + 1);
+const reducedMotion = () => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 const clampZoom = (z: number) => Phaser.Math.Clamp(z, 0.8, 1.4);
 
 export class WorldScene extends Phaser.Scene {
@@ -54,7 +55,12 @@ export class WorldScene extends Phaser.Scene {
     const layer = (n: string) => map.layers.find((l) => l.name === n)?.data ?? [];
     const ground = layer('ground'), roads = layer('roads'), deco = layer('decoration');
     const isRoad = (x: number, y: number) => x >= 0 && y >= 0 && x < MAP.size && y < MAP.size && !!roads[y * MAP.size + x];
-    const decorTiles = new Set(DECOR.map((d) => d.y * MAP.size + d.x));
+    // dekor karosu ve türbin çevresinde (yüksek parça) ağaç çizilmez
+    const decorTiles = new Set<number>();
+    for (const d of DECOR) {
+      const r = d.kind === 'turbine' ? 1 : 0;
+      for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) decorTiles.add((d.y + dy) * MAP.size + d.x + dx);
+    }
     // Satır-sütun sırası (right-down) düz karolar için doğru ressam sırasını verir.
     for (let y = 0; y < MAP.size; y++) {
       for (let x = 0; x < MAP.size; x++) {
@@ -67,7 +73,16 @@ export class WorldScene extends Phaser.Scene {
         }
         if (!def) continue;
         // 1.015 ölçek: karolar arası dikişi kapatır
-        this.add.image(p.x, p.y, def.atlas, def.frame).setOrigin(0.5, 0).setScale(def.flipX ? -1.015 : 1.015, 1.015).setDepth(0);
+        const isWater = !roads[i] && ground[i] === WATER_GID;
+        const img = this.add
+          .image(p.x, p.y + (isWater ? WATER_DROP : 0), def.atlas, def.frame)
+          .setOrigin(0.5, 0)
+          .setScale(def.flipX ? -1.015 : 1.015, 1.015)
+          .setDepth(0);
+        // su parıltısı: karo karo hafif gecikmeli (hareket azaltma açıksa çalışmaz)
+        if (isWater && !reducedMotion()) {
+          this.tweens.add({ targets: img, alpha: 0.93, duration: 1800, yoyo: true, repeat: -1, ease: 'Sine.easeInOut', delay: ((x + y) % 8) * 200 });
+        }
         if (deco[i] === TREE_GID && !decorTiles.has(i)) {
           const c = iso(x + 0.5, y + 0.5);
           this.add.image(c.x, c.y + 6, 'tree').setOrigin(0.5, 1).setDepth(10 + c.y);
@@ -84,7 +99,10 @@ export class WorldScene extends Phaser.Scene {
         const f = this.textures.getFrame('buildings', d.frame!);
         this.add.image(p.x, p.y - (f.height - GROUND_SPRITE_HEIGHT), 'buildings', d.frame).setOrigin(0.5, 0).setDepth(10 + p.y);
       } else if (d.kind === 'turbine') {
-        this.add.image(p.x, p.y + MAP.tileHeight * 0.75, d.kind).setOrigin(0.5, 1).setDepth(10 + p.y + 20);
+        const bottom = p.y + MAP.tileHeight * 0.75;
+        this.add.image(p.x, bottom, d.kind).setOrigin(0.5, 1).setDepth(10 + p.y + 20);
+        const hub = this.add.image(p.x, bottom - 150 + 38, 'blades').setDepth(10 + p.y + 21).setAngle((d.x * 37 + d.y * 53) % 120);
+        if (!reducedMotion()) this.tweens.add({ targets: hub, angle: hub.angle + 360, duration: 7000, repeat: -1 });
       } else {
         // zemin karosunun elmasına oturur (üst köşe hizası); kutu parçaları yukarı taşar
         this.add.image(p.x, p.y, d.kind).setOrigin(0.5, 0).setDepth(d.kind === 'crop' ? 1 : 10 + p.y + 10);

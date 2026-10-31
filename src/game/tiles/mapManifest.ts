@@ -19,7 +19,7 @@ type Frame = { atlas: 'landscape' | 'buildings'; frame: string; tint?: number };
 export const GROUND_FRAMES: Record<number, Frame> = {
   1: { atlas: 'landscape', frame: 'landscapeTiles_022.png' }, // çim
   2: { atlas: 'landscape', frame: 'landscapeTiles_074.png' }, // yol (yöne göre seçilir, ROAD_FRAMES)
-  3: { atlas: 'landscape', frame: 'landscapeTiles_035.png' }, // su
+  3: { atlas: 'landscape', frame: 'landscapeTiles_066.png' }, // su (düz)
   4: { atlas: 'landscape', frame: 'landscapeTiles_083.png' }, // tarım toprağı
   5: { atlas: 'landscape', frame: 'landscapeTiles_059.png' }, // kıyı kumu
   6: { atlas: 'landscape', frame: 'landscapeTiles_059.png', tint: 0xe3e8f1 }, // meydan / kaldırım (açık)
@@ -47,3 +47,7 @@ export const ROAD_FRAMES = {
 } as const;
 
 export const TREE_GID = 7;
+
+/** Su yüzeyi kumsala göre biraz çökük çizilir (px). */
+export const WATER_DROP = 8;
+export const WATER_GID = 3;

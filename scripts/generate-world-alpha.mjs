@@ -22,7 +22,8 @@ const decoration = new Array(N * N).fill(0);
 for (let y = 0; y < N; y++) {
   for (let x = 0; x < N; x++) {
     const i = y * N + x;
-    if (inBox(x, y, zones.ocean.box)) ground[i] = x + y >= 52 ? T.water : T.sand;
+    // kıyı: köşede koy (x+y>=56 su), çevresi kumsal; bina karosu (27,27) kumsalda kalır
+    if (inBox(x, y, zones.ocean.box)) ground[i] = x + y >= 56 ? T.water : T.sand;
     else if (inBox(x, y, zones.farm.box)) ground[i] = T.farm;
     else if (inBox(x, y, zones.city.box) || inBox(x, y, zones.waste.box)) ground[i] = T.plaza;
     // ada kenarı: dış halka kum (çevresi su)

@@ -82,18 +82,19 @@ export class BootScene extends Phaser.Scene {
       box(g, 0.4, 0.4, 0.58, 0.58, 8, 0x2e9e6b, oy - 34);
     });
 
-    // rüzgâr türbini: direk + üç kanat
+    // rüzgâr türbini: yalnızca direk + göbek (kanatlar ayrı, döner)
     make('turbine', 84, 150, (g) => {
       g.fillStyle(0x12263a, 0.14).fillEllipse(42, 140, 44, 14);
       g.fillStyle(0xe9edf2, 1).fillTriangle(38, 140, 46, 140, 42, 40);
       g.fillStyle(0xc5ccd6, 1).fillTriangle(42, 140, 46, 140, 42, 40);
-      const hub = { x: 42, y: 38 };
+    });
+    make('blades', 80, 80, (g) => {
       g.fillStyle(0xf7f5ef, 1);
       for (const ang of [-90, 30, 150]) {
-        const r = Phaser.Math.DegToRad(ang), l = 34, n = Phaser.Math.DegToRad(ang + 90);
-        g.fillTriangle(hub.x, hub.y, hub.x + Math.cos(r) * l + Math.cos(n) * 4, hub.y + Math.sin(r) * l + Math.sin(n) * 4, hub.x + Math.cos(r) * l - Math.cos(n) * 4, hub.y + Math.sin(r) * l - Math.sin(n) * 4);
+        const r = Phaser.Math.DegToRad(ang), n = Phaser.Math.DegToRad(ang + 90), l = 34;
+        g.fillTriangle(40, 40, 40 + Math.cos(r) * l + Math.cos(n) * 4, 40 + Math.sin(r) * l + Math.sin(n) * 4, 40 + Math.cos(r) * l - Math.cos(n) * 4, 40 + Math.sin(r) * l - Math.sin(n) * 4);
       }
-      g.fillStyle(0x4aa8d8, 1).fillCircle(hub.x, hub.y, 5);
+      g.fillStyle(0x4aa8d8, 1).fillCircle(40, 40, 5);
     });
 
     // ayrıştırma kutuları: mavi (kâğıt), yeşil (cam), sarı (plastik); koyu kapaklı

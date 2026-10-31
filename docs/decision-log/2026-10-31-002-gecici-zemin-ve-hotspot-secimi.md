@@ -12,3 +12,6 @@ Yollar komşu karoya göre seçiliyor: x ekseni `landscapeTiles_074`, y ekseni a
 
 ## Görsel cila 2 (aynı gün)
 Ada görünümü: dış halka kum, çevresi açık deniz rengi; meydan ve atık bölgesi açık kaldırım karosu (`landscapeTiles_059` tonlu). Bölge kimliği için etkileşimsiz dekor (`src/game/tiles/decor.ts`): enerji bölgesinde güneş paneli/batarya/rüzgâr türbini, atık bölgesinde ayrıştırma kutuları, bostanda ekin sıraları, şehir ve okul çevresinde Kenney dekor binaları. Özel parçalar `BootScene.makeCustomTextures` ile kodla üretilir (`team-owned`). Dekor yollara ve hotspot bina karolarına denk gelmez (`tests/decor.test.ts`); dekor karosundaki ağaç çizilmez. Kalan: kıyı su geçiş karoları, hafif karo çizgileri, gerçek cihazda performans.
+
+## Görsel cila 3 (aynı gün)
+Kıyı: şeritli `landscapeTiles_035` yerine düz su karosu `landscapeTiles_066`; köşede koy (x+y ≥ 56 su, çevresi kumsal), su yüzeyi kumsala göre 8 px çökük. Hareket: rüzgâr türbini kanatları ayrı dokuyla döner (7 sn/tur), su karoları hafif parlar (alpha 0.93↔1); ikisi de `prefers-reduced-motion` açıkken çalışmaz. Türbinler bataryalarla çakışmayacak yere alındı; dekor karosu ve türbin çevresinde ağaç çizilmez. Kalan: çimde çok hafif karo çizgileri, gerçek cihazda performans/FPS ölçümü.
