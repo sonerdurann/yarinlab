@@ -1,6 +1,7 @@
 # Kabul testleri (kılavuz §23)
 
-Son çalıştırma: 2026-10-31 · `npm run test` 35/35 · `npm run build` başarılı · tarayıcı: yerleşik pane, Chromium, 1440×900 ve 360×640 emülasyon.
+Son çalıştırma: 2026-10-31 · temiz `HEAD` kopyasında (`1550cdb`) `npm run test` 52/52 · `tsc` 0 hata · `npm run build` başarılı · tarayıcı: yerleşik pane, Chromium, 1440×900 ve 360×640 emülasyon.
+Son duman testi (üretim derlemesi, `vite preview`): yükleme → açılış → kantin kararı → sonuç/çapraz etki → rehber (hazır) → iki gelecek → dönem → öğretmen → kaynaklar → ayarlar; konsol hatasız, dev kancası pakette yok. 360 px'te 9 ekranda (harita, açılış, seçenekler, sonuç, karşılaştırma, öğretmen, kaynaklar, ayarlar, açık sheet) yatay taşma ve <44 px hedef yok.
 Durum: ☑ geçti · ◐ kısmen (açıklama) · ☐ yapılmadı.
 
 | ID | Test | Beklenen | Durum | Kanıt / yöntem |

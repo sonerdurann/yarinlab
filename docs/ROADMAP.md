@@ -29,3 +29,6 @@ Final: 15-16 Kas, 24 saat geliştirme, 5 dk sunum + 3 dk soru-cevap. Finalde 3 k
 - [x] (ek) Dönem görünümü: haritanın iki renk varyasyonu (§04, §09)
 
 İlk görev dosyaları: `world_alpha.json`, `food_001.json`, `ClimateEngine.ts`, `WorldScene.ts`, `DecisionModal.tsx`, `aiFallback.tr.json`, `licenses.md`.
+
+## Görsel/UX cila: tamamlandı (31 Ekim 2026)
+Harita (Kenney atlası, yöne duyarlı yollar, kıyı, bölge dekoru, hareket), karar ve sonuç ekranları, öğretmen grafikleri, açılış/yükleme/marka, dönem görünümü, ayarlar, parçalı yükleme. Cila için kalan bilinen küçük konu: çimde çok hafif karo çizgileri (gerçek cihazda yeniden bakılmalı). Bundan sonraki işler cila değil: yayın (Cloudflare Pages), gerçek cihaz/klavye testi, 90 sn prova, saha görüşmeleri, P1 modülleri.
