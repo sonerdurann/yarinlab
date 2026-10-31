@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { BUILDING_FRAMES, GROUND_FRAMES, GROUND_SPRITE_HEIGHT, MAP } from '../tiles/mapManifest';
+import { BUILDING_FRAMES, GROUND_FRAMES, GROUND_SPRITE_HEIGHT, MAP, ROAD_FRAMES, TREE_GID } from '../tiles/mapManifest';
 import { hotspots, type Hotspot } from '../tiles/hotspots';
 import { gameStore } from '../../state/gameStore';
 
@@ -49,17 +49,26 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private drawTiles(map: TiledMap) {
-    const ground = map.layers.find((l) => l.name === 'ground')?.data ?? [];
-    const roads = map.layers.find((l) => l.name === 'roads')?.data ?? [];
+    const layer = (n: string) => map.layers.find((l) => l.name === n)?.data ?? [];
+    const ground = layer('ground'), roads = layer('roads'), deco = layer('decoration');
+    const isRoad = (x: number, y: number) => x >= 0 && y >= 0 && x < MAP.size && y < MAP.size && !!roads[y * MAP.size + x];
     // Satır-sütun sırası (right-down) düz karolar için doğru ressam sırasını verir.
     for (let y = 0; y < MAP.size; y++) {
       for (let x = 0; x < MAP.size; x++) {
         const i = y * MAP.size + x;
-        const def = GROUND_FRAMES[roads[i] || ground[i]];
-        if (!def) continue;
         const p = iso(x, y);
-        const img = this.add.image(p.x, p.y, def.atlas, def.frame).setOrigin(0.5, 0).setScale(1.015).setDepth(0); // hafif taşma: karolar arası dikişi kapatır
-        if (def.tint) img.setTint(def.tint);
+        let def: { atlas: string; frame: string; tint?: number; flipX?: boolean } | undefined = GROUND_FRAMES[ground[i]];
+        if (roads[i]) {
+          const ax = isRoad(x - 1, y) || isRoad(x + 1, y), ay = isRoad(x, y - 1) || isRoad(x, y + 1);
+          def = ax && ay ? ROAD_FRAMES.cross : ay ? ROAD_FRAMES.alongY : ROAD_FRAMES.alongX;
+        }
+        if (!def) continue;
+        // 1.015 ölçek: karolar arası dikişi kapatır
+        this.add.image(p.x, p.y, def.atlas, def.frame).setOrigin(0.5, 0).setScale(def.flipX ? -1.015 : 1.015, 1.015).setDepth(0);
+        if (deco[i] === TREE_GID) {
+          const c = iso(x + 0.5, y + 0.5);
+          this.add.image(c.x, c.y + 6, 'tree').setOrigin(0.5, 1).setDepth(10 + c.y);
+        }
       }
     }
   }

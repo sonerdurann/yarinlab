@@ -18,7 +18,7 @@ type Frame = { atlas: 'landscape' | 'buildings'; frame: string; tint?: number };
 /** Tiled gid -> Kenney karosu. Sheet'teki indeksler contact sheet ile görsel olarak seçildi. */
 export const GROUND_FRAMES: Record<number, Frame> = {
   1: { atlas: 'landscape', frame: 'landscapeTiles_022.png' }, // çim
-  2: { atlas: 'landscape', frame: 'landscapeTiles_080.png' }, // yol (asfalt)
+  2: { atlas: 'landscape', frame: 'landscapeTiles_074.png' }, // yol (yöne göre seçilir, ROAD_FRAMES)
   3: { atlas: 'landscape', frame: 'landscapeTiles_035.png' }, // su
   4: { atlas: 'landscape', frame: 'landscapeTiles_083.png' }, // tarım toprağı
   5: { atlas: 'landscape', frame: 'landscapeTiles_059.png' }, // kıyı kumu
@@ -38,3 +38,12 @@ export const BUILDING_FRAMES: Record<string, Frame> = {
 
 /** Zemin sprite'ında elmasın altındaki kalınlık dahil toplam yükseklik (132x99). */
 export const GROUND_SPRITE_HEIGHT = 99;
+
+/** Yol karoları: x ekseni, y ekseni (x'in aynası), kavşak. Komşu karoya göre seçilir. */
+export const ROAD_FRAMES = {
+  alongX: { atlas: 'landscape', frame: 'landscapeTiles_074.png', flipX: false },
+  alongY: { atlas: 'landscape', frame: 'landscapeTiles_074.png', flipX: true },
+  cross: { atlas: 'landscape', frame: 'landscapeTiles_090.png', flipX: false },
+} as const;
+
+export const TREE_GID = 7;

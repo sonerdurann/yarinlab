@@ -6,3 +6,6 @@
 
 ## Güncelleme (aynı gün): Kenney atlası bağlandı
 Zemin ve binalar artık Kenney Landscape/Buildings atlaslarından (`load.atlasXML`) çiziliyor; geçici prosedürel zemin kaldırıldı. Ölçülen taban 132×66 olduğu için `tileWidth/tileHeight` ve JSON harita 132×66'ya çekildi. gid→kare ve hotspot→bina eşlemesi `src/game/tiles/mapManifest.ts` içinde; kareler contact sheet ile görsel seçildi. Bilinen eksikler: yol karoları yön ayrımı yapmıyor (tek asfalt karo), ağaç/dekor katmanı henüz çizilmiyor, özel parçalar (güneş paneli, batarya vb.) üretilecek.
+
+## Görsel cila (aynı gün)
+Yollar komşu karoya göre seçiliyor: x ekseni `landscapeTiles_074`, y ekseni aynı karonun yatay aynası, kavşak `landscapeTiles_090` (`ROAD_FRAMES`). Kenney paketlerinde ağaç olmadığı için `BootScene.makeTreeTexture` aynı paletle düz gölgeli bir ağaç üretiyor (özel asset, `team-owned`); `decoration` katmanındaki gid 7 bu ağaçla çiziliyor. Karolar 1.015 ölçekle çizilerek dikişler kapatıldı. Kalan: kıyı/su geçişleri, tarım ve enerji bölgesi dekoru, özel enerji parçaları.
