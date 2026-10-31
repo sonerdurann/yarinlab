@@ -96,7 +96,10 @@ test.describe('misafir oyuncu', () => {
 
   test('erişilebilirlik: ana ekran ve karar penceresinde ciddi axe ihlali yok', async ({ page }) => {
     await start(page);
-    const scan = async () => (await new AxeBuilder({ page: page as never }).exclude('canvas').withTags(['wcag2a', 'wcag2aa']).analyze()).violations.filter((v) => v.impact === 'critical' || v.impact === 'serious');
+    // Açılış/geçiş animasyonları bitmeden ölçülen renkler yarı saydam karışım olur; önce sonlu animasyonlar beklenir.
+    const settle = () => page.waitForFunction(() => document.getAnimations().every((a) => a.playState !== 'running' || a.effect?.getTiming().iterations === Infinity));
+    const scan = async () => { await settle(); return scanNow(); };
+    const scanNow = async () => (await new AxeBuilder({ page: page as never }).exclude('canvas').withTags(['wcag2a', 'wcag2aa']).analyze()).violations.filter((v) => v.impact === 'critical' || v.impact === 'serious');
     expect(await scan(), JSON.stringify(await scan(), null, 1)).toEqual([]);
     await page.getByRole('button', { name: /^Önerilen:/ }).click();
     expect(await scan(), JSON.stringify(await scan(), null, 1)).toEqual([]);
