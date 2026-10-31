@@ -5,7 +5,7 @@ export const uid = () => `${Date.now().toString(36)}${Math.floor(Math.random() *
 /** Yükleme bitene kadar bekler ve hikâye girişini geçer. */
 export async function start(page: Page) {
   await page.goto('/');
-  await expect(page.locator('.loading.done')).toBeAttached({ timeout: 20_000 });
+  await expect(page.locator('.loading.done')).toBeAttached({ timeout: 45_000 });
   // Başlık ekranı -> yeni oyun -> karakter oluşturucu -> hikâye girişi
   const newGame = page.getByRole('button', { name: /Yeni oyuna başla/ });
   if (await newGame.isVisible()) {

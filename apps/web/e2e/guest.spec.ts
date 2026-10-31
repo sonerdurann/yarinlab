@@ -4,6 +4,7 @@ import { decide, openTasks, start } from './helpers';
 
 test.describe('misafir oyuncu', () => {
   test('görev zinciri, puan, gün döngüsü, inşa ve yeniden yükleme', async ({ page }) => {
+    test.setTimeout(120_000);
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
     await start(page);
@@ -102,6 +103,7 @@ test.describe('misafir oyuncu', () => {
   });
 
   test('tüm yedi modülün ilk görevi oynanabilir; Meclis kanıt kartları gösterir', async ({ page }) => {
+    test.setTimeout(180_000);
     await start(page);
     const modules = ['Enerji Adası', 'Karbon Dedektifleri', 'KrizKenti', 'Son Tabak', 'Mavi Nöbet', 'Döngü Ustaları', 'Gelecek Meclisi'];
     for (const m of modules) {

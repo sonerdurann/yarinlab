@@ -15,7 +15,7 @@ export function TimeChip() {
   return (
     <span className="time-chip" aria-label="Zaman ve hava">
       <span className="weather" aria-hidden="true" title={c.weatherTr}>{WEATHER_ICON[c.weather]}</span>
-      <span className="date"><span>{c.seasonTr} · Gün {s.sim.day + 1}</span><small>{c.year} · {c.weatherTr}</small></span>
+      <span className="date"><span><span className="season">{c.seasonTr} · </span>Gün {s.sim.day + 1}</span><small>{c.year} · {c.weatherTr}</small></span>
       <button className="sun" onClick={() => gameStore.endDay()}>🌙 Günü bitir</button>
     </span>
   );
