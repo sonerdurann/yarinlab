@@ -24,7 +24,7 @@ Final: 15-16 Kas, 24 saat geliştirme, 5 dk sunum + 3 dk soru-cevap. Finalde 3 k
 - [x] 08 İki gelecek karşılaştırması
 - [x] 09 Fallback AI açıklaması + gerekçe alanı (model servisi P1)
 - [x] 10 Öğretmen özeti + kaynak/lisans sayfası
-- [ ] 11 12 kabul testi + production build
+- [~] 11 12 kabul testi + production build (9 geçti, T07/T08/T12 kısmen; docs/ACCEPTANCE.md)
 - [ ] 12 Sunumda P0 ile P1-P2 yol haritası ayrımı
 
 İlk görev dosyaları: `world_alpha.json`, `food_001.json`, `ClimateEngine.ts`, `WorldScene.ts`, `DecisionModal.tsx`, `aiFallback.tr.json`, `licenses.md`.
