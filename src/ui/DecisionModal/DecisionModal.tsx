@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { food } from '../../data/scenarios';
 import { SIMULATION_NOTICE } from '../../data/constants';
 import { gameStore, useGameState } from '../../state/gameStore';
@@ -5,11 +6,27 @@ import type { Resources } from '../../state/types';
 import { TutorCard } from '../TutorCard/TutorCard';
 import { Modal } from '../Modal/Modal';
 
-const rows: { key: keyof Resources; label: string; unit: string; lowerIsBetter?: boolean }[] = [
-  { key: 'foodWasteKg', label: 'Gıda atığı', unit: 'kg/gün', lowerIsBetter: true },
-  { key: 'budget', label: 'Bütçe', unit: 'puan' },
-  { key: 'wellbeing', label: 'Memnuniyet', unit: '/100' },
+const rows: { key: keyof Resources; label: string; unit: string; max: number; lowerIsBetter?: boolean }[] = [
+  { key: 'foodWasteKg', label: 'Gıda atığı', unit: 'kg/gün', max: 40, lowerIsBetter: true },
+  { key: 'budget', label: 'Bütçe', unit: 'puan', max: 13000 },
+  { key: 'wellbeing', label: 'Memnuniyet', unit: '/100', max: 100 },
 ];
+
+/** Başlangıç işaretinden yeni değere uzayan çubuk (renk tek başına anlam taşımaz; sayı ve ok yanında). */
+function DeltaBar({ before, after, max, tone }: { before: number; after: number; max: number; tone: 'good' | 'bad' | 'flat' }) {
+  const pct = (v: number) => Math.max(2, Math.min(100, (v / max) * 100));
+  const [grown, setGrown] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setGrown(true), 60);
+    return () => clearTimeout(t);
+  }, []);
+  return (
+    <span className="delta-bar" aria-hidden="true">
+      <span className={`delta-fill ${tone}`} style={{ width: `${pct(grown ? after : before)}%` }} />
+      <span className="delta-before" style={{ left: `${pct(before)}%` }} />
+    </span>
+  );
+}
 
 const sign = (n: number) => (n > 0 ? `+${n.toLocaleString('tr-TR')}` : n.toLocaleString('tr-TR'));
 
@@ -39,11 +56,9 @@ export function DecisionModal() {
               {food.choices.map((c) => (
                 <label key={c.id} className={s.pendingChoiceId === c.id ? 'choice on' : 'choice'}>
                   <input type="radio" name="choice" value={c.id} aria-label={`${c.id} ${c.label}`} checked={s.pendingChoiceId === c.id} onChange={() => gameStore.pickChoice(c.id)} />
-                  <span>
-                    <strong>
-                      {c.id} · {c.label}
-                    </strong>
-                    <br />
+                  <span className="badge" aria-hidden="true">{c.id}</span>
+                  <span className="choice-text">
+                    <strong>{c.label}</strong>
                     <small>{c.summary}</small>
                   </span>
                 </label>
@@ -89,10 +104,15 @@ export function DecisionModal() {
                     <tr key={r.key}>
                       <th scope="row">{r.label}</th>
                       <td>{result.before[r.key].toLocaleString('tr-TR')}</td>
-                      <td>{result.after[r.key].toLocaleString('tr-TR')}</td>
                       <td>
-                        {sign(d)} {r.unit} <span className="sr-only">{d === 0 ? 'değişmedi' : good ? 'olumlu yönde' : 'olumsuz yönde'}</span>
-                        <span aria-hidden="true">{d === 0 ? ' •' : good ? ' ▲' : ' ▼'}</span>
+                        {result.after[r.key].toLocaleString('tr-TR')}
+                        <DeltaBar before={result.before[r.key]} after={result.after[r.key]} max={r.max} tone={d === 0 ? 'flat' : good ? 'good' : 'bad'} />
+                      </td>
+                      <td>
+                        <span className={`chip ${d === 0 ? 'flat' : good ? 'good' : 'bad'}`}>
+                          <span aria-hidden="true">{d === 0 ? '•' : d > 0 ? '▲' : '▼'}</span> {sign(d)} {r.unit}
+                          <span className="sr-only"> {d === 0 ? 'değişmedi' : good ? 'olumlu yönde' : 'olumsuz yönde'}</span>
+                        </span>
                       </td>
                     </tr>
                   );

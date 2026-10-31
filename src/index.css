@@ -148,3 +148,33 @@ legend { font-weight: 600; padding: 0 6px; }
 .spinner { width: 28px; height: 28px; border-radius: 50%; border: 3px solid var(--mint); border-top-color: var(--climate-green); animation: spin 900ms linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (max-width: 760px) { .intro-hero { flex-direction: column; } }
+
+/* Karar penceresi cilası */
+.modal-backdrop { animation: fade 160ms ease-out; }
+.modal { animation: pop 220ms ease-out; }
+@keyframes fade { from { opacity: 0; } }
+@keyframes pop { from { opacity: 0; transform: translateY(10px) scale(0.98); } }
+
+.choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.choices legend { grid-column: 1 / -1; }
+.choice { position: relative; flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px; border: 2px solid #12263a22; background: #fff; transition: border-color 160ms, background 160ms, transform 160ms; }
+.choice:hover { border-color: var(--water); transform: translateY(-2px); }
+.choice.on { border-color: var(--climate-green); background: var(--mint); }
+.choice:focus-within { outline: 3px solid var(--water); outline-offset: 2px; }
+.choice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.choice .badge { width: 34px; height: 34px; border-radius: 50%; background: var(--night); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; }
+.choice.on .badge { background: var(--climate-green); }
+.choice-text { display: flex; flex-direction: column; gap: 2px; }
+.choice-text small { opacity: 0.85; }
+
+.chip { display: inline-flex; align-items: center; gap: 4px; border-radius: 999px; padding: 2px 10px; font-weight: 600; font-size: 0.8125rem; white-space: nowrap; }
+.chip.good { background: #d7f2e3; color: #14573a; }
+.chip.bad { background: #fbe0dc; color: #8a2a1e; }
+.chip.flat { background: #e5e3dc; color: #3a4a5c; }
+.delta-bar { position: relative; display: block; height: 8px; margin-top: 4px; background: #e5e3dc; border-radius: 4px; }
+.delta-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; transition: width 600ms cubic-bezier(.2,.7,.2,1); }
+.delta-fill.good { background: var(--climate-green); }
+.delta-fill.bad { background: #d9644f; }
+.delta-fill.flat { background: #8a97a6; }
+.delta-before { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--night); border-radius: 1px; }
+@media (max-width: 760px) { .choices { grid-template-columns: 1fr; } .choice { flex-direction: row; align-items: center; } }

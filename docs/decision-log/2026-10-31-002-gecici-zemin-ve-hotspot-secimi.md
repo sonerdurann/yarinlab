@@ -18,3 +18,6 @@ Kıyı: şeritli `landscapeTiles_035` yerine düz su karosu `landscapeTiles_066`
 
 ## Görsel cila 4 (aynı gün)
 Binalara yumuşak yer gölgesi (`shadow` dokusu), yuvarlak köşeli etiketler (kilitliler gri), üzerine gelinen bina 6 px yükselir (180 ms). Karar sonucu gelince kantin büyüyüp genişleyen halka çıkarır (~1,4 sn; kılavuz §04 "karar efekti"). HUD sayaçları (`useCountUp`, 700 ms) yeni değere akar; ekran okuyucu yalnızca son değeri okur. Üç hareket de `prefers-reduced-motion` açıkken kapalıdır; arka planda `requestAnimationFrame` durursa sayaç zamanlayıcıyla son değere zorlanır.
+
+## Görsel cila 5: karar penceresi
+Seçenekler A/B/C rozetli kartlara döndü (mobilde alt alta; yerel radyo düğmeleri korunur, klavye/odak halkası kartta görünür). Sonuç tablosuna başlangıçtan yeni değere uzayan çubuk ve yön oku + sayı + metin içeren değişim etiketi eklendi (renk tek başına anlam taşımaz; ekran okuyucuya "olumlu/olumsuz yönde" metni korunur). Pencere girişinde 160-220 ms solma/yükselme animasyonu (hareket azaltma açıkken kapalı). 360 px'te taşma yok, hedefler ≥44 px.
