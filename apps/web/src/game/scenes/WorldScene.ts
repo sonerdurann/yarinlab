@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { GROUND_FRAMES, GROUND_SPRITE_HEIGHT, MAP, ROAD_FRAMES, TREE_GID, WATER_DROP, WATER_GID } from '../tiles/mapManifest';
+import { GROUND_FRAMES, GROUND_SPRITE_HEIGHT, MAP, ROAD_FRAMES, TREE_GID, VEHICLE_DIR, WATER_DROP, WATER_GID } from '../tiles/mapManifest';
 import { footprintTiles, hotspotCenter, hotspots, type Hotspot } from '../tiles/hotspots';
 import { DECOR } from '../tiles/decor';
 import { gameStore, type MapLayer } from '../../state/gameStore';
@@ -544,26 +544,38 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
-  /** Yollarda gidip gelen araçlar ve yürüyen insanlar (hareket azaltmada durur). */
+  /**
+   * Yollarda gidip gelen araçlar (Kenney Isometric Vehicles, CC0; yön karesi harekete göre seçilir) ve yayalar.
+   * Araç atlası yüklenemezse kodla üretilen araç kullanılır. Hareket azaltmada durur.
+   */
   private addTraffic() {
-    const route = (kind: 'car' | 'walker', from: [number, number], to: [number, number], dur: number, delay: number) => {
+    const hasVehicles = this.textures.exists('vehicles') && this.textures.get('vehicles').has('taxi_SE.png');
+    const dirOf = (a: [number, number], b: [number, number]) =>
+      VEHICLE_DIR[b[0] !== a[0] ? (b[0] > a[0] ? '+x' : '-x') : (b[1] > a[1] ? '+y' : '-y')];
+    const route = (kind: 'taxi' | 'garbage' | 'police' | 'ambulance' | 'walker', from: [number, number], to: [number, number], dur: number, delay: number) => {
       const a = iso(from[0] + 0.5, from[1] + 0.5), b = iso(to[0] + 0.5, to[1] + 0.5);
-      const img = this.add.image(a.x, a.y, kind).setOrigin(0.5, 1).setDepth(10 + a.y + HH);
-      img.setFlipX(b.x < a.x);
+      const kenney = kind !== 'walker' && hasVehicles;
+      const there = `${kind}_${dirOf(from, to)}.png`, back = `${kind}_${dirOf(to, from)}.png`;
+      const img = kenney
+        ? this.add.image(a.x, a.y, 'vehicles', there).setOrigin(0.5, 0.8).setScale(1.5)
+        : this.add.image(a.x, a.y, kind === 'walker' ? 'walker' : 'car').setOrigin(0.5, 1).setFlipX(b.x < a.x);
+      img.setDepth(10 + a.y + HH);
       this.ambient.push(this.tweens.add({
         targets: img, x: b.x, y: b.y, duration: dur, delay, yoyo: true, repeat: -1, ease: 'Linear',
         onUpdate: () => img.setDepth(10 + img.y + HH),
-        onYoyo: () => img.setFlipX(!img.flipX),
+        onYoyo: () => { if (kenney) img.setFrame(back); else img.setFlipX(!img.flipX); },
+        onRepeat: () => { if (kenney) img.setFrame(there); else img.setFlipX(b.x < a.x); },
       }));
     };
-    route('car', [13, 13], [26, 13], 9000, 0);
-    route('car', [26, 14], [26, 26], 9000, 2500);
-    route('car', [27, 8], [38, 8], 10000, 1000);
-    route('car', [13, 27], [13, 38], 10000, 4000);
-    route('car', [3, 13], [12, 13], 8000, 1500);
-    route('car', [27, 21], [36, 21], 8000, 3000);
+    route('taxi', [13, 13], [26, 13], 9000, 0);
+    route('taxi', [26, 14], [26, 26], 9000, 2500);
+    route('police', [27, 8], [38, 8], 10000, 1000);
+    route('taxi', [13, 27], [13, 38], 10000, 4000);
+    route('ambulance', [3, 13], [12, 13], 8000, 1500);
+    route('garbage', [27, 26], [37, 26], 12000, 3000);
+    route('garbage', [32, 27], [32, 37], 11000, 6000);
+    route('taxi', [27, 21], [36, 21], 8000, 3000);
     route('walker', [13, 16], [13, 24], 12000, 500);
-    route('walker', [32, 27], [32, 36], 11000, 2500);
   }
 
   /** Örtüşen alanlarda en küçük bölge kazanır (kantin, kampüsün içindedir). */

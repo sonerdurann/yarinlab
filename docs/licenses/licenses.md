@@ -10,9 +10,9 @@ Kenney paketleri CC0 (ticari kullanım serbest, atıf zorunlu değil; oyunda kay
 | Isometric Tiles Buildings | https://kenney.nl/assets/isometric-tiles-buildings | CC0 | 2026-10-31 | isometric-tiles-buildings.zip, 1,71 MB | indirildi |
 | Isometric Tiles Landscape | https://kenney.nl/assets/isometric-tiles-landscape | CC0 | 2026-10-31 | isometric-tiles-landscape.zip, 1,14 MB | indirildi |
 | UI Pack | https://kenney.nl/assets/ui-pack | CC0 | 2026-10-31 | ui-pack.zip, 1,23 MB | indirildi (kullanım UI adımında) |
-| Isometric Tiles Vehicles | https://kenney.nl/assets/isometric-tiles-vehicles | CC0 | – | – | `scripts/fetch-kenney-extras.sh` ile yerelde indirilir (bulut ağı engelli) |
-| Interface Sounds | https://kenney.nl/assets/interface-sounds | CC0 | – | – | aynı betikle; oyun dosya varsa bunu çalar |
-| Game Icons | https://kenney.nl/assets/game-icons | CC0 | – | – | aynı betikle |
+| Isometric Tiles Vehicles | https://kenney.nl/assets/isometric-tiles-vehicles | CC0 | 2026-10-31 | isometric-tiles-vehicles.zip, 2,27 MB | kullanılıyor: `sheet_allCars` atlası (taksi, çöp kamyonu, polis, ambulans) |
+| Interface Sounds | https://kenney.nl/assets/interface-sounds | CC0 | 2026-10-31 | interface-sounds.zip, 0,83 MB | kullanılıyor: 9 efekt (`apps/web/public/assets/kenney/sounds`) |
+| Game Icons | https://kenney.nl/assets/game-icons | CC0 | 2026-10-31 | game-icons.zip, 1,05 MB | indirildi; henüz kullanılmıyor (arayüz emoji/SVG) |
 | Input Prompts | https://kenney.nl/assets/input-prompts | CC0 | – | – | indirilmedi (opsiyon) |
 
 ## Ölçülen gerçek boyutlar (kılavuz §06: "128×64 varsayma")

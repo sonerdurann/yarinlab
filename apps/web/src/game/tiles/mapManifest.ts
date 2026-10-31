@@ -11,7 +11,11 @@ export const MAP = {
 export const ATLASES = [
   { key: 'landscape', png: '/assets/kenney/landscape/landscapeTiles_sheet.png', xml: '/assets/kenney/landscape/landscapeTiles_sheet.xml' },
   { key: 'buildings', png: '/assets/kenney/buildings/buildingTiles_sheet.png', xml: '/assets/kenney/buildings/buildingTiles_sheet.xml' },
+  { key: 'vehicles', png: '/assets/kenney/vehicles/sheet_allCars.png', xml: '/assets/kenney/vehicles/sheet_allCars.xml' },
 ] as const;
+
+/** Kenney araç yönleri (ekran pusulası): +x = SE, -x = NW, +y = SW, -y = NE. */
+export const VEHICLE_DIR = { '+x': 'SE', '-x': 'NW', '+y': 'SW', '-y': 'NE' } as const;
 
 type Frame = { atlas: 'landscape' | 'buildings'; frame: string; tint?: number };
 

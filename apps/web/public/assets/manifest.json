@@ -1278,6 +1278,119 @@
         1
       ],
       "interactive": false
+    },
+    {
+      "id": "kenney-sound-click_002",
+      "file": "/assets/kenney/sounds/click_002.ogg",
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "license": "CC0",
+      "licenseFile": "/assets/kenney/sounds/License.txt",
+      "interactive": false,
+      "category": "ses",
+      "description": "Kenney Interface Sounds efekti (src/audio/sfx.ts KENNEY_SOUND)"
+    },
+    {
+      "id": "kenney-sound-confirmation_001",
+      "file": "/assets/kenney/sounds/confirmation_001.ogg",
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "license": "CC0",
+      "licenseFile": "/assets/kenney/sounds/License.txt",
+      "interactive": false,
+      "category": "ses",
+      "description": "Kenney Interface Sounds efekti (src/audio/sfx.ts KENNEY_SOUND)"
+    },
+    {
+      "id": "kenney-sound-confirmation_002",
+      "file": "/assets/kenney/sounds/confirmation_002.ogg",
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "license": "CC0",
+      "licenseFile": "/assets/kenney/sounds/License.txt",
+      "interactive": false,
+      "category": "ses",
+      "description": "Kenney Interface Sounds efekti (src/audio/sfx.ts KENNEY_SOUND)"
+    },
+    {
+      "id": "kenney-sound-confirmation_004",
+      "file": "/assets/kenney/sounds/confirmation_004.ogg",
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "license": "CC0",
+      "licenseFile": "/assets/kenney/sounds/License.txt",
+      "interactive": false,
+      "category": "ses",
+      "description": "Kenney Interface Sounds efekti (src/audio/sfx.ts KENNEY_SOUND)"
+    },
+    {
+      "id": "kenney-sound-error_004",
+      "file": "/assets/kenney/sounds/error_004.ogg",
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "license": "CC0",
+      "licenseFile": "/assets/kenney/sounds/License.txt",
+      "interactive": false,
+      "category": "ses",
+      "description": "Kenney Interface Sounds efekti (src/audio/sfx.ts KENNEY_SOUND)"
+    },
+    {
+      "id": "kenney-sound-maximize_006",
+      "file": "/assets/kenney/sounds/maximize_006.ogg",
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "license": "CC0",
+      "licenseFile": "/assets/kenney/sounds/License.txt",
+      "interactive": false,
+      "category": "ses",
+      "description": "Kenney Interface Sounds efekti (src/audio/sfx.ts KENNEY_SOUND)"
+    },
+    {
+      "id": "kenney-sound-maximize_008",
+      "file": "/assets/kenney/sounds/maximize_008.ogg",
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "license": "CC0",
+      "licenseFile": "/assets/kenney/sounds/License.txt",
+      "interactive": false,
+      "category": "ses",
+      "description": "Kenney Interface Sounds efekti (src/audio/sfx.ts KENNEY_SOUND)"
+    },
+    {
+      "id": "kenney-sound-pluck_002",
+      "file": "/assets/kenney/sounds/pluck_002.ogg",
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "license": "CC0",
+      "licenseFile": "/assets/kenney/sounds/License.txt",
+      "interactive": false,
+      "category": "ses",
+      "description": "Kenney Interface Sounds efekti (src/audio/sfx.ts KENNEY_SOUND)"
+    },
+    {
+      "id": "kenney-sound-select_002",
+      "file": "/assets/kenney/sounds/select_002.ogg",
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "license": "CC0",
+      "licenseFile": "/assets/kenney/sounds/License.txt",
+      "interactive": false,
+      "category": "ses",
+      "description": "Kenney Interface Sounds efekti (src/audio/sfx.ts KENNEY_SOUND)"
+    },
+    {
+      "id": "kenney-vehicles",
+      "file": "/assets/kenney/vehicles/sheet_allCars.png",
+      "source": "https://kenney.nl/assets/isometric-tiles-vehicles",
+      "license": "CC0",
+      "licenseFile": "/assets/kenney/vehicles/License.txt",
+      "interactive": false,
+      "category": "canli",
+      "description": "Kenney Isometric Vehicles atlası (taksi, çöp kamyonu, polis, ambulans; 16 yön). Yollardaki trafik.",
+      "tileFootprint": [
+        1,
+        1
+      ]
+    },
+    {
+      "id": "kenney-icons",
+      "file": "/assets/kenney/icons/License.txt",
+      "source": "https://kenney.nl/assets/game-icons",
+      "license": "CC0",
+      "licenseFile": "/assets/kenney/icons/License.txt",
+      "interactive": false,
+      "description": "Kenney Game Icons — yalnızca lisans kopyası; arayüz şu an emoji/SVG simge kullanıyor (ZIP design/third_party/kenney altında)."
     }
   ]
 }
