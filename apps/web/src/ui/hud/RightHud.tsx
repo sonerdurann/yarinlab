@@ -5,6 +5,7 @@ import { gameStore, useGameState, type MapLayer } from '../../state/gameStore';
 import { cityOf } from '../../state/city';
 import { zoneWarningsOf } from '../../state/warnings';
 import { hotspots } from '../../game/tiles/hotspots';
+import { Icon } from '../Icon';
 
 const N = 40;
 const S = 2.2; // mini harita karo yarı genişliği (px)
@@ -123,8 +124,8 @@ export function RightHud({ game, onZoom }: Props) {
       <div className="hud-row">
         <Notifications />
         <div className="zoom-btns">
-          <button aria-label="Yakınlaştır" onClick={() => onZoom(0.1)}>+</button>
-          <button aria-label="Uzaklaştır" onClick={() => onZoom(-0.1)}>−</button>
+          <button aria-label="Yakınlaştır" onClick={() => onZoom(0.1)}><Icon name="zoomIn" tone="black" size={24} /></button>
+          <button aria-label="Uzaklaştır" onClick={() => onZoom(-0.1)}><Icon name="zoomOut" tone="black" size={24} /></button>
         </div>
       </div>
       {s.mapView === 'world' ? <Minimap game={game} /> : <button className="primary back-city" onClick={() => gameStore.setMapView('world')}>🏙️ Şehre dön</button>}

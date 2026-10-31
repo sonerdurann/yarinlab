@@ -1385,12 +1385,49 @@
     },
     {
       "id": "kenney-icons",
-      "file": "/assets/kenney/icons/License.txt",
+      "file": "/assets/kenney/icons/white/gear.png",
       "source": "https://kenney.nl/assets/game-icons",
       "license": "CC0",
       "licenseFile": "/assets/kenney/icons/License.txt",
       "interactive": false,
-      "description": "Kenney Game Icons — yalnızca lisans kopyası; arayüz şu an emoji/SVG simge kullanıyor (ZIP design/third_party/kenney altında)."
+      "description": "Kenney Game Icons: 14 simge (beyaz/siyah, 100 px) — üst çubuk ayarlar/yardım/menü ve yakınlaştırma düğmeleri.",
+      "category": "arayuz"
+    },
+    {
+      "id": "player-0",
+      "file": null,
+      "generator": "apps/web/src/game/art/player.ts",
+      "category": "canli",
+      "description": "Oyuncu karakteri (avatar renkleriyle; duruş karesi)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
+    },
+    {
+      "id": "player-1",
+      "file": null,
+      "generator": "apps/web/src/game/art/player.ts",
+      "category": "canli",
+      "description": "Oyuncu karakteri (avatar renkleriyle; adım karesi)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 1
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
     }
   ]
 }

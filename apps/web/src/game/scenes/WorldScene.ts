@@ -10,6 +10,7 @@ import {
   type CityIndicators, type PlacedBuilding, type Weather,
 } from '@yarinlab/shared';
 import { textureOrigin } from '../art/isoArt';
+import { makePlayerTextures } from '../art/player';
 import { zoneWarningsOf } from '../../state/warnings';
 import { depthOf, diamond, HH, isWorldPointer, iso, placeIso, placeUpright, setupCameraControls, toTile } from './iso';
 
@@ -74,6 +75,7 @@ export class WorldScene extends Phaser.Scene {
     this.setupCamera();
     this.addTraffic();
     this.addLife();
+    this.addPlayer();
     this.addClouds();
     this.setupSky();
     this.syncCity(true);
@@ -639,6 +641,79 @@ export class WorldScene extends Phaser.Scene {
     const [x0, x1, y0, y1] = h.bounds;
     this.glow?.lineStyle(4, 0xf6c453, 0.9).strokePoints(diamond(x0, y0, x1 - x0 + 1, y1 - y0 + 1), true);
     this.tip?.setText(h.label);
+  }
+
+  // ---- Oyuncu karakteri: avatar görünümüyle haritada yürür (duruş, yürüme, düşünme, sevinç) ----
+  private player?: Phaser.GameObjects.Image;
+  private playerBubble?: Phaser.GameObjects.Text;
+  private playerLook = '';
+  private playerWalk?: Phaser.Tweens.Tween;
+  private playerStep?: Phaser.Time.TimerEvent;
+  private playerIdle?: Phaser.Tweens.Tween;
+  private lastScores = 0;
+
+  private addPlayer() {
+    const st = gameStore.get();
+    this.playerLook = JSON.stringify(st.profile.avatar);
+    makePlayerTextures(this, st.profile.avatar);
+    const p = iso(19.5, 20.5);
+    this.player = this.add.image(p.x, p.y, 'player-0').setOrigin(0.5, 1).setScale(1.6).setDepth(10 + p.y + HH);
+    this.playerBubble = this.add.text(p.x, p.y - 100, '', { fontFamily: "'Baloo 2', Nunito, sans-serif", fontSize: '26px', backgroundColor: '#ffffff', color: '#243447', padding: { x: 8, y: 2 } })
+      .setOrigin(0.5, 1).setDepth(5650).setVisible(false);
+    this.playerIdle = this.tweens.add({ targets: this.player, scaleY: 1.66, duration: 900, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    this.ambient.push(this.playerIdle);
+    this.lastScores = st.scores.length;
+    let wasOpen = st.decisionOpen, lastInspect = '';
+    const unsub = gameStore.subscribe(() => {
+      const s = gameStore.get();
+      const look = JSON.stringify(s.profile.avatar);
+      if (look !== this.playerLook) { this.playerLook = look; makePlayerTextures(this, s.profile.avatar); this.player?.setTexture('player-0'); }
+      const target = s.inspect?.kind === 'zone' ? s.inspect.id : s.decisionOpen && s.selectedHotspotId ? s.selectedHotspotId : '';
+      if (target && target !== lastInspect) this.walkTo(target);
+      lastInspect = target;
+      // düşünme: karar penceresi açıkken düşünce balonu
+      if (s.decisionOpen !== wasOpen) this.bubble(s.decisionOpen ? '💭' : '');
+      wasOpen = s.decisionOpen;
+      // sevinç: yeni puan 80+ ise zıplar
+      if (s.scores.length > this.lastScores) {
+        const last = s.scores[s.scores.length - 1];
+        if (last.total >= 80) this.cheer();
+      }
+      this.lastScores = s.scores.length;
+    });
+    this.events.once('shutdown', unsub);
+  }
+
+  private bubble(text: string) {
+    const b = this.playerBubble, pl = this.player;
+    if (!b || !pl) return;
+    b.setText(text).setVisible(!!text).setPosition(pl.x, pl.y - pl.displayHeight - 6);
+  }
+
+  private cheer() {
+    const pl = this.player;
+    if (!pl || reducedMotion()) return;
+    this.bubble('🎉');
+    this.tweens.add({ targets: pl, y: pl.y - 26, duration: 220, yoyo: true, repeat: 2, ease: 'Quad.easeOut', onComplete: () => this.bubble('') });
+  }
+
+  /** Bölgenin önündeki karoya yürür (kampüs içinde düz çizgi; hareket azaltmada anında). */
+  private walkTo(zoneId: string) {
+    const h = hotspots.find((x) => x.id === zoneId), pl = this.player;
+    if (!h || !pl) return;
+    const t = iso(h.tileX + h.foot[0] / 2 + 0.3, h.tileY + h.foot[1] + 0.6);
+    this.playerWalk?.remove();
+    this.playerStep?.remove();
+    pl.setFlipX(t.x < pl.x);
+    if (reducedMotion()) { pl.setPosition(t.x, t.y).setDepth(10 + t.y + HH); return; }
+    const dist = Phaser.Math.Distance.Between(pl.x, pl.y, t.x, t.y);
+    let f = 0;
+    this.playerStep = this.time.addEvent({ delay: 180, loop: true, callback: () => pl.setTexture(`player-${(f = 1 - f)}`) });
+    this.playerWalk = this.tweens.add({
+      targets: pl, x: t.x, y: t.y, duration: Phaser.Math.Clamp(dist * 2.2, 400, 4500), ease: 'Sine.easeInOut',
+      onUpdate: () => { pl.setDepth(10 + pl.y + HH); this.playerBubble?.setPosition(pl.x, pl.y - pl.displayHeight - 6); },
+      onComplete: () => { this.playerStep?.remove(); pl.setTexture('player-0'); },
+    });
   }
 
   private focusHotspot(id: string) {

@@ -1,6 +1,6 @@
 # Asset envanteri
 
-Bu dosya `apps/web/public/assets/manifest.json` dosyasından üretilir (`node scripts/asset-inventory.mjs`). Toplam **85** kayıt.
+Bu dosya `apps/web/public/assets/manifest.json` dosyasından üretilir (`node scripts/asset-inventory.mjs`). Toplam **87** kayıt.
 
 Lisanslar: `team-owned` = bu projede kodla üretildi (dosya yok, `generator` çalışma anında çizer). `CC0` = Kenney. Ayrıntı: `docs/licenses/licenses.md`.
 
@@ -40,7 +40,7 @@ Lisanslar: `team-owned` = bu projede kodla üretildi (dosya yok, `generator` ça
 | `mascot-yari` | Maskot Yarı (SVG) | — | — | hayır | apps/web/src/ui/Mascot.tsx | team-owned |
 | `sfx` | WebAudio ile üretilen ses efektleri | — | — | hayır | apps/web/src/audio/sfx.ts | team-owned |
 
-## kenney-atlas (5)
+## kenney-atlas (4)
 
 | Kimlik | Açıklama | Taban (karo) | Pivot | Etkileşim | Kaynak | Lisans |
 |---|---|---|---|---|---|---|
@@ -48,7 +48,6 @@ Lisanslar: `team-owned` = bu projede kodla üretildi (dosya yok, `generator` ça
 | `kenney-cityDetails_sheet` | — | — | 0.5, 0 | hayır | /assets/kenney/city/cityDetails_sheet.png | CC0 |
 | `kenney-buildingTiles_sheet` | — | — | 0.5, 0 | hayır | /assets/kenney/buildings/buildingTiles_sheet.png | CC0 |
 | `kenney-landscapeTiles_sheet` | — | — | 0.5, 0 | hayır | /assets/kenney/landscape/landscapeTiles_sheet.png | CC0 |
-| `kenney-icons` | Kenney Game Icons — yalnızca lisans kopyası; arayüz şu an emoji/SVG simge kullanıyor (ZIP design/third_party/kenney altında). | — | — | hayır | /assets/kenney/icons/License.txt | CC0 |
 
 ## bina-ana (11)
 
@@ -115,7 +114,7 @@ Lisanslar: `team-owned` = bu projede kodla üretildi (dosya yok, `generator` ça
 | `dust` | İnşaat tozu parçacığı | 1×1 | 0.5, 0.5 | hayır | apps/web/src/game/art/isoArt.ts | team-owned |
 | `spark` | Tamamlandı ışıltısı | 1×1 | 0.5, 0.5 | hayır | apps/web/src/game/art/isoArt.ts | team-owned |
 
-## canli (5)
+## canli (7)
 
 | Kimlik | Açıklama | Taban (karo) | Pivot | Etkileşim | Kaynak | Lisans |
 |---|---|---|---|---|---|---|
@@ -124,6 +123,8 @@ Lisanslar: `team-owned` = bu projede kodla üretildi (dosya yok, `generator` ça
 | `fish` | Balık | 1×1 | 0.5, 0.5 | hayır | apps/web/src/game/art/isoArt.ts | team-owned |
 | `turtle` | Deniz kaplumbağası | 1×1 | 0.5, 0.5 | hayır | apps/web/src/game/art/isoArt.ts | team-owned |
 | `kenney-vehicles` | Kenney Isometric Vehicles atlası (taksi, çöp kamyonu, polis, ambulans; 16 yön). Yollardaki trafik. | 1×1 | — | hayır | /assets/kenney/vehicles/sheet_allCars.png | CC0 |
+| `player-0` | Oyuncu karakteri (avatar renkleriyle; duruş karesi) | 1×1 | 0.5, 1 | hayır | apps/web/src/game/art/player.ts | team-owned |
+| `player-1` | Oyuncu karakteri (avatar renkleriyle; adım karesi) | 1×1 | 0.5, 1 | hayır | apps/web/src/game/art/player.ts | team-owned |
 
 ## kiyi (5)
 
@@ -148,4 +149,10 @@ Lisanslar: `team-owned` = bu projede kodla üretildi (dosya yok, `generator` ça
 | `kenney-sound-maximize_008` | Kenney Interface Sounds efekti (src/audio/sfx.ts KENNEY_SOUND) | — | — | hayır | /assets/kenney/sounds/maximize_008.ogg | CC0 |
 | `kenney-sound-pluck_002` | Kenney Interface Sounds efekti (src/audio/sfx.ts KENNEY_SOUND) | — | — | hayır | /assets/kenney/sounds/pluck_002.ogg | CC0 |
 | `kenney-sound-select_002` | Kenney Interface Sounds efekti (src/audio/sfx.ts KENNEY_SOUND) | — | — | hayır | /assets/kenney/sounds/select_002.ogg | CC0 |
+
+## arayuz (1)
+
+| Kimlik | Açıklama | Taban (karo) | Pivot | Etkileşim | Kaynak | Lisans |
+|---|---|---|---|---|---|---|
+| `kenney-icons` | Kenney Game Icons: 14 simge (beyaz/siyah, 100 px) — üst çubuk ayarlar/yardım/menü ve yakınlaştırma düğmeleri. | — | — | hayır | /assets/kenney/icons/white/gear.png | CC0 |
 

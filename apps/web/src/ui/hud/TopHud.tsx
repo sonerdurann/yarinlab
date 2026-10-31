@@ -8,6 +8,7 @@ import { authStore, useAuth } from '../../state/authStore';
 import { syncLabel, useSync } from '../../state/saveSync';
 import { useCountUp } from '../useCountUp';
 import { Logo } from '../Logo';
+import { Icon } from '../Icon';
 import { TimeChip } from '../City/CityPanels';
 import { AvatarFace } from '../characters/Avatar';
 import { useProfile } from '../../state/profileStore';
@@ -82,9 +83,9 @@ export function TopHud() {
           <AvatarFace look={profile.avatar} size={30} />{user ? <span className="lbl" aria-hidden="true">{user.displayName}</span> : <span className="lbl" aria-hidden="true">Giriş</span>}
         </button>
         <button onClick={teacherStore.openTeacher} aria-label="Öğretmen" title="Öğretmen paneli"><span aria-hidden="true" className="ico-only">🍎</span><span className="lbl" aria-hidden="true">Öğretmen</span></button>
-        <button onClick={settingsStore.open} aria-label="Ayarlar" title="Ayarlar">⚙</button>
-        <button onClick={() => gameStore.openOverlay('help')} aria-label="Yardım" title="Yardım">?</button>
-        <button onClick={() => gameStore.openOverlay('menu')} aria-label="Ana menü" title="Ana menü">☰</button>
+        <button onClick={settingsStore.open} aria-label="Ayarlar" title="Ayarlar"><Icon name="gear" /></button>
+        <button onClick={() => gameStore.openOverlay('help')} aria-label="Yardım" title="Yardım"><Icon name="question" /></button>
+        <button onClick={() => gameStore.openOverlay('menu')} aria-label="Ana menü" title="Ana menü"><Icon name="menuList" /></button>
       </span>
     </header>
   );

@@ -13,6 +13,8 @@ export default defineConfig({
   projects: [
     { name: 'masaustu', use: { ...devices['Desktop Chrome'], viewport: { width: 1366, height: 768 } } },
     { name: 'tablet', use: { ...devices['Desktop Chrome'], viewport: { width: 1024, height: 768 }, hasTouch: true, isMobile: false } },
+    // Birincil hedef çözünürlük (prompt §13): yalnızca misafir oyuncu senaryoları
+    { name: 'genis', testMatch: /guest\.spec\.ts/, use: { ...devices['Desktop Chrome'], viewport: { width: 1920, height: 1080 } } },
   ],
   webServer: {
     command: `npm run build --workspace @yarinlab/web && PORT=${PORT} npm run start --workspace @yarinlab/server`,

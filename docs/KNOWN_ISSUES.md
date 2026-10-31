@@ -16,7 +16,7 @@ Bu liste, test edilmemiş veya bu ortamda yapılamamış işleri açıkça bildi
 - **Binalar ve karakterler kodla üretilmiştir** (Phaser Graphics + SVG; tek ışık yönü ve palet). Bu bir “el çizimi premium sanat” değildir; kalite tavanı profesyonel illüstrasyonun altındadır. Zemin karoları Kenney'dir (CC0). Profesyonel sanatçı geçişi yapılmadı.
 - Görsel kalite yalnızca headless Chromium ekran görüntüleriyle (1920×1080, 1366×768) gözden geçirildi; gerçek ekranlarda ve çocuklarla kullanılabilirlik testi yapılmadı.
 - Harita katmanları (sıcaklık, sel, enerji ve atık akışı) bölge düzeyinde göstergelerden çizilir; karo düzeyinde fiziksel bir model değildir.
-- Kenney destek paketleri kullanıcı tarafından indirildi (CC0). Araç atlası trafikte, Interface Sounds efektlerde kullanılıyor; Game Icons henüz kullanılmıyor. Sivil araç renk atlasları (16 yön, numaralı kareler) eklenmedi.
+- Kenney destek paketleri kullanıcı tarafından indirildi (CC0). Araç atlası trafikte, Interface Sounds efektlerde, Game Icons üst çubuk ve yakınlaştırma düğmelerinde kullanılıyor. Sivil araç renk atlasları eklenmedi: kareleri yön adı yerine numarayla adlandırılmış ve yönleri güvenilir biçimde eşlenemedi; trafik adlandırılmış 4 araç tipiyle (taksi, çöp kamyonu, polis, ambulans) çalışır.
 - Efektler Kenney Interface Sounds'tur (dosya yoksa kod sesi). Müzik ve ortam sesi kodla üretilir; profesyonel besteci işi değildir.
 - Gerekçe puanı sezgisel bir dil ölçüsüdür (bağlaç ve kanıt sözcükleri). Gerekçenin bilimsel doğruluğunu değerlendirmez; öğretmenin okuması gerekir.
 - Görev başlangıç değerleri her görevin kendi tabanından ölçülür. Ortak şehir durumu ise kararların toplamından hesaplanır, dolayısıyla “önce” sütunu şehir durumunu değil görev tabanını gösterir.

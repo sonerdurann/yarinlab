@@ -328,3 +328,4 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .hud-top .topbar-actions { gap: 4px; }
   .hud-top .topbar-actions > button { min-width: 40px; padding: 4px 6px; }
 }
+.kicon { display: inline-block; vertical-align: middle; pointer-events: none; }
