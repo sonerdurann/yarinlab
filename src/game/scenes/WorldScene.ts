@@ -58,6 +58,7 @@ export class WorldScene extends Phaser.Scene {
       this.lastResult = r;
     });
     this.events.once('shutdown', unsub);
+    gameStore.setWorldReady();
   }
 
   /** Yuvarlak köşeli etiket (arka plan + metin tek kapta). */

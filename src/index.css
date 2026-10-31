@@ -136,3 +136,15 @@ legend { font-weight: 600; padding: 0 6px; }
 /* Bağlantı dokunma hedefi ≥44 px */
 .source-list li, .result th a { margin: 2px 0; }
 .source-list a, .result th a { display: inline-flex; align-items: center; min-height: 44px; }
+
+/* Açılış, yükleme, marka */
+.brand { display: inline-flex; align-items: center; gap: 8px; }
+.intro-hero { display: flex; gap: 12px; align-items: flex-start; }
+.intro-hero blockquote { margin: 0; padding: 8px 14px; background: #fff; border-left: 4px solid var(--energy-gold); border-radius: 10px; font-style: italic; }
+.howto { padding-left: 18px; font-size: 0.9375rem; }
+.howto li { margin: 6px 0; }
+.loading { position: fixed; inset: 0; z-index: 9; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: var(--paper); transition: opacity 300ms; }
+.loading.done { opacity: 0; pointer-events: none; }
+.spinner { width: 28px; height: 28px; border-radius: 50%; border: 3px solid var(--mint); border-top-color: var(--climate-green); animation: spin 900ms linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 760px) { .intro-hero { flex-direction: column; } }

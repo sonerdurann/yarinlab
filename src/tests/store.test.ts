@@ -55,3 +55,18 @@ describe('kantin görev akışı', () => {
     expect(gameStore.get().world).toEqual(food.baseline);
   });
 });
+
+describe('açılış ve yükleme', () => {
+  it('açılış mesajı başta açıktır, kapatılır, yeni oturumda tekrar açılır', () => {
+    expect(gameStore.get().introOpen).toBe(true);
+    gameStore.closeIntro();
+    expect(gameStore.get().introOpen).toBe(false);
+    gameStore.resetSession();
+    expect(gameStore.get().introOpen).toBe(true);
+  });
+  it('harita hazır bilgisi yeni oturumda korunur', () => {
+    gameStore.setWorldReady();
+    gameStore.resetSession();
+    expect(gameStore.get().worldReady).toBe(true);
+  });
+});

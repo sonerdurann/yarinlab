@@ -9,6 +9,8 @@ import { DecisionModal } from './ui/DecisionModal/DecisionModal';
 import { TeacherPanel } from './ui/TeacherPanel/TeacherPanel';
 import { SourcesPanel } from './ui/Sources/SourcesPanel';
 import { FutureComparison } from './ui/FutureComparison/FutureComparison';
+import { Intro } from './ui/Intro/Intro';
+import { Logo } from './ui/Logo';
 
 export function App() {
   const host = useRef<HTMLDivElement>(null);
@@ -89,6 +91,12 @@ export function App() {
           )}
         </aside>
       )}
+      <div className={gs.worldReady ? 'loading done' : 'loading'} role="status" aria-hidden={gs.worldReady}>
+        <Logo size={56} />
+        <p>Harita yükleniyor…</p>
+        <span className="spinner" aria-hidden="true" />
+      </div>
+      <Intro />
       <DecisionModal />
       <FutureComparison />
       <TeacherPanel />

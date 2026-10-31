@@ -6,6 +6,10 @@ import type { DecisionResult, Resources } from './types';
 import { getTutorFeedback, type TutorOutcome } from '../ai/tutorClient';
 
 export type GameState = {
+  /** Açılış: 2040 mesajı penceresi */
+  introOpen: boolean;
+  /** Harita sahnesi hazır (yükleme ekranı kapanır) */
+  worldReady: boolean;
   selectedHotspotId: string | null;
   notice: string | null;
   /** Kantin karar paneli açık mı */
@@ -35,6 +39,8 @@ export type GameState = {
 };
 
 const initial = (): GameState => ({
+  introOpen: true,
+  worldReady: false,
   selectedHotspotId: null,
   notice: null,
   decisionOpen: false,
@@ -91,6 +97,9 @@ export const gameStore = {
     if (id === 'canteen') return set({ selectedHotspotId: id, notice: null, decisionOpen: true, canteenVisited: true });
     set({ selectedHotspotId: id, notice: null });
   },
+  closeIntro: () => set({ introOpen: false }),
+  openIntro: () => set({ introOpen: true }),
+  setWorldReady: () => set({ worldReady: true }),
   closePanel: () => set({ selectedHotspotId: null }),
   clearNotice: () => set({ notice: null }),
   openDecision: () => set({ decisionOpen: true, canteenVisited: true }),
@@ -121,7 +130,8 @@ export const gameStore = {
   setCompare: (slot: 'A' | 'B', id: string) => set(slot === 'A' ? { compareA: id } : { compareB: id }),
   /** Yeni oturum: örnek öğrenci verisi sıfırlanır (T09). */
   resetSession: () => {
-    state = initial();
+    // Harita yeniden yüklenmez; yeni oturumda açılış mesajı yine gösterilir.
+    state = { ...initial(), worldReady: state.worldReady };
     listeners.forEach((l) => l());
   },
 };

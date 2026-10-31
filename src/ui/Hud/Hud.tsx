@@ -1,6 +1,8 @@
 import { useGameState } from '../../state/gameStore';
 import { teacherStore } from '../../state/teacherStore';
 import { useCountUp } from '../useCountUp';
+import { Logo } from '../Logo';
+import { gameStore as gs } from '../../state/gameStore';
 
 const fmt = (n: number) => n.toLocaleString('tr-TR');
 
@@ -20,13 +22,17 @@ export function TopBar() {
   const { world } = useGameState();
   return (
     <header className="topbar">
-      <strong>YARINLAB / 2040</strong>
+      <span className="brand">
+        <Logo />
+        <strong>YARINLAB / 2040</strong>
+      </span>
       <span className="topbar-stats" aria-label="Dünya durumu özeti">
         <span>Enerji <Num value={world.energyScore} /></span>
         <span>Atık <Num value={world.foodWasteKg} /></span>
         <span>Bütçe <Num value={world.budget} /></span>
       </span>
       <span className="topbar-actions">
+        <button onClick={gs.openIntro} aria-label="Nasıl oynanır?">?</button>
         <button onClick={teacherStore.openTeacher}>Öğretmen</button>
         <button onClick={teacherStore.openSources}>Kaynaklar</button>
       </span>

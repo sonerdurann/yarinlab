@@ -16,7 +16,7 @@ Durum: ☑ geçti · ◐ kısmen (açıklama) · ☐ yapılmadı.
 | T09 | Yeni oturum aç | Örnek öğrenci verisi sıfırlanabilir | ☑ | "Yeni oturum": atık 18→30, tamamlanan adım 2→0; öğretmen panelinde "Örnek veriyi sıfırla" |
 | T10 | Kaynak listesi görüntüle | Lisans ve kaynak bağlantıları açık | ☑ | Kaynaklar penceresi; 15 bağlantının 14'ü 200; UNEP script'e 403 verdi ama tarayıcıda açıldı. Kenney paketleri CC0 |
 | T11 | Build al | `npm run build` başarılı; `dist` üretilir | ☑ | `dist` 3,3 MB (JS 1,63 MB / 439 KB gzip); dev kancası (`__yarinlab`) ve AI adresi pakette yok; `vite preview` ile çalıştı |
-| T12 | Jüri demosu | 90 sn içinde karar ve sonuç gösterilir | ◐ | Akış betikle hatasız bitti (harita → kantin → karar → rehber → iki gelecek → görev tamamlandı, ~1,4 sn). **İnsan eliyle süreli prova yapılmadı** |
+| T12 | Jüri demosu | 90 sn içinde karar ve sonuç gösterilir | ◐ | (Açılış penceresi "Başla" ile kapatılır.) Akış betikle hatasız bitti (harita → kantin → karar → rehber → iki gelecek → görev tamamlandı, ~1,4 sn). **İnsan eliyle süreli prova yapılmadı** |
 
 ## Açık işler
 - T07: gerçek telefonda (iOS Safari / Android Chrome) deneme.
