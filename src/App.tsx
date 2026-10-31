@@ -6,6 +6,8 @@ import { gameStore, useGameState } from './state/gameStore';
 import { TopBar, WorldStatus } from './ui/Hud/Hud';
 import { TaskPanel } from './ui/TaskPanel/TaskPanel';
 import { DecisionModal } from './ui/DecisionModal/DecisionModal';
+import { TeacherPanel } from './ui/TeacherPanel/TeacherPanel';
+import { SourcesPanel } from './ui/Sources/SourcesPanel';
 import { FutureComparison } from './ui/FutureComparison/FutureComparison';
 
 export function App() {
@@ -52,6 +54,8 @@ export function App() {
       )}
       <DecisionModal />
       <FutureComparison />
+      <TeacherPanel />
+      <SourcesPanel />
     </div>
   );
 }

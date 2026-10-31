@@ -1,4 +1,5 @@
 import { useGameState } from '../../state/gameStore';
+import { teacherStore } from '../../state/teacherStore';
 
 const fmt = (n: number) => n.toLocaleString('tr-TR');
 
@@ -12,6 +13,10 @@ export function TopBar() {
         <span>Enerji {world.energyScore}</span>
         <span>Atık {world.foodWasteKg}</span>
         <span>Bütçe {fmt(world.budget)}</span>
+      </span>
+      <span className="topbar-actions">
+        <button onClick={teacherStore.openTeacher}>Öğretmen</button>
+        <button onClick={teacherStore.openSources}>Kaynaklar</button>
       </span>
     </header>
   );
