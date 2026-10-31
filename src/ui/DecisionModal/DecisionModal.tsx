@@ -3,6 +3,7 @@ import { food } from '../../data/scenarios';
 import { SIMULATION_NOTICE } from '../../data/constants';
 import { gameStore, useGameState } from '../../state/gameStore';
 import type { Resources } from '../../state/types';
+import { TutorCard } from '../TutorCard/TutorCard';
 
 const rows: { key: keyof Resources; label: string; unit: string; lowerIsBetter?: boolean }[] = [
   { key: 'foodWasteKg', label: 'Gıda atığı', unit: 'kg/gün', lowerIsBetter: true },
@@ -124,6 +125,8 @@ export function DecisionModal() {
               </p>
             )}
             <p className="notice">{SIMULATION_NOTICE}</p>
+
+            <TutorCard />
 
             {s.history.length > 1 && (
               <div>

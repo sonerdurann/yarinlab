@@ -22,7 +22,7 @@ Final: 15-16 Kas, 24 saat geliştirme, 5 dk sunum + 3 dk soru-cevap. Finalde 3 k
 - [x] 06 Kantin hotspot + React görev paneli
 - [x] 07 3 seçenekli saf karar motoru
 - [x] 08 İki gelecek karşılaştırması
-- [ ] 09 Fallback AI açıklaması + gerekçe alanı
+- [x] 09 Fallback AI açıklaması + gerekçe alanı (model servisi P1)
 - [ ] 10 Öğretmen özeti + kaynak/lisans sayfası
 - [ ] 11 12 kabul testi + production build
 - [ ] 12 Sunumda P0 ile P1-P2 yol haritası ayrımı

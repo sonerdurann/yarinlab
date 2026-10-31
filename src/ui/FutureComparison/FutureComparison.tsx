@@ -5,6 +5,7 @@ import { applyChoice } from '../../game/systems/DecisionEngine';
 import { scenarioImpactScore } from '../../game/systems/ClimateEngine';
 import { gameStore, useGameState } from '../../state/gameStore';
 import type { Resources } from '../../state/types';
+import { fallbackForComparison } from '../../ai/fallbackResponses';
 
 const futures = [food.noDecision, ...food.choices];
 const futureById = (id: string) => futures.find((f) => f.id === id) ?? futures[0];
@@ -107,6 +108,15 @@ export function FutureComparison() {
           ))}
         </div>
         <p className="hint">Renkler yalnızca A/B ayrımı içindir; iyi/kötü yargısı için sayılara ve açıklamaya bak. Etki puanı oyun içi dengedir, kg CO₂e değildir.</p>
+
+        <div className="tutor" aria-label="Rehber soruları">
+          <h3>Rehber: iki soruluk yansıtma</h3>
+          <p>{fallbackForComparison().tradeoff}</p>
+          <ol>
+            <li>{fallbackForComparison().question1}</li>
+            <li>{fallbackForComparison().question2}</li>
+          </ol>
+        </div>
 
         <div className="real-world">
           <h3>{food.realWorldAction.title}</h3>

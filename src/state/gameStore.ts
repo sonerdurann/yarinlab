@@ -3,6 +3,7 @@ import { hotspotById } from '../game/tiles/hotspots';
 import { food } from '../data/scenarios';
 import { runDecision } from '../game/systems/DecisionEngine';
 import type { DecisionResult, Resources } from './types';
+import { getTutorFeedback, type TutorOutcome } from '../ai/tutorClient';
 
 export type GameState = {
   selectedHotspotId: string | null;
@@ -21,6 +22,10 @@ export type GameState = {
   result: DecisionResult | null;
   /** Aynı başlangıç koşullarında denenen tüm kararlar */
   history: DecisionResult[];
+  /** AI rehberi / hazır geri bildirim (güncel sonuç için) */
+  tutor: { status: 'idle' | 'loading' | 'ready'; outcome: TutorOutcome | null };
+  /** Yansıtma sorularına kısa cevaplar */
+  reflection: [string, string];
   /** İki gelecek karşılaştırması: 'N' = kararlar yok, aksi halde seçenek id'si */
   comparisonOpen: boolean;
   compareA: string;
@@ -40,6 +45,8 @@ const initial = (): GameState => ({
   transferAnswer: '',
   result: null,
   history: [],
+  tutor: { status: 'idle', outcome: null },
+  reflection: ['', ''],
   comparisonOpen: false,
   compareA: 'N',
   compareB: 'B',
@@ -91,16 +98,21 @@ export const gameStore = {
   pickChoice: (id: string) => set({ pendingChoiceId: id }),
   setReasoningOption: (v: string | null) => set({ reasoningOption: v }),
   setReasoningText: (v: string) => set({ reasoningText: v.slice(0, 280) }),
+  setReflection: (i: 0 | 1, v: string) => set({ reflection: i === 0 ? [v.slice(0, 280), state.reflection[1]] : [state.reflection[0], v.slice(0, 280)] }),
   setTransferAnswer: (v: string) => set({ transferAnswer: v.slice(0, 280) }),
   /** Seçmeden simülasyon başlatılamaz. */
   evaluate() {
     if (!state.pendingChoiceId) return;
     const reasoning = state.reasoningText.trim() || state.reasoningOption || undefined;
     const result = runDecision(food, state.pendingChoiceId, reasoning);
-    set({ result, history: [...state.history, result], world: result.after });
+    set({ result, history: [...state.history, result], world: result.after, tutor: { status: 'loading', outcome: null }, reflection: ['', ''] });
+    // Yanıt gelene kadar kullanıcı başka karara geçtiyse eski sonucu yazma.
+    void getTutorFeedback(result).then((outcome) => {
+      if (state.result === result) set({ tutor: { status: 'ready', outcome } });
+    });
   },
   /** "Tekrar dene": aynı başlangıç koşullarına dön, başka karar dene. */
-  retry: () => set({ result: null, pendingChoiceId: null, reasoningOption: null, reasoningText: '', world: { ...food.baseline } }),
+  retry: () => set({ tutor: { status: 'idle', outcome: null }, reflection: ['', ''], result: null, pendingChoiceId: null, reasoningOption: null, reasoningText: '', world: { ...food.baseline } }),
   openComparison() {
     const last = state.history[state.history.length - 1]?.choiceId ?? state.compareB;
     set({ comparisonOpen: true, compareA: 'N', compareB: last, canteenVisited: true });
