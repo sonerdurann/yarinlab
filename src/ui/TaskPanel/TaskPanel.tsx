@@ -26,12 +26,16 @@ export function TaskPanel({ onPick }: Props) {
       )}
       <nav id="zones" tabIndex={-1} aria-label="Bölge Listesi">
         <h3>Bölgeler</h3>
+        <p className="hint">Şehir, Karbon ve Kıyı haritadan açılır. Meclisin pini yoktur.</p>
         {hotspots.map((h) => (
           <button key={h.id} className={h.locked ? 'zone locked' : 'zone'} onClick={() => onPick(h.id)}>
             {h.label}
             {h.locked ? ' (Yakında)' : ''}
           </button>
         ))}
+        <button className="zone" onClick={() => gameStore.openCouncil()}>
+          Gelecek Meclisi
+        </button>
       </nav>
       <button className="link" onClick={gameStore.resetSession}>
         Yeni oturum (örnek veriyi sıfırla)

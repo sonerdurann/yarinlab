@@ -1,0 +1,67 @@
+{
+  "id": "ocean_001",
+  "version": "0.1.0",
+  "title": "Mavi Nöbet / Görev 06",
+  "brief": "Kıyıya okulun atık yükü de ulaşıyor. Temizlik, habitat onarımı veya yalnızca tabela seçebilirsin. Yük artınca kıyı riski yükselir; habitat bakımı riski düşürür. Yük, kantin ve atık kararından gelir.",
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Kıyı temizliği",
+      "summary": "Görünür atık",
+      "deltas": { "wellbeing": 6, "budget": -300, "waterScore": 2 },
+      "tradeoff": "Toplamak görünür atığı azaltır; habitat az değişirse risk az düşer.",
+      "system": { "habitatCare": 20 }
+    },
+    {
+      "id": "B",
+      "label": "Habitat onarımı",
+      "summary": "Canlı kıyı",
+      "deltas": { "wellbeing": 10, "budget": -1000, "waterScore": 4 },
+      "tradeoff": "Habitat bakımı riski daha çok düşürür; bütçe daha çok azalır. Yük, kantin ve atık kararına bağlıdır.",
+      "system": { "habitatCare": 50 }
+    },
+    {
+      "id": "C",
+      "label": "Yalnızca tabela",
+      "summary": "Uyarı yazısı",
+      "deltas": { "wellbeing": 1, "budget": -40, "waterScore": -2 },
+      "tradeoff": "Tabela tek başına habitatı onarmaz; risk neredeyse yerinde kalır veya yükselir.",
+      "system": { "habitatCare": 15 }
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Kıyı kendi haline",
+    "deltas": { "wellbeing": -3, "budget": -80, "waterScore": -1 },
+    "tradeoff": "Bakım aynı kalır; yük durursa risk kendiliğinden çözülmez.",
+    "system": { "habitatCare": 10 }
+  },
+  "learningOutcomeIds": ["L2", "L3", "L5"],
+  "evidenceRefs": ["R9"],
+  "disclaimer": "Simülasyon – gerçek saha sonucu değildir",
+  "reasoningOptions": [
+    "Görünen atığı hemen toplamak istedim.",
+    "Canlı kıyıyı onarmak istedim.",
+    "Az bütçeyle bir uyarı yeterli göründü.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyondaki kıyı riski ile sahilde saydığın atık aynı şey midir? Bir yürüyüşte neyi sayardın?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Belirli bir kıyı şeridinde gördüğün atık parça sayısını ve bir canlı izini (var/yok) not et. Ad yazma. Ertesi hafta aynı şeride bak.",
+    "measurementPlan": [
+      "Yalnızca parça sayısı ve canlı izi var/yok",
+      "Ad, fotoğraf veya konum yok",
+      "Aynı şerit, aynı süre",
+      "Sonucu simülasyon puanıyla bir tutma"
+    ]
+  }
+}

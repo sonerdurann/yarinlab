@@ -11,13 +11,14 @@ describe('kantin görev akışı', () => {
     expect(gameStore.get().history).toHaveLength(0);
   });
 
-  it('kantin hotspotu paneli açar; kilitli bölge açmaz', () => {
+  it('kantin hotspotu paneli açar; şehir de karar açar', () => {
     gameStore.selectHotspot('canteen');
     expect(gameStore.get().decisionOpen).toBe(true);
     gameStore.closeDecision();
     gameStore.selectHotspot('city');
-    expect(gameStore.get().decisionOpen).toBe(false);
-    expect(gameStore.get().notice).toMatch(/Henüz açılmadı/);
+    expect(gameStore.get().decisionOpen).toBe(true);
+    expect(gameStore.get().activeScenarioId).toBe('city_001');
+    expect(gameStore.get().notice).toBeNull();
   });
 
   it('T04: tekrar dene ilk durumu korur ve dünya durumunu sıfırlar', () => {

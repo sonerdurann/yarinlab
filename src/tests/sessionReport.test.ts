@@ -38,7 +38,7 @@ describe('oturum raporu', () => {
     const csv = reportToCsv(buildSessionReport(input([runDecision(food, 'A', 'x'), runDecision(food, 'C', 'a "b", c')])));
     const lines = csv.trim().split('\r\n');
     expect(lines).toHaveLength(3);
-    expect(lines[0].split(',')).toHaveLength(11);
+    expect(lines[0].split(',')).toHaveLength(12);
     expect(lines[2]).toContain('"a ""b"", c"');
   });
 

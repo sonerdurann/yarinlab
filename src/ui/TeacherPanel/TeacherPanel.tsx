@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { DEMO_LABEL, DEMO_STUDENTS } from '../../data/teacherDemo';
-import { food } from '../../data/scenarios';
+import { food, playableById, playableOrder } from '../../data/scenarios';
 import { perStudentPerDay, summarize } from '../../teacher/report';
 import { gameStore, isTaskComplete, useGameState } from '../../state/gameStore';
 import { teacherStore, useTeacherState } from '../../state/teacherStore';
@@ -39,6 +39,7 @@ const fmt = (n: number | null, unit = '') => (n === null ? '–' : `${n.toLocale
 export function TeacherPanel() {
   const t = useTeacherState();
   const g = useGameState();
+  const [tab, setTab] = useState<'class' | 'tasks' | 'learn' | 'field'>('class');
   const [form, setForm] = useState({ totalKg: '', students: '', days: '' });
   const [formError, setFormError] = useState('');
   const demo = useMemo(() => summarize(t.demoVisible ? DEMO_STUDENTS : []), [t.demoVisible]);
@@ -55,8 +56,48 @@ export function TeacherPanel() {
   return (
     <Modal titleId="tp-title" title="Öğretmen paneli" onClose={teacherStore.closeTeacher} wide>
       {t.demoVisible && <p className="demo-badge">{DEMO_LABEL} – gerçek öğrenci verisi değildir</p>}
+      <div className="tabs" role="tablist" aria-label="Öğretmen bölümleri">
+        {([
+          ['class', 'Sınıflarım'],
+          ['tasks', 'Görevler'],
+          ['learn', 'Öğrenme'],
+          ['field', 'Saha verisi'],
+        ] as const).map(([id, label]) => (
+          <button key={id} role="tab" aria-selected={tab === id} className={tab === id ? 'on' : ''} onClick={() => setTab(id)}>
+            {label}
+          </button>
+        ))}
+      </div>
 
-      <h3>Sınıf özeti</h3>
+      {tab === 'class' && (
+      <>
+      <h3>Bu cihaz</h3>
+      <div className="measure-form">
+        <label>
+          Kurum kodu
+          <input
+            value={t.classCode}
+            maxLength={12}
+            autoComplete="off"
+            spellCheck={false}
+            aria-describedby="class-code-hint"
+            onChange={(e) => teacherStore.setClassCode(e.target.value)}
+            placeholder="6A2026"
+          />
+        </label>
+      </div>
+      <p id="class-code-hint" className="hint">Anonim kod, en fazla 12 harf veya rakam. Yalnızca bu tarayıcıda durur. Öğrenci adı, e-posta veya fotoğraf istenmez. Başka cihazlarla eşleşmez.</p>
+      <ul className="indicators">
+        {playableOrder.map((sc) => {
+          const hit = g.applied[sc.id];
+          return (
+            <li key={sc.id}>
+              {sc.shortTitle}: {hit ? `son karar ${hit.choiceId}` : 'henüz yok'}
+            </li>
+          );
+        })}
+      </ul>
+      <h3>Örnek sınıf (DEMO)</h3>
       <div className="cards">
         <div className="card"><span>Katılan öğrenci</span><strong>{fmt(demo.joined)}</strong></div>
         <div className="card"><span>Tamamlanan görev</span><strong>{fmt(demo.completed)}</strong></div>
@@ -84,7 +125,11 @@ export function TeacherPanel() {
           </div>
         </div>
       )}
+      </>
+      )}
 
+      {tab === 'learn' && (
+      <>
       <h3>Öğrenme göstergeleri</h3>
       <ul className="indicators">
         <li>
@@ -101,7 +146,11 @@ export function TeacherPanel() {
           )}
         </li>
       </ul>
+      </>
+      )}
 
+      {tab === 'tasks' && (
+      <>
       <h3>Bu cihazdaki gerçek oturum</h3>
       <p>
         Denenen karar: <strong>{g.history.length}</strong> (farklı seçenek: {distinctTried}) · Gerekçe yazıldı: {g.history.some((h) => h.reasoning) ? 'evet' : 'hayır'} · Görev:{' '}
@@ -116,7 +165,7 @@ export function TeacherPanel() {
           <tbody>
             {g.history.map((h, i) => (
               <tr key={i}>
-                <th scope="row">{h.choiceId} · {food.choices.find((c) => c.id === h.choiceId)?.label}</th>
+                <th scope="row">{playableById(h.scenarioId).shortTitle} · {h.choiceId} · {playableById(h.scenarioId).choices.find((c) => c.id === h.choiceId)?.label}</th>
                 <td>{h.reasoning ?? '–'}</td>
                 <td>{i === g.history.length - 1 && g.tutor.outcome ? (g.tutor.outcome.source === 'ai' ? 'AI (inceleme gerekir)' : 'Hazır geri bildirim') : '–'}</td>
               </tr>
@@ -124,8 +173,10 @@ export function TeacherPanel() {
           </tbody>
         </table>
       )}
+      </>
+      )}
 
-      {t.demoVisible && (
+      {tab === 'class' && t.demoVisible && (
         <>
           <h3>Örnek karar gerekçeleri</h3>
           <table className="result">
@@ -148,6 +199,8 @@ export function TeacherPanel() {
         </>
       )}
 
+      {tab === 'tasks' && (
+      <>
       <h3>Oturum raporunu indir</h3>
       <p className="hint">Bu cihazdaki oturumun anonim raporu (kararlar, gerekçeler, cevaplar). Tarayıcıdan indirilir, sunucuya gönderilmez. Gerekçe ve cevaplar öğrencinin yazdığı metindir; paylaşmadan önce gözden geçir.</p>
       <div className="actions left">
@@ -170,8 +223,12 @@ export function TeacherPanel() {
           CSV indir (Excel)
         </button>
       </div>
-      {g.history.length === 0 && <p className="hint">Rapor için önce Kantin görevinde bir karar ver.</p>}
+      {g.history.length === 0 && <p className="hint">Rapor için önce bir görevde karar ver.</p>}
+      </>
+      )}
 
+      {tab === 'field' && (
+      <>
       <h3>Gerçek okul görevi: ölçüm girişi</h3>
       <p className="hint">Yalnızca toplam kg, öğrenci sayısı ve gün sayısı. Ad, fotoğraf veya konum girme. Veri bu cihazda yerel saklanır.</p>
       <div className="measure-form">
@@ -195,6 +252,8 @@ export function TeacherPanel() {
           <tr><th scope="row">Gerçek okul görevi</th><td>Öğretmenin girdiği toplam veri</td><td>Kişisel fotoğraf/konum istenmez</td></tr>
         </tbody>
       </table>
+      </>
+      )}
 
       <div className="actions">
         <button onClick={() => { teacherStore.resetDemo(); gameStore.resetSession(); }}>Örnek veriyi sıfırla</button>

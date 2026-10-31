@@ -1,0 +1,67 @@
+{
+  "id": "city_001",
+  "version": "0.1.0",
+  "title": "KrizKenti / Görev 04",
+  "brief": "Şehir yüzeyi suyu tutmuyor. Yeşil alan, yağmur suyu payı veya boru hattı seçebilirsin. Sızdırmaz yüzey artınca taşkın riski yükselir. Amaç tek başına daha yüksek su göstergesi değil; riski de okuyan bir denge.",
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Yeşil alan",
+      "summary": "Park ve toprak",
+      "deltas": { "waterScore": 6, "budget": -400, "wellbeing": 10 },
+      "tradeoff": "Yeşil alan suyu tutar ve memnuniyeti yükseltir; bütçe azalır. Taşkın riski düşer. Bu bir sel ölçümü değildir.",
+      "system": { "sealedShare": 25, "greenShare": 55, "rainShare": 0 }
+    },
+    {
+      "id": "B",
+      "label": "Yağmur suyu",
+      "summary": "Tutma ve yeşil",
+      "deltas": { "waterScore": 14, "budget": -1100, "wellbeing": 8 },
+      "tradeoff": "Yağmur payı riski daha da düşürür; bedeli bütçededir. Su göstergesi yükselir.",
+      "system": { "sealedShare": 30, "greenShare": 35, "rainShare": 45 }
+    },
+    {
+      "id": "C",
+      "label": "Boru hattı",
+      "summary": "Sert zemin",
+      "deltas": { "waterScore": 4, "budget": -800, "wellbeing": -8 },
+      "tradeoff": "Boru suyu bir yere taşır; sızdırmaz yüzey artınca risk yükselebilir. Memnuniyet düşebilir.",
+      "system": { "sealedShare": 55, "greenShare": 15, "rainShare": 10 }
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Mevcut yüzey sürer",
+    "deltas": { "waterScore": -2, "budget": -100, "wellbeing": -3 },
+    "tradeoff": "Yüzeyler aynı kalır; göstergeler yavaşça zayıflar. Risk kendiliğinden çözülmez.",
+    "system": { "sealedShare": 40, "greenShare": 20, "rainShare": 0 }
+  },
+  "learningOutcomeIds": ["L2", "L3", "L5"],
+  "evidenceRefs": ["R9"],
+  "disclaimer": "Simülasyon – gerçek saha sonucu değildir",
+  "reasoningOptions": [
+    "Taşkın riskini düşürmek istedim.",
+    "Su göstergesini en çok yükseltmek istedim.",
+    "Bütçeyi çok zorlamadan denge aradım.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyondaki taşkın riski ile okul bahçesinde biriken su aynı şey midir? Bir yağmurdan sonra neyi not ederdin?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Bir yağmur gününde bahçede su biriken yeri ve süreyi not et (ad yazma). Ertesi yağmurda aynı yere bak.",
+    "measurementPlan": [
+      "Yalnızca yer kodu, süre ve birikme var/yok",
+      "Ad, fotoğraf veya konum yok",
+      "Aynı tür yağmurda önce/sonra bak",
+      "Sonucu simülasyon puanıyla bir tutma"
+    ]
+  }
+}

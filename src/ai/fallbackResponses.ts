@@ -22,19 +22,25 @@ export function fillTemplate(t: string, r: DecisionResult): string {
     budgetAfter: fmt(r.after.budget),
     wellbeingBefore: fmt(r.before.wellbeing),
     wellbeingAfter: fmt(r.after.wellbeing),
+    energyBefore: fmt(r.before.energyScore),
+    energyAfter: fmt(r.after.energyScore),
+    waterBefore: fmt(r.before.waterScore),
+    waterAfter: fmt(r.after.waterScore),
   };
   return t.replace(/\{(\w+)\}/g, (_, k: string) => v[k] ?? '');
 }
 
 export function fallbackForResult(r: DecisionResult): TutorResponse {
-  const byChoice = data.byChoice as Record<string, Template>;
-  const t = byChoice[r.choiceId] ?? data.unknownChoice;
+  const byScenario = (data.byScenario as Record<string, Record<string, Template>> | undefined)?.[r.scenarioId];
+  const table = byScenario ?? (data.byChoice as Record<string, Template>);
+  const t = table[r.choiceId] ?? data.unknownChoice;
+  const sourceIds = (data.sourceIdsByScenario as Record<string, string[]> | undefined)?.[r.scenarioId] ?? data.sourceIds;
   return {
     summary: fillTemplate(t.summary, r),
     tradeoff: t.tradeoff,
     question1: t.question1,
     question2: t.question2,
-    sourceIds: data.sourceIds,
+    sourceIds,
   };
 }
 
