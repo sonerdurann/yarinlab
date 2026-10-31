@@ -1,3 +1,26 @@
+> Güncel kabul durumu aşağıdadır. Altındaki bölüm Creathon P0 dönemine ait tarihsel kayıttır.
+
+# Kabul testleri T01-T12 — güncel durum (kılavuz §23)
+
+| ID | Test | Kanıt (otomatik) | Durum |
+|---|---|---|---|
+| T01 | Oyun URL'de açılır: başlangıç, dünya, görev | E2E `guest.spec.ts` (üretim derlemesi Fastify'den), `map.test.ts` | ✅ yerel üretim sunucusunda; canlı URL yok ⛔ |
+| T02 | Tüm aktif hotspotlar doğru sahneyi açar | `store.test.ts`, `citySim.test.ts` (hotspot → sıradaki görev), E2E klavye testi | ✅ |
+| T03 | Aynı karar aynı başlangıçta 3× aynı sonuç | `acceptance.test.ts`, `sim.test.ts` (tohum belirlenimciliği) | ✅ |
+| T04 | A/B/C farklı sonuç, başlangıç korunur | `acceptance.test.ts`, `content.test.ts` (35 görevde farklı yollar) | ✅ |
+| T05 | Uç değer: atık ≥ 0, puan 0-100 | `acceptance.test.ts`, `deriveFlatSystems` sınırları | ✅ |
+| T06 | API kesik: yedek açıklama, görev biter | `acceptance.test.ts`, sunucu `ai.test.ts`, E2E ağ kesintisi testi | ✅ |
+| T07 | 360 px: taşma yok | Mobil düzen ekran görüntüleri (390 px), E2E tablet | 🟡 otomatik görsel kontrol; gerçek cihaz ⛔ |
+| T08 | Klavyeyle gezinme | E2E klavye testi, odak yönetimi | ✅ (ekran okuyucu insan testi ⛔) |
+| T09 | Yeni oturum, örnek veri sıfırlanır | `store.test.ts`, ana menü “Yeni oyun” | ✅ |
+| T10 | Kaynak listesi ve lisanslar | Kaynaklar paneli, `assets.test.ts`, `SOURCES.md` | ✅ |
+| T11 | `npm run build` başarılı | CI ve yerel derleme | ✅ |
+| T12 | Jüri demosu 90 sn | Menü → “90 saniyelik tanıtım” | ⛔ insan provası gerekli |
+
+Uçtan uca sonuçların son çalıştırması: `docs/TEST_RESULTS.md`.
+
+---
+
 > **Tarihsel kayıt (Creathon P0 dönemi, 31 Ekim 2026 sabahı).** Güncel durum için README.md, docs/ARCHITECTURE.md ve docs/KNOWN_ISSUES.md belgelerine bakın.
 
 # Kabul testleri (kılavuz §23)
