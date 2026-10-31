@@ -48,6 +48,7 @@ React ↔ Phaser paylaşımı EventBus değil ortak store adapter ile. Model ana
 `Resources {budget, foodWasteKg, energyScore, waterScore, wellbeing}` · `Choice {id,label,deltas,tradeoff}` · `Scenario {id,version,baseline,choices,learningOutcomeIds,evidenceRefs}` · `DecisionResult {scenarioId,choiceId,before,after,reasoning?,modelVersion}`. Atık ≥ 0; skorlar 0..100. Aynı seed ve koşullar saklanır.
 
 ## Simülasyon dürüstlüğü (§19)
+- Çapraz kural arayüzde: Dünya durumu, karar sonucu, iki gelecek ve Atık paneli (docs/decision-log/006).
 - Temsili sonuç tablosu (30 kg başlangıç; A 29 / B 20 / C 18 kg; bütçe 12.000 → 11.900 / 11.300 / 12.200; memnuniyet 75 → 65 / 87 / 58) mekanik gösterimi içindir; saha deneyi veya karbon iddiası değildir.
 - Oyun göstergesi ≠ gerçek dünya; saha verisi gerçek tartım ile kayıtlanır; emisyon yalnızca doğrulanmış ürün-bazlı katsayı ve sistem sınırı varsa üretilir; "atık kg" ile "senaryo etki puanı" ayrı.
 - Küresel istatistikler (UNEP Food Waste Index 2024) ürünün kanıtlanmış etkisi olarak sunulmaz.

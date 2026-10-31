@@ -5,6 +5,7 @@ import { gameStore, useGameState } from '../../state/gameStore';
 import type { Resources } from '../../state/types';
 import { TutorCard } from '../TutorCard/TutorCard';
 import { Modal } from '../Modal/Modal';
+import { wasteCollection } from '../../game/systems/ClimateEngine';
 
 const rows: { key: keyof Resources; label: string; unit: string; max: number; lowerIsBetter?: boolean }[] = [
   { key: 'foodWasteKg', label: 'Gıda atığı', unit: 'kg/gün', max: 40, lowerIsBetter: true },
@@ -119,6 +120,15 @@ export function DecisionModal() {
                 })}
               </tbody>
             </table>
+            {(() => {
+              const b = wasteCollection(result.before.foodWasteKg), a = wasteCollection(result.after.foodWasteKg);
+              return (
+                <p className="cross" role="note">
+                  <strong>Atık modülüne etkisi:</strong> toplama ihtiyacı {b.collectionNeed} → {a.collectionNeed} sefer/gün (yük {b.wasteLoadKg} → {a.wasteLoadKg} kg = gıda atığı + diğer okul atığı).
+                  <small> Varsayım: {a.assumedCollectionCapacityKg} kg/sefer; simülasyon varsayımıdır, gerçek veri değildir.</small>
+                </p>
+              );
+            })()}
             <p className="tradeoff">
               <strong>Ödünleşim:</strong> {chosen?.tradeoff}
             </p>

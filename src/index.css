@@ -192,3 +192,6 @@ legend { font-weight: 600; padding: 0 6px; }
 .hbar-fill.gold { background: var(--energy-gold); }
 .hbar-val { text-align: right; font-weight: 600; white-space: nowrap; }
 @media (max-width: 760px) { .charts { grid-template-columns: 1fr; } .hbar { grid-template-columns: 1fr 74px; } .hbar-label { grid-column: 1 / -1; } .hbar-track { grid-column: 1; } .hbar-val { grid-column: 2; } }
+
+.cross { background: #eef6fb; border-left: 4px solid var(--water); border-radius: 10px; padding: 8px 12px; margin: 8px 0; font-size: 0.9375rem; }
+.cross small { display: block; opacity: 0.85; margin-top: 2px; }

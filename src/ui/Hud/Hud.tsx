@@ -2,6 +2,7 @@ import { useGameState } from '../../state/gameStore';
 import { teacherStore } from '../../state/teacherStore';
 import { useCountUp } from '../useCountUp';
 import { Logo } from '../Logo';
+import { wasteCollection } from '../../game/systems/ClimateEngine';
 import { gameStore as gs } from '../../state/gameStore';
 
 const fmt = (n: number) => n.toLocaleString('tr-TR');
@@ -67,6 +68,12 @@ export function WorldStatus() {
           </div>
         </div>
       ))}
+      <p className="stat" title="Atık modülü: gıda atığı + diğer okul atığı, varsayılan toplama kapasitesine bölünür">
+        <span>Toplama ihtiyacı (Atık)</span>
+        <strong>
+          <Num value={wasteCollection(world.foodWasteKg).collectionNeed} /> sefer/gün
+        </strong>
+      </p>
       <p className="stat">
         <span>Bütçe (oyun puanı)</span>
         <strong><Num value={world.budget} /></strong>

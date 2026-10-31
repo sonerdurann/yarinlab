@@ -1,7 +1,7 @@
 import { food } from '../../data/scenarios';
 import { SIMULATION_NOTICE } from '../../data/constants';
 import { applyChoice } from '../../game/systems/DecisionEngine';
-import { scenarioImpactScore } from '../../game/systems/ClimateEngine';
+import { scenarioImpactScore, wasteCollection } from '../../game/systems/ClimateEngine';
 import { gameStore, useGameState } from '../../state/gameStore';
 import type { Resources } from '../../state/types';
 import { fallbackForComparison } from '../../ai/fallbackResponses';
@@ -10,13 +10,15 @@ import { Modal } from '../Modal/Modal';
 const futures = [food.noDecision, ...food.choices];
 const futureById = (id: string) => futures.find((f) => f.id === id) ?? futures[0];
 
-type Metric = { key: keyof Resources; label: string; unit: string; max: number; lowerIsBetter?: boolean };
+type Metric = { key: string; label: string; unit: string; max: number; lowerIsBetter?: boolean; get?: (r: Resources) => number };
 const metrics: Metric[] = [
   { key: 'foodWasteKg', label: 'Gıda atığı', unit: 'kg/gün', max: 40, lowerIsBetter: true },
   { key: 'budget', label: 'Bütçe', unit: 'puan', max: 13000 },
   { key: 'wellbeing', label: 'Memnuniyet', unit: '/100', max: 100 },
   { key: 'energyScore', label: 'Enerji', unit: '/100', max: 100 },
+  { key: 'collection', label: 'Toplama ihtiyacı (Atık modülü)', unit: 'sefer/gün', max: 8, lowerIsBetter: true, get: (r) => wasteCollection(r.foodWasteKg).collectionNeed },
 ];
+const read = (m: Metric, r: Resources) => (m.get ? m.get(r) : r[m.key as keyof Resources]);
 
 const num = (n: number) => n.toLocaleString('tr-TR');
 
@@ -73,8 +75,8 @@ export function FutureComparison() {
                 {m.label} <small>({m.unit})</small>
               </div>
               {sides.map((x) => {
-                const v = x.after[m.key];
-                const base = food.baseline[m.key];
+                const v = read(m, x.after);
+                const base = read(m, food.baseline);
                 const d = v - base;
                 return (
                   <div key={x.slot} className="bar-cell" role="cell">

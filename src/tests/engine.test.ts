@@ -63,3 +63,17 @@ describe('scenarioImpactScore', () => {
     expect(scenarioImpactScore(extreme, food.baseline)).toBeGreaterThanOrEqual(0);
   });
 });
+
+
+describe('çapraz modül: gıda atığı → atık toplama (P0)', () => {
+  it('kantin kararları toplama ihtiyacını azaltır veya korur; en az bir seçenek gerçekten azaltır', () => {
+    const base = wasteCollection(food.baseline.foodWasteKg).collectionNeed;
+    const needs = food.choices.map((c) => wasteCollection(applyChoice(food.baseline, c).foodWasteKg).collectionNeed);
+    for (const n of needs) expect(n).toBeLessThanOrEqual(base);
+    expect(needs.some((n) => n < base)).toBe(true);
+  });
+  it('yük ve ihtiyaç sınırları: negatif girdi 0 sayılır', () => {
+    expect(wasteCollection(-5, -5).wasteLoadKg).toBe(0);
+    expect(wasteCollection(-5, -5).collectionNeed).toBe(0);
+  });
+});

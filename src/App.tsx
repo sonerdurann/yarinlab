@@ -10,6 +10,7 @@ import { SourcesPanel } from './ui/Sources/SourcesPanel';
 import { FutureComparison } from './ui/FutureComparison/FutureComparison';
 import { Intro } from './ui/Intro/Intro';
 import { Logo } from './ui/Logo';
+import { wasteCollection } from './game/systems/ClimateEngine';
 
 export function App() {
   const host = useRef<HTMLDivElement>(null);
@@ -85,7 +86,14 @@ export function App() {
           {selected && !notice ? (
             <>
               <h2>{selected.label}</h2>
-              <p>Bu bölgenin görevi sonraki sürümde (P1). Şimdilik Kantin görevi oynanabilir.</p>
+              {selected.id === 'waste' ? (
+                <p>
+                  Kantin kararın burayı etkiler: gıda atığı {gs.world.foodWasteKg} kg/gün → toplama ihtiyacı{' '}
+                  <strong>{wasteCollection(gs.world.foodWasteKg).collectionNeed} sefer/gün</strong>. Bu bölgenin kendi görevi sonraki sürümde (P1).
+                </p>
+              ) : (
+                <p>Bu bölgenin görevi sonraki sürümde (P1). Şimdilik Kantin görevi oynanabilir.</p>
+              )}
               <button onClick={gameStore.closePanel}>Kapat</button>
             </>
           ) : (
