@@ -52,6 +52,11 @@ export class BootScene extends Phaser.Scene {
       g.destroy();
     };
 
+    // yumuşak yer gölgesi (bina tabanı)
+    make('shadow', W, H, (g) => {
+      g.fillStyle(0x12263a, 0.2).fillEllipse(W / 2, H / 2, 112, 50);
+    });
+
     // ekin sırası: kahverengi zemin üstünde yeşil şeritler
     make('crop', W, H, (g) => {
       for (const [a, b] of [[0.08, 0.22], [0.36, 0.5], [0.64, 0.78]]) {

@@ -15,3 +15,6 @@ Ada görünümü: dış halka kum, çevresi açık deniz rengi; meydan ve atık 
 
 ## Görsel cila 3 (aynı gün)
 Kıyı: şeritli `landscapeTiles_035` yerine düz su karosu `landscapeTiles_066`; köşede koy (x+y ≥ 56 su, çevresi kumsal), su yüzeyi kumsala göre 8 px çökük. Hareket: rüzgâr türbini kanatları ayrı dokuyla döner (7 sn/tur), su karoları hafif parlar (alpha 0.93↔1); ikisi de `prefers-reduced-motion` açıkken çalışmaz. Türbinler bataryalarla çakışmayacak yere alındı; dekor karosu ve türbin çevresinde ağaç çizilmez. Kalan: çimde çok hafif karo çizgileri, gerçek cihazda performans/FPS ölçümü.
+
+## Görsel cila 4 (aynı gün)
+Binalara yumuşak yer gölgesi (`shadow` dokusu), yuvarlak köşeli etiketler (kilitliler gri), üzerine gelinen bina 6 px yükselir (180 ms). Karar sonucu gelince kantin büyüyüp genişleyen halka çıkarır (~1,4 sn; kılavuz §04 "karar efekti"). HUD sayaçları (`useCountUp`, 700 ms) yeni değere akar; ekran okuyucu yalnızca son değeri okur. Üç hareket de `prefers-reduced-motion` açıkken kapalıdır; arka planda `requestAnimationFrame` durursa sayaç zamanlayıcıyla son değere zorlanır.

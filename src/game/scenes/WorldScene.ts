@@ -27,6 +27,8 @@ export class WorldScene extends Phaser.Scene {
   private glow?: Phaser.GameObjects.Graphics;
   private tip?: Phaser.GameObjects.Text;
   private dragged = false;
+  private nodes = new Map<string, { img: Phaser.GameObjects.Image; label: Phaser.GameObjects.Container; imgY: number; labelY: number; scale: number; x: number; baseY: number }>();
+  private lastResult: unknown = null;
 
   constructor() {
     super('WorldScene');
@@ -49,6 +51,44 @@ export class WorldScene extends Phaser.Scene {
     this.scale.updateBounds();
     this.scale.on('resize', () => this.scale.updateBounds());
     this.events.on('focus-hotspot', (id: string) => this.focusHotspot(id));
+    // Karar sonucu gelince kantin vurgulanır (kılavuz §04: bina vurgusu, 1-2 sn karar efekti).
+    const unsub = gameStore.subscribe(() => {
+      const r = gameStore.get().result;
+      if (r && r !== this.lastResult) this.pulse('canteen');
+      this.lastResult = r;
+    });
+    this.events.once('shutdown', unsub);
+  }
+
+  /** Yuvarlak köşeli etiket (arka plan + metin tek kapta). */
+  private pill(x: number, y: number, text: string, locked: boolean) {
+    const t = this.add
+      .text(0, 0, text, { fontFamily: 'Noto Sans, sans-serif', fontSize: '20px', color: locked ? '#4a5a6c' : '#12263a', fontStyle: '600' })
+      .setOrigin(0.5);
+    const w = t.width + 24, h = t.height + 8;
+    const g = this.add.graphics();
+    g.fillStyle(locked ? 0xe5e3dc : 0xf7f5ef, 0.95).fillRoundedRect(-w / 2, -h / 2, w, h, h / 2);
+    g.lineStyle(1.5, 0x12263a, 0.2).strokeRoundedRect(-w / 2, -h / 2, w, h, h / 2);
+    return this.add.container(x, y, [g, t]).setDepth(5500);
+  }
+
+  /** Karar sonrası bina vurgusu: büyüme + genişleyen halka. */
+  private pulse(id: string) {
+    const n = this.nodes.get(id);
+    if (!n || reducedMotion()) return;
+    this.tweens.add({ targets: n.img, scale: n.scale * 1.08, duration: 220, yoyo: true, repeat: 1, ease: 'Sine.easeInOut' });
+    const ring = this.add.graphics().setDepth(5100).setPosition(n.x, n.baseY);
+    ring.lineStyle(5, 0x2e9e6b, 0.9).strokeEllipse(0, 0, 120, 60);
+    this.tweens.add({ targets: ring, scaleX: 2.6, scaleY: 2.6, alpha: 0, duration: 1400, ease: 'Cubic.easeOut', onComplete: () => ring.destroy() });
+  }
+
+  /** Üzerine gelinen bina hafifçe yükselir (150-250 ms). */
+  private lift(id: string | undefined, up: boolean) {
+    const n = id ? this.nodes.get(id) : undefined;
+    if (!n) return;
+    const d = up ? -6 : 0;
+    this.tweens.add({ targets: n.img, y: n.imgY + d, duration: reducedMotion() ? 0 : 180, ease: 'Sine.easeOut' });
+    this.tweens.add({ targets: n.label, y: n.labelY + d, duration: reducedMotion() ? 0 : 180, ease: 'Sine.easeOut' });
   }
 
   private drawTiles(map: TiledMap) {
@@ -118,14 +158,11 @@ export class WorldScene extends Phaser.Scene {
       // Binanın taban bloğu 99 px; üst kısım yukarı taşar. Önemli binalar daha büyük çizilir.
       const scale = h.id === 'school' ? 1.8 : h.locked ? 1.2 : 1.4;
       const top = p.y - (frame.height - GROUND_SPRITE_HEIGHT) * scale;
+      this.add.image(p.x, p.y + HH, 'shadow').setScale(scale * 1.1).setAlpha(h.locked ? 0.6 : 1).setDepth(5 + p.y);
       const img = this.add.image(p.x, top, def.atlas, def.frame).setOrigin(0.5, 0).setScale(scale).setDepth(10 + p.y);
       if (h.locked) img.setAlpha(0.6).setTint(0xcfd6e2);
-      this.add
-        .text(p.x, top - 6, h.locked ? `${h.label} · Yakında` : h.label, {
-          fontFamily: 'Noto Sans, sans-serif', fontSize: '22px', color: '#12263a', backgroundColor: '#f7f5efcc', padding: { x: 8, y: 3 },
-        })
-        .setOrigin(0.5)
-        .setDepth(5500);
+      const label = this.pill(p.x, top - 10, h.locked ? `${h.label} · Yakında` : h.label, h.locked);
+      this.nodes.set(h.id, { img, label, imgY: top, labelY: top - 10, scale, x: p.x, baseY: p.y + HH });
     }
   }
 
@@ -163,7 +200,9 @@ export class WorldScene extends Phaser.Scene {
   private hovered?: string;
   private hover(h?: Hotspot) {
     if (this.hovered === h?.id) return;
+    this.lift(this.hovered, false);
     this.hovered = h?.id;
+    this.lift(h?.id, true);
     this.glow?.clear();
     this.tip?.setVisible(!!h);
     this.input.setDefaultCursor(h ? 'pointer' : 'default');
