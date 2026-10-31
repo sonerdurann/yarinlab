@@ -1,0 +1,41 @@
+{
+  "id": "food_001",
+  "version": "0.1.0",
+  "title": "Kantin / Görev 01 – Kaybolan Öğünler",
+  "brief": "Bugün okulumuzun yemekhanesinde 280 öğrenci için öğün hazırlanıyor. Son bir haftadan alınmış örnek olayda tabak artıkları ve hazırlık fazlası önemli bir sorun. Tek hedefin atığı sıfırlamak değil; öğrencilerin ihtiyacını karşılayarak kaynakları daha akıllıca kullanmak.",
+  "context": { "students": 280, "mealDemand": 280, "budgetLabel": "12.000 puan", "goal": "denge kurmak" },
+  "baseline": { "budget": 12000, "foodWasteKg": 30, "energyScore": 76, "waterScore": 81, "wellbeing": 75 },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Aynı porsiyon",
+      "summary": "Düşük hazırlık",
+      "deltas": { "foodWasteKg": -1, "budget": -100, "wellbeing": -10 },
+      "tradeoff": "Hizmet kolay kalır; tercihlere uyum düşük olabilir. Tek metrikli çözüm yetmeyebilir."
+    },
+    {
+      "id": "B",
+      "label": "Esnek porsiyon",
+      "summary": "Ek servis planı",
+      "deltas": { "foodWasteKg": -10, "budget": -700, "wellbeing": 12 },
+      "tradeoff": "İsraf düşebilir; servis maliyeti artabilir. Denge ve yan etki."
+    },
+    {
+      "id": "C",
+      "label": "Tahmine göre üretim",
+      "summary": "Talep riski",
+      "deltas": { "foodWasteKg": -12, "budget": 200, "wellbeing": -17 },
+      "tradeoff": "İsraf azalabilir; yanlış tahmin riski vardır. Belirsizlik ve erişilebilirlik."
+    }
+  ],
+  "learningOutcomeIds": ["L1", "L2", "L3", "L5"],
+  "evidenceRefs": ["R11", "R9"],
+  "disclaimer": "Simülasyon – gerçek saha sonucu değildir",
+  "reasoningOptions": [
+    "Atığı en çok azaltan seçeneği seçtim.",
+    "Öğrencilerin memnuniyetini korumak istedim.",
+    "Bütçeyi dengede tutmak istedim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyondaki atık değeri ile okulda gerçekten tartılan atık arasındaki fark nedir? Bunu nasıl ölçerdin?"
+}
