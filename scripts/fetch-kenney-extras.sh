@@ -36,13 +36,6 @@ find "$DEST/game-icons" -path '*PNG*' -name '*.png' -exec cp {} "$PUB/icons/" \;
 cp "$(lic "$DEST/game-icons")" "$PUB/icons/License.txt"
 
 # Manifeste ekle (kılavuz §06)
-node -e '
-const fs=require("fs"),p="apps/web/public/assets/manifest.json",m=JSON.parse(fs.readFileSync(p,"utf8"));
-const add=(id,file,src,lic)=>{ if(!m.assets.some(a=>a.id===id)) m.assets.push({id,file,source:src,license:"CC0",licenseFile:lic,interactive:false}); };
-for (const f of fs.readdirSync("apps/web/public/assets/kenney/sounds").filter(x=>x.endsWith(".ogg")))
-  add("kenney-sound-"+f.replace(".ogg",""),"/assets/kenney/sounds/"+f,"https://kenney.nl/assets/interface-sounds","/assets/kenney/sounds/License.txt");
-add("kenney-vehicles","/assets/kenney/vehicles/License.txt","https://kenney.nl/assets/isometric-tiles-vehicles","/assets/kenney/vehicles/License.txt");
-add("kenney-icons","/assets/kenney/icons/License.txt","https://kenney.nl/assets/game-icons","/assets/kenney/icons/License.txt");
-fs.writeFileSync(p,JSON.stringify(m,null,2)+"\n");'
+node scripts/kenney-manifest.mjs
 echo "Bitti. Lisanslar doğrulandı mı: $(head -2 "$PUB/sounds/License.txt" | tr '\n' ' ')"
 echo "Sonra: git add -A && git commit -m 'assets: Kenney destek paketleri' && git push"
