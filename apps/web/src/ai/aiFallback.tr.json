@@ -1,0 +1,210 @@
+{
+  "version": "fallback-0.1",
+  "note": "Doğrulanmış pedagojik geri bildirim. Sayılar yalnızca {yer tutucu} ile kural motoru sonucundan gelir; metinde başka sayı veya kgCO2e yoktur.",
+  "sourceIds": ["R9", "R11"],
+  "sourceIdsByScenario": {
+    "food_001": ["R9", "R11"],
+    "energy_001": ["R9"],
+    "waste_001": ["R9", "R11"],
+    "city_001": ["R9"],
+    "carbon_001": ["R9"],
+    "ocean_001": ["R9"],
+    "council_001": ["R9"]
+  },
+  "byScenario": {
+    "energy_001": {
+      "A": {
+        "summary": "Yalnızca güneşi seçtin. Enerji göstergesi {energyBefore} puandan {energyAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana değişti.",
+        "tradeoff": "Depolama olmadan yenilenebilir pay artınca kesinti riski yükselir. Daha yüksek enerji göstergesi her zaman daha güvenli değildir.",
+        "question1": "Kesinti olursa hangi dersler en çok aksar?",
+        "question2": "Güneşi artırmadan önce hangi bilgiyi isterdin?"
+      },
+      "B": {
+        "summary": "Rüzgâr ve bataryayı seçtin. Enerji göstergesi {energyBefore} puandan {energyAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana değişti.",
+        "tradeoff": "Depolama riski düşürür; bedeli bütçededir. İki göstergeyi birlikte okumak gerekir.",
+        "question1": "Bu bütçe azalmasını okul başka nereden karşılayabilir?",
+        "question2": "Batarya olmasa bu seçenek neden zayıflardı?"
+      },
+      "C": {
+        "summary": "Önce bataryayı seçtin. Enerji göstergesi {energyBefore} puandan {energyAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana değişti.",
+        "tradeoff": "Risk düşer ama enerji göstergesi daha az yükselir. Güvenilirlik ile büyüme aynı şey değildir.",
+        "question1": "Düşük risk, düşük artış sana ne zaman yeter?",
+        "question2": "Bu seçeneği gerçek okulda hangi gözlem doğrular?"
+      },
+      "N": {
+        "summary": "Hiçbir enerji kararı vermezsen göstergeler {energyBefore} puandan {energyAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana değişir.",
+        "tradeoff": "Pay ve depolama yerinde kalır; sorun kendiliğinden düzelmez.",
+        "question1": "Hiçbir şey yapmamanın bedelini kim hisseder?",
+        "question2": "İlk küçük adım hangisi olurdu?"
+      }
+    },
+    "waste_001": {
+      "A": {
+        "summary": "Önlemeyi seçtin. Bütçe {budgetBefore} puandan {budgetAfter} puana, memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana, su {waterBefore} puandan {waterAfter} puana değişti.",
+        "tradeoff": "Kullanılmayan malzeme azalınca toplama yükü düşebilir. Alışkanlık değişimi tek başına bir sayı değildir.",
+        "question1": "Hangi malzemeyi hiç almamak işe yarar?",
+        "question2": "Önleme kim için zor olabilir?"
+      },
+      "B": {
+        "summary": "Yeniden kullanımı seçtin. Bütçe {budgetBefore} puandan {budgetAfter} puana, memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana, su {waterBefore} puandan {waterAfter} puana değişti.",
+        "tradeoff": "Eşya ikinci kez işe yarar; toplama yükü önleme kadar azalmayabilir. Memnuniyet ile yük aynı yönde gitmez.",
+        "question1": "Neyi ikinci kez kullanmak güvenli olur?",
+        "question2": "Bu seçenek hangi atık türünde işe yaramaz?"
+      },
+      "C": {
+        "summary": "Ayırmayı seçtin. Bütçe {budgetBefore} puandan {budgetAfter} puana, memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana, su {waterBefore} puandan {waterAfter} puana değişti.",
+        "tradeoff": "Ayrılan kısım yükten düşer; yıkama suyu artabilir. Geri kazanım, atığın hiç oluşmaması demek değildir.",
+        "question1": "Ayırmak kime ek iş çıkarır?",
+        "question2": "Su maliyeti yükselirse kararı nasıl yeniden tartarsın?"
+      },
+      "N": {
+        "summary": "Hiçbir atık kararı vermezsen bütçe {budgetBefore} puandan {budgetAfter} puana, memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana, su {waterBefore} puandan {waterAfter} puana değişir.",
+        "tradeoff": "Diğer okul atığı birikir; toplama ihtiyacı kendiliğinden azalmaz.",
+        "question1": "Biriken atığın bedelini kim öder?",
+        "question2": "İlk hangi küçük değişikliği denersin?"
+      }
+    },
+    "city_001": {
+      "A": {
+        "summary": "Yeşil alanı seçtin. Su {waterBefore} puandan {waterAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana değişti.",
+        "tradeoff": "Toprak ve bitki suyu tutar. Risk düşer; bu bir sel ölçümü değildir.",
+        "question1": "Bahçede su birikince ilk kimi etkiler?",
+        "question2": "Yeşil alan hangi yerde işe yaramaz?"
+      },
+      "B": {
+        "summary": "Yağmur suyunu seçtin. Su {waterBefore} puandan {waterAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana değişti.",
+        "tradeoff": "Tutma payı riski daha da düşürür. Bedeli bütçededir.",
+        "question1": "Bu bütçe hangi işi bekletir?",
+        "question2": "Yağmur payı olmadan yeşil alan yeter mi?"
+      },
+      "C": {
+        "summary": "Boru hattını seçtin. Su {waterBefore} puandan {waterAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana değişti.",
+        "tradeoff": "Sert zemin suyu hızlandırabilir. Risk yükselebilir; tek gösterge yanıltır.",
+        "question1": "Boru suyu nereye taşır, orada kim yaşar?",
+        "question2": "Risk yükselirken su göstergesi neden yine artabilir?"
+      },
+      "N": {
+        "summary": "Hiçbir şehir kararı vermezsen su {waterBefore} puandan {waterAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana değişir.",
+        "tradeoff": "Yüzeyler aynı kalır. Risk kendiliğinden çözülmez.",
+        "question1": "Hiçbir şey yapmamanın bedelini kim hisseder?",
+        "question2": "İlk küçük yüzey değişikliği ne olurdu?"
+      }
+    },
+    "carbon_001": {
+      "A": {
+        "summary": "Sloganı kabul ettin. Memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, su {waterBefore} puandan {waterAfter} puana değişti.",
+        "tradeoff": "Kontrol edilmeyen yazı kanıt değildir. İnceleme puanı düşer.",
+        "question1": "Yazıdaki hangi cümle kontrol ister?",
+        "question2": "Memnuniyet yükselince iddia doğru mu olur?"
+      },
+      "B": {
+        "summary": "İki kaynağı kontrol ettin. Memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, su {waterBefore} puandan {waterAfter} puana değişti.",
+        "tradeoff": "İkinci kaynak inceleme puanını yükseltir. Zaman ve bütçe gider.",
+        "question1": "İki kaynak uyuşmazsa ne yaparsın?",
+        "question2": "Hangi bilgi ürün yazısında yoktur?"
+      },
+      "C": {
+        "summary": "İddiayı reddettin. Memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, su {waterBefore} puandan {waterAfter} puana değişti.",
+        "tradeoff": "Hiç bakmamak da bir seçimdir. Bazı doğru bilgiler dışarıda kalır.",
+        "question1": "Reddetmek ne zaman acele olur?",
+        "question2": "Hangi tek soru yazıyı test eder?"
+      },
+      "N": {
+        "summary": "Hiçbir inceleme yapmazsan memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, su {waterBefore} puandan {waterAfter} puana değişir.",
+        "tradeoff": "Alışkanlık sürer. Puan kendiliğinden yükselmez.",
+        "question1": "Kontrol etmemenin bedeli nedir?",
+        "question2": "İlk bakacağın cümle hangisi olurdu?"
+      }
+    },
+    "ocean_001": {
+      "A": {
+        "summary": "Kıyı temizliğini seçtin. Memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, su {waterBefore} puandan {waterAfter} puana değişti.",
+        "tradeoff": "Görünür atık azalır. Habitat az değişirse risk az düşer.",
+        "question1": "Toplanan atık bir hafta sonra geri gelir mi?",
+        "question2": "Temizlik kimi yorar?"
+      },
+      "B": {
+        "summary": "Habitat onarımını seçtin. Memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, su {waterBefore} puandan {waterAfter} puana değişti.",
+        "tradeoff": "Bakım riski daha çok düşürür. Yük, kantin ve atık kararına bağlıdır.",
+        "question1": "Okul atığı azalırsa aynı bakım neden daha işe yarar?",
+        "question2": "Bu bütçe hangi başka işi bekletir?"
+      },
+      "C": {
+        "summary": "Yalnızca tabelayı seçtin. Memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, su {waterBefore} puandan {waterAfter} puana değişti.",
+        "tradeoff": "Yazı habitatı onarmaz. Risk neredeyse yerinde kalır.",
+        "question1": "Tabela kim için yeter, kim için yetmez?",
+        "question2": "Yazıdan sonra hangi gözlem kararı değiştirir?"
+      },
+      "N": {
+        "summary": "Hiçbir kıyı kararı vermezsen memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, su {waterBefore} puandan {waterAfter} puana değişir.",
+        "tradeoff": "Bakım aynı kalır. Yük durursa risk çözülmez.",
+        "question1": "Kıyıyı kendi haline bırakmak kime zarar verir?",
+        "question2": "İlk küçük bakım ne olurdu?"
+      }
+    },
+    "council_001": {
+      "A": {
+        "summary": "Tek göstergeyi seçtin. Memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, su {waterBefore} puandan {waterAfter} puana değişti.",
+        "tradeoff": "Bir sayı kararı kolaylaştırır ve diğer kanıtları gizler. Meclis puanı düşer.",
+        "question1": "Hangi kanıt bu sayıda yoktur?",
+        "question2": "Tek sayı kimin işini zorlaştırır?"
+      },
+      "B": {
+        "summary": "Kanıt dengesini seçtin. Memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, su {waterBefore} puandan {waterAfter} puana değişti.",
+        "tradeoff": "Birden fazla iz puanı yükseltir. Uzlaşma zaman alır.",
+        "question1": "İki kanıt çelişirse ne yaparsın?",
+        "question2": "Hangi modülün kanıtı masada eksik?"
+      },
+      "C": {
+        "summary": "Önce ölçmeyi seçtin. Memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, su {waterBefore} puandan {waterAfter} puana değişti.",
+        "tradeoff": "Ölçmek temkinlidir. Puan biraz yükselir; karar gecikebilir.",
+        "question1": "Ölçmeden karar ne zaman daha kötü olur?",
+        "question2": "Hangi notu almadan masaya oturmazsın?"
+      },
+      "N": {
+        "summary": "Meclis karar vermezse memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana, bütçe {budgetBefore} puandan {budgetAfter} puana, su {waterBefore} puandan {waterAfter} puana değişir.",
+        "tradeoff": "Kanıt masada kalır. Ortak karar oluşmaz.",
+        "question1": "Dağılan meclisin bedelini kim öder?",
+        "question2": "İlk hangi kanıtı masaya koyardın?"
+      }
+    }
+  },
+  "byChoice": {
+    "A": {
+      "summary": "Aynı porsiyonu seçtin. Simülasyonda atık {wasteBefore} kg'dan {wasteAfter} kg'a, bütçe {budgetBefore} puandan {budgetAfter} puana, memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana değişti.",
+      "tradeoff": "Tek porsiyon hazırlığı kolaylaştırır ama herkesin iştahı aynı değildir; memnuniyet düşebilir. Tek bir göstergeye bakmak yetmeyebilir.",
+      "question1": "Hangi öğrenciler bu porsiyondan memnun kalmamış olabilir?",
+      "question2": "Atık az değiştiyse bunun nedeni porsiyon dışında başka ne olabilir?"
+    },
+    "B": {
+      "summary": "Esnek porsiyonu seçtin. Simülasyonda atık {wasteBefore} kg'dan {wasteAfter} kg'a, bütçe {budgetBefore} puandan {budgetAfter} puana, memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana değişti.",
+      "tradeoff": "Öğrenci istediği kadar alınca israf azalabilir ve memnuniyet artabilir; ama ek servis planı bütçeyi artırabilir. Denge kurmak bir ödünleşimdir.",
+      "question1": "Bütçedeki artışı kimler, nasıl karşılayabilir?",
+      "question2": "Bu seçenek hangi durumda işe yaramayabilir?"
+    },
+    "C": {
+      "summary": "Talebe göre üretimi seçtin. Simülasyonda atık {wasteBefore} kg'dan {wasteAfter} kg'a, bütçe {budgetBefore} puandan {budgetAfter} puana, memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana değişti.",
+      "tradeoff": "Tahmine göre hazırlık israfı azaltabilir; fakat tahmin yanlışsa bazı öğrenciler yemeğe ulaşamaz. Erişilebilirlik ve belirsizlik hesaba katılmalıdır.",
+      "question1": "Tahmin yanlış çıkarsa kimler en çok etkilenir?",
+      "question2": "Tahmini daha güvenilir yapmak için hangi bilgiyi toplardın?"
+    },
+    "N": {
+      "summary": "Hiçbir karar vermezsen simülasyonda atık {wasteBefore} kg'dan {wasteAfter} kg'a, bütçe {budgetBefore} puandan {budgetAfter} puana, memnuniyet {wellbeingBefore} puandan {wellbeingAfter} puana değişir.",
+      "tradeoff": "Değişiklik yapılmadığında sorunlar kendiliğinden çözülmez; israf sürer ve maliyetler birikir. Bu değerler temsilidir.",
+      "question1": "Hiçbir şey yapmamanın bedelini kim öder?",
+      "question2": "İlk hangi küçük değişikliği denemek isterdin?"
+    }
+  },
+  "comparison": {
+    "summary": "İki gelecek aynı başlangıçtan çıkıyor; fark yalnızca verilen kararlardan geliyor.",
+    "tradeoff": "Bir gelecekte atık azalırken başka bir göstergenin kötüleşebildiğine bak. Tek bir sayıya göre karar vermek yerine hepsini birlikte düşün.",
+    "question1": "İki gelecek arasında hangi gösterge en çok ayrıldı ve neden?",
+    "question2": "Gerçek okulda bunu doğrulamak için neyi ölçerdin?"
+  },
+  "unknownChoice": {
+    "summary": "Bu karar için hazır bir açıklama yok.",
+    "tradeoff": "Simülasyondaki değişimlere ve ödünleşim notuna bak.",
+    "question1": "Hangi gösterge senin için en önemliydi?",
+    "question2": "Bu kararı gerçek okulda nasıl test ederdin?"
+  }
+}

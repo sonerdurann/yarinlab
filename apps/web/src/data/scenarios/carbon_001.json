@@ -1,0 +1,67 @@
+{
+  "id": "carbon_001",
+  "version": "0.1.0",
+  "title": "Karbon Dedektifleri / Görev 05",
+  "brief": "Bir ürün kutusu kendini daha iyi diye anlatıyor. Yazıyı olduğu gibi kabul edebilir, iki kaynağı kontrol edebilir veya iddiayı reddedebilirsin. Puan, iddianın ne kadar incelendiğini gösterir. Sera gazı miktarı hesaplanmaz.",
+  "baseline": {
+    "budget": 12000,
+    "foodWasteKg": 30,
+    "energyScore": 76,
+    "waterScore": 81,
+    "wellbeing": 75
+  },
+  "choices": [
+    {
+      "id": "A",
+      "label": "Sloganı kabul et",
+      "summary": "Yazıya güven",
+      "deltas": { "wellbeing": 6, "budget": -80, "waterScore": -3 },
+      "tradeoff": "Kontrol etmeden kabul etmek inceleme puanını düşürür. Memnuniyet bir an yükselir; bu bir kanıt değildir.",
+      "system": { "claimScore": 30 }
+    },
+    {
+      "id": "B",
+      "label": "İki kaynağı kontrol et",
+      "summary": "Yazı ve ikinci bilgi",
+      "deltas": { "wellbeing": 4, "budget": -220, "waterScore": 2 },
+      "tradeoff": "İki kaynağı karşılaştırmak inceleme puanını yükseltir. Zaman ve bütçe gider.",
+      "system": { "claimScore": 75 }
+    },
+    {
+      "id": "C",
+      "label": "İddiayı reddet",
+      "summary": "Hiçbir yazıya bakma",
+      "deltas": { "wellbeing": -6, "budget": -40, "waterScore": 1 },
+      "tradeoff": "Her iddiayı reddetmek de bir seçimdir; bazı doğru bilgiler dışarıda kalabilir.",
+      "system": { "claimScore": 45 }
+    }
+  ],
+  "noDecision": {
+    "id": "N",
+    "label": "Kararlar yok",
+    "summary": "Alışkanlık sürer",
+    "deltas": { "wellbeing": -3, "budget": -30, "waterScore": -1 },
+    "tradeoff": "İnceleme yapılmazsa puan yerinde kalır; alışkanlık değişmez.",
+    "system": { "claimScore": 40 }
+  },
+  "learningOutcomeIds": ["L2", "L3", "L5"],
+  "evidenceRefs": ["R9"],
+  "disclaimer": "Simülasyon – gerçek saha sonucu değildir",
+  "reasoningOptions": [
+    "Ürün yazısı yeterli göründü.",
+    "İkinci bir kaynağa bakmak istedim.",
+    "Kontrol etmeden ne kabul ne red istedim.",
+    "Başka bir neden (kısa yaz)."
+  ],
+  "transferQuestion": "Simülasyondaki inceleme puanı ile bir ürünün gerçek etkisi aynı şey midir? Hangi iki bilgiyi yan yana koyardın?",
+  "realWorldAction": {
+    "title": "Gerçek okulda ne yapabilirim?",
+    "action": "Bir ürün yazısından bir cümle seç. Aynı cümle için ikinci bir kaynak bul (ad yazma). İkisi uyuşuyor mu, yalnızca evet/hayır not et.",
+    "measurementPlan": [
+      "Yalnızca cümle kodu ve evet/hayır",
+      "Ad, fotoğraf veya konum yok",
+      "Kaynak adı yerine türü yaz (etiket, kitap, site)",
+      "Sonucu simülasyon puanıyla bir tutma"
+    ]
+  }
+}

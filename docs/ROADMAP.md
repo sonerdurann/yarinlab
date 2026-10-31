@@ -25,10 +25,10 @@ Final: 15-16 Kas, 24 saat geliştirme, 5 dk sunum + 3 dk soru-cevap. Finalde 3 k
 - [x] 09 Fallback AI açıklaması + gerekçe alanı (model servisi P1)
 - [x] 10 Öğretmen özeti + kaynak/lisans sayfası
 - [~] 11 12 kabul testi + production build (9 geçti, T07/T08/T12 kısmen; docs/ACCEPTANCE.md)
-- [ ] 12 Sunumda P0 ile P1-P2 yol haritası ayrımı
+- [x] 12 Sunumda P0 ile P1-P2 yol haritası ayrımı (uygulama içi Kapsam paneli)
 - [x] (ek) Dönem görünümü: haritanın iki renk varyasyonu (§04, §09)
 
 İlk görev dosyaları: `world_alpha.json`, `food_001.json`, `ClimateEngine.ts`, `WorldScene.ts`, `DecisionModal.tsx`, `aiFallback.tr.json`, `licenses.md`.
 
 ## Görsel/UX cila: tamamlandı (31 Ekim 2026)
-Harita (Kenney atlası, yöne duyarlı yollar, kıyı, bölge dekoru, hareket), karar ve sonuç ekranları, öğretmen grafikleri, açılış/yükleme/marka, dönem görünümü, ayarlar, parçalı yükleme. Cila için kalan bilinen küçük konu: çimde çok hafif karo çizgileri (gerçek cihazda yeniden bakılmalı). Bundan sonraki işler cila değil: yayın (Cloudflare Pages), gerçek cihaz/klavye testi, 90 sn prova, saha görüşmeleri, P1 modülleri.
+Harita (Kenney atlası, yöne duyarlı yollar, kıyı, bölge dekoru, hareket), karar ve sonuç ekranları, öğretmen grafikleri, açılış/yükleme/marka, dönem görünümü, ayarlar, parçalı yükleme. Cila için kalan bilinen küçük konu: çimde çok hafif karo çizgileri (gerçek cihazda yeniden bakılmalı). P1 enerji ve atık, P2 şehir, karbon, kıyı ve meclis senaryoları ile bu cihazdaki anonim kurum kodu eklendi (decision-log 007, 010). Bundan sonraki işler: yayın (Cloudflare Pages), gerçek cihaz/klavye testi, 90 sn prova, saha görüşmeleri, canlı model anahtarı. Bulut sınıf eşitlemesi yok.
