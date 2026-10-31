@@ -15,9 +15,47 @@ const NOTES: Record<Sfx, [number, number, OscillatorType][]> = {
 };
 let ctx: AudioContext | null = null;
 
+/** Kenney Interface Sounds (CC0) dosyaları; scripts/fetch-kenney-extras.sh ile eklenir. Yoksa kodla üretilen ses çalar. */
+export const KENNEY_SOUND: Record<Sfx, string> = {
+  decision: 'confirmation_002', build: 'maximize_006', day: 'pluck_002', badge: 'confirmation_004', warn: 'error_004',
+};
+const buffers = new Map<Sfx, AudioBuffer | null>();
+async function loadBuffer(kind: Sfx): Promise<AudioBuffer | null> {
+  if (buffers.has(kind)) return buffers.get(kind)!;
+  let buf: AudioBuffer | null = null;
+  try {
+    const res = await fetch(`/assets/kenney/sounds/${KENNEY_SOUND[kind]}.ogg`);
+    const type = res.headers.get('content-type') ?? '';
+    if (res.ok && !type.includes('text/html')) buf = await ctx!.decodeAudioData(await res.arrayBuffer());
+  } catch { /* dosya yok veya çözülemedi */ }
+  buffers.set(kind, buf);
+  return buf;
+}
+
 export function play(kind: Sfx) {
   const st = settingsStore.get();
   if (!st.sound || st.volume <= 0) return;
+  try {
+    const AC0 = (globalThis as { AudioContext?: typeof AudioContext }).AudioContext;
+    if (!AC0) return;
+    ctx ??= new AC0();
+    if (ctx.state === 'suspended') void ctx.resume();
+    void loadBuffer(kind).then((buf) => {
+      if (buf && ctx) {
+        const src = ctx.createBufferSource(), g = ctx.createGain();
+        g.gain.value = st.volume;
+        src.buffer = buf;
+        src.connect(g).connect(ctx.destination);
+        src.start();
+      } else synth(kind, st.volume);
+    });
+  } catch {
+    /* ses yok */
+  }
+}
+
+function synth(kind: Sfx, volume: number) {
+  const st = { volume };
   try {
     const AC = (globalThis as { AudioContext?: typeof AudioContext }).AudioContext;
     if (!AC) return;

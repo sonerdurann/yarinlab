@@ -14,7 +14,7 @@ Bu liste, test edilmemiş veya bu ortamda yapılamamış işleri açıkça bildi
 ## Bilinen sınırlamalar
 - Harita 32×32'dir. Bölgeler inşa alanları ve görev kilitleriyle açılır, ancak haritanın kendisi fiziksel olarak genişlemiyor (48×48 hedefi ertelendi).
 - Eksik binalar (güneş paneli, türbin, batarya, kutular, ekin, ağaç, araç, yaya, yağmur bahçesi, sera, kompost, sulak alan) Kenney stiline uygun, kodla üretilmiş basit şekillerdir. Profesyonel sanat geçişi yapılmadı.
-- **Kenney destek paketleri (Vehicles, Interface Sounds, Game Icons) indirilemedi:** bu ortamın ağ politikası kenney.nl'e bağlantıyı engelliyor (403). Araç, ses ve simgeler kodla üretildi; paketler sonradan `design/third_party/kenney/` altına eklenip manifestle bağlanabilir.
+- **Kenney destek paketleri (Vehicles, Interface Sounds, Game Icons) indirilemedi:** bu ortamın ağ politikası kenney.nl'e bağlantıyı engelliyor (403). Araç, ses ve simgeler kodla üretildi. İnternete açık bir bilgisayarda `./scripts/fetch-kenney-extras.sh` paketleri indirir, sesleri oyuna bağlar (dosya varsa Kenney sesi, yoksa kod sesi çalar), lisansları kopyalar ve manifesti günceller; ardından commit + push yapılır. Araç dokularının haritaya bağlanması bu indirmeden sonra yapılacak.
 - Ses efektleri kodla üretilmiş kısa tonlardır; müzik yok.
 - Gerekçe puanı sezgisel bir dil ölçüsüdür (bağlaç ve kanıt sözcükleri). Gerekçenin bilimsel doğruluğunu değerlendirmez; öğretmenin okuması gerekir.
 - Görev başlangıç değerleri her görevin kendi tabanından ölçülür. Ortak şehir durumu ise kararların toplamından hesaplanır, dolayısıyla “önce” sütunu şehir durumunu değil görev tabanını gösterir.

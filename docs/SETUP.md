@@ -48,6 +48,14 @@ POSTGRES_PASSWORD=guclu-parola docker compose up -d --build
 | `AI_TIMEOUT_MS`, `AI_DAILY_USER_CALLS`, `AI_DAILY_TOKEN_BUDGET` | Zaman aşımı ve maliyet sınırları |
 | `WEB_DIST` | Web derleme klasörü (isteğe bağlı) |
 
+## Kenney destek paketleri (isteğe bağlı)
+Bulut geliştirme ortamı kenney.nl'e erişemediği için Vehicles, Interface Sounds ve Game Icons paketleri betikle yerelde indirilir:
+```bash
+./scripts/fetch-kenney-extras.sh
+git add -A && git commit -m "assets: Kenney destek paketleri" && git push
+```
+Betik ZIP'leri `design/third_party/kenney/` altına koyar, sesleri ve lisansları `apps/web/public/assets/kenney/` altına kopyalar, `manifest.json`'u günceller.
+
 ## Yedekleme
 `scripts/backup.sh` günlük cron ile çalıştırılır (`pg_dump` özel biçim, `BACKUP_KEEP_DAYS` gün saklama). Geri yükleme komutu betiğin sonunda yazılıdır. Yedekler öğrenci verisi içerir: şifreli diskte, erişimi kısıtlı tutun.
 
