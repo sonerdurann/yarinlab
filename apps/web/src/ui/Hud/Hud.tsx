@@ -3,8 +3,10 @@ import { teacherStore } from '../../state/teacherStore';
 import { useCountUp } from '../useCountUp';
 import { Logo } from '../Logo';
 import { settingsStore } from '../../state/settingsStore';
-import { wasteCollection } from '../../game/systems/ClimateEngine';
+import { ASSUMED_COLLECTION_CAPACITY_KG, CITY_FLOOD_NOTE, ENERGY_RISK_NOTE, OCEAN_NOTE, WASTE_RULE_NOTE } from '../../data/constants';
+import { coastalRisk, councilStanding, floodRisk, outageRisk, wasteCollection } from '../../game/systems/ClimateEngine';
 import { gameStore as gs } from '../../state/gameStore';
+import { RoadmapButton } from '../Roadmap/RoadmapPanel';
 
 const fmt = (n: number) => n.toLocaleString('tr-TR');
 
@@ -41,6 +43,7 @@ export function TopBar() {
         <button onClick={authStore.open}>{user ? user.displayName : 'Giriş'}</button>
         <button onClick={teacherStore.openTeacher}>Öğretmen</button>
         <button onClick={teacherStore.openSources}>Kaynaklar</button>
+        <RoadmapButton />
         <button onClick={settingsStore.open} aria-label="Ayarlar">⚙</button>
       </span>
     </header>
@@ -55,7 +58,12 @@ const meters: { key: 'energyScore' | 'waterScore' | 'wellbeing'; label: string }
 
 /** Sağ sonuç paneli: ortak dünya durumu. */
 export function WorldStatus() {
-  const { world } = useGameState();
+  const { world, energySystem, wasteSystem, citySystem, carbonSystem, oceanSystem, councilSystem, applied, history } = useGameState();
+  const risk = outageRisk(energySystem.renewableShare, energySystem.storageUnits);
+  const col = wasteCollection(world.foodWasteKg, wasteSystem.otherWasteKg, ASSUMED_COLLECTION_CAPACITY_KG, wasteSystem.sortingRecovery);
+  const flood = floodRisk(citySystem.sealedShare, citySystem.greenShare, citySystem.rainShare);
+  const coast = coastalRisk(col.wasteLoadKg, oceanSystem.habitatCare);
+  const meclis = councilStanding({ appliedIds: Object.keys(applied), history, evidenceBias: councilSystem.evidenceBias });
   return (
     <aside className="panel world-status" aria-label="Dünya durumu">
       <h2>Dünya durumu</h2>
@@ -77,9 +85,40 @@ export function WorldStatus() {
       <p className="stat" title="Atık modülü: gıda atığı + diğer okul atığı, varsayılan toplama kapasitesine bölünür">
         <span>Toplama ihtiyacı (Atık)</span>
         <strong>
-          <Num value={wasteCollection(world.foodWasteKg).collectionNeed} /> sefer/gün
+          <Num value={col.collectionNeed} /> sefer/gün
         </strong>
       </p>
+      <p className="stat" title={ENERGY_RISK_NOTE}>
+        <span>Kesinti riski (Enerji)</span>
+        <strong>
+          <Num value={risk} />/100
+        </strong>
+      </p>
+      <p className="stat" title={CITY_FLOOD_NOTE}>
+        <span>Taşkın riski (Şehir)</span>
+        <strong>
+          <Num value={flood} />/100
+        </strong>
+      </p>
+      <p className="stat" title={OCEAN_NOTE}>
+        <span>Kıyı riski</span>
+        <strong>
+          <Num value={coast} />/100
+        </strong>
+      </p>
+      <p className="stat" title="İddia inceleme puanı. Sera gazı miktarı değildir.">
+        <span>İddia inceleme</span>
+        <strong>
+          <Num value={carbonSystem.claimScore} />/100
+        </strong>
+      </p>
+      <p className="stat" title="Oynanan modüller, iki kantin seçeneği, gerekçe ve meclis seçimi. Sera gazı miktarı değildir.">
+        <span>Meclis puanı</span>
+        <strong>
+          <Num value={meclis} />/100
+        </strong>
+      </p>
+      <p className="hint">{WASTE_RULE_NOTE}</p>
       <p className="stat">
         <span>Bütçe (oyun puanı)</span>
         <strong><Num value={world.budget} /></strong>

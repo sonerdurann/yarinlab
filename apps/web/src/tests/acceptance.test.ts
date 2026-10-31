@@ -22,7 +22,9 @@ describe('T02 hotspot yönlendirme', () => {
         expect(s.notice, h.id).toMatch(/Henüz açılmadı/);
       } else {
         expect(s.selectedHotspotId, h.id).toBe(h.id);
-        expect(s.decisionOpen, h.id).toBe(h.id === 'canteen');
+        const decision = new Set(['canteen', 'energy', 'waste', 'city', 'farm', 'ocean']);
+        expect(s.decisionOpen, h.id).toBe(decision.has(h.id));
+        expect(s.schoolOpen, h.id).toBe(h.id === 'school');
       }
     }
   });

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import type Phaser from 'phaser';
-import { hotspots } from './game/tiles/hotspots';
 import { gameStore, taskSteps, useGameState } from './state/gameStore';
 import { TopBar, WorldStatus } from './ui/Hud/Hud';
 import { TaskPanel } from './ui/TaskPanel/TaskPanel';
@@ -14,16 +13,15 @@ import { SettingsPanel } from './ui/Settings/SettingsPanel';
 import { PeriodSwitch, PeriodTint } from './ui/PeriodSwitch/PeriodSwitch';
 import { AuthPanel } from './ui/Auth/AuthPanel';
 import { authStore } from './state/authStore';
-import { wasteCollection } from './game/systems/ClimateEngine';
+import { SchoolPanel } from './ui/SchoolPanel/SchoolPanel';
 
 export function App() {
   const host = useRef<HTMLDivElement>(null);
   const game = useRef<Phaser.Game | null>(null);
   const gs = useGameState();
-  const { selectedHotspotId, notice, decisionOpen } = gs;
+  const { notice, decisionOpen } = gs;
   const [sheet, setSheet] = useState(false);
   const next = taskSteps(gs).find((t) => !t.done);
-  const selected = hotspots.find((h) => h.id === selectedHotspotId);
 
   useEffect(() => {
     if (!host.current) return;
@@ -89,27 +87,11 @@ export function App() {
         <TaskPanel onPick={pick} />
         <WorldStatus />
       </div>
-      {(notice || (selected && selected.id !== 'canteen')) && !decisionOpen && (
+      {gs.schoolOpen && <SchoolPanel onPick={pick} />}
+      {notice && !decisionOpen && (
         <aside role="status" className="panel toast">
-          {selected && !notice ? (
-            <>
-              <h2>{selected.label}</h2>
-              {selected.id === 'waste' ? (
-                <p>
-                  Kantin kararın burayı etkiler: gıda atığı {gs.world.foodWasteKg} kg/gün → toplama ihtiyacı{' '}
-                  <strong>{wasteCollection(gs.world.foodWasteKg).collectionNeed} sefer/gün</strong>. Bu bölgenin kendi görevi sonraki sürümde (P1).
-                </p>
-              ) : (
-                <p>Bu bölgenin görevi sonraki sürümde (P1). Şimdilik Kantin görevi oynanabilir.</p>
-              )}
-              <button onClick={gameStore.closePanel}>Kapat</button>
-            </>
-          ) : (
-            <>
-              <p>{notice}</p>
-              <button onClick={gameStore.clearNotice}>Tamam</button>
-            </>
-          )}
+          <p>{notice}</p>
+          <button onClick={gameStore.clearNotice}>Tamam</button>
         </aside>
       )}
       <div className={gs.worldReady ? 'loading done' : 'loading'} role="status" aria-hidden={gs.worldReady}>
