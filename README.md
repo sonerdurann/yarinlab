@@ -1,50 +1,45 @@
 # YarınLab — Geleceği Sen Tasarla
 
-COP31 / KLM Teknolojileri Creathonu için modern 2.5D izometrik iklim karar oyunu (6-8. sınıf).
-Öğrenciler bütçe, su, enerji, atık ve refah arasında seçim yapar; sonuçları ortak bir okul-şehir simülasyonunda görür ve açıklama alır.
+*Bugünün kararları, yarının dünyasını şekillendirir.*
 
-**Teknoloji:** Phaser 4.2.1 + React + TypeScript + Vite · Tiled JSON harita · Kenney Isometric Tiles (CC0)
+COP31 “İklim Değişikliği Odağında Eğitim” teması için 6-8. sınıflara yönelik, 2.5D izometrik, yapay zekâ destekli iklim eğitimi simülasyonu. Oyun 2026'da başlar. 2040'tan gelen bir öğrencinin mesajıyla oyuncu bir okulun ve çevresinin sorumluluğunu üstlenir. Yedi iklim probleminde karar verir, şehrini geliştirir ve kararlarının ortak bir şehir simülasyonundaki etkisini görür. Öğretmenler sınıf açar, görev atar ve kazanım raporlarını izler.
 
-## Durum (P2 senaryoları – 31 Ekim 2026)
-Çalışan prototip, tarayıcıda oynanır:
-- 32×32 izometrik ada haritası; yedi bölge oynanır (Tarım karosu Karbon modülünü açar). Gelecek Meclisi pin değildir. Sürükle, tekerlek, +/− ile yakınlaştırma, klavyeyle Bölge Listesi.
-- **Kantin / Görev 01:** A/B/C kararı, gerekçe, sonuç (önce/sonra çubukları), tekrar dene, **iki gelecek karşılaştırması**, gıda atığı → **atık toplama** çapraz etkisi.
-- **Dönem görünümü:** Bugün / 2040 Kararsız / 2040 Kararlarınla (görsel yorum).
-- **AI yedeği:** doğrulanmış hazır pedagojik geri bildirim + iki soruluk yansıtma; model servisi olmadan da oyun biter (sunucu uç noktası taslağı `functions/`).
-- **Öğretmen paneli:** DEMO etiketli sınıf özeti ve grafikler, gerçek okul ölçümü girişi, anonim oturum raporu indirme (JSON/CSV).
-- **Erişilebilirlik ve mobil:** 360 px, ≥44 px hedefler, ortak odak yönetimli pencereler, Ayarlar (hareket, yazı boyutu), açılış mesajı, kaynak/lisans sayfası.
-- Test: 72 birim/akış testi (`npm run test`). Üretim derlemesi bu turda yeniden alınmadı.
+**Teknoloji:** Phaser 4 · React 19 · TypeScript · Vite · Fastify 5 · Prisma 6 · PostgreSQL 16 · Vitest · Playwright · Tiled JSON · Kenney Isometric (CC0)
 
-**Henüz yapılmadı / doğrulanmadı:** yayınlanmış URL (Cloudflare Pages), gerçek telefonda ve gerçek klavye turuyla deneme, 90 sn'lik insan provası, hedef cihazda performans ölçümü, saha görüşmeleri, canlı model servisi (anahtar yokken yedek açıklama), bulut sınıf eşitlemesi. Ayrıntı: [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md).
+## Neler çalışıyor (test edildi)
+- **7 modül × 5 görev = 35 oynanabilir görev:** Enerji Adası, Karbon Dedektifleri, KrizKenti, Son Tabak, Mavi Nöbet, Döngü Ustaları, Gelecek Meclisi. Her görevde 3 karar yolu, karar vermeme seçeneği, ödünleşim, kavram yanılgısı işareti, kazanım, kaynak, transfer sorusu ve gerçek dünya etkinliği var. Görev zinciri ve Meclis kapıları bulunuyor. Hikâyenin dört bölümü ve göstergelere göre değişen üç 2040 sonu var.
+- **Ortak şehir simülasyonu (deterministik):** tohumlu hava ve mevsim, saatlik enerji dengesi (güneş/rüzgâr/depolama/şebeke sınırı), 10 gösterge, modüller arası etkiler, nedenleri açıklanan olay günlüğü.
+- **İnşa sistemi:** 15 yapı, 3 seviye, maliyet, bakım, kapasite ve kilitler. Yapılar haritada görünür.
+- **Hesaplar ve kayıt:** öğretmen (e-posta) ve öğrenci (sınıf kodu + takma ad). Sunucuya otomatik kayıt, sürüm kilidi, çevrim dışı kuyruk ve geri yükleme.
+- **Yapay zekâ:** İklim Öğretmeni, Senaryo Yönetmeni ve Öğretmen Asistanı. Sağlayıcıdan bağımsız arayüz (Anthropic adaptörü dahil). Yanıtlar doğrulanır; kota, bütçe ve hız sınırı uygulanır; her hata durumunda doğrulanmış yedek geri bildirim döner.
+- **Öğretmen paneli (gerçek veri):** sınıf, KVKK izin akışı, gruplar, görev atama, ilerleme, kazanım analizi, ön/son test, kavram yanılgısı raporu, gerekçeler, gerçek dünya ölçümleri, CSV/PDF ve AI önerileri.
+- **Oyunlaştırma:** seviye, 12 baskısız rozet, puan dökümü (sonuç/gerekçe/denge). Sıralama, süre baskısı veya ücretli ödül yok.
+- **Erişilebilirlik ve kalite:** klavye ile kullanım, odak yönetimi, axe (WCAG 2 AA) taraması, hareket azaltma, yazı boyutu, ses ve grafik ayarları, dokunmatik ve tablet görünümü, sıkı CSP.
 
-## Proje merkezi (docs/)
+Test sonuçları: [docs/TEST_RESULTS.md](docs/TEST_RESULTS.md). Yapılmayan ve doğrulanmayan işler: **[docs/KNOWN_ISSUES.md](docs/KNOWN_ISSUES.md)** (canlı yayın, canlı LLM çağrısı, gerçek cihaz ölçümü ve KVKK hukuki incelemesi yapılmadı).
+
+## Hızlı başlangıç
+```bash
+npm ci
+cp .env.example apps/server/.env
+npm -w @yarinlab/server exec prisma migrate deploy
+npm run dev            # http://localhost:5173
+```
+Ayrıntı: [docs/SETUP.md](docs/SETUP.md) · Docker: `docker compose up -d --build`
+
+## Belgeler
 | Belge | İçerik |
 |---|---|
-| [docs/kilavuz.pdf](docs/kilavuz.pdf) | Orijinal uygulama kılavuzu (tek gerçek kaynak) |
-| [docs/PLAN.md](docs/PLAN.md) | Kapsam (P0/P1/P2), öğrenme çıktıları, modüller, mimari, veri modeli |
-| [docs/ROADMAP.md](docs/ROADMAP.md) | Takvim ve ilerleme durumu |
-| [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md) | Kabul testleri T01-T12 ve sonuçları |
-| [docs/RISKS.md](docs/RISKS.md) | Riskler ve GO / NO-GO eşikleri |
-| [docs/ART_DIRECTION.md](docs/ART_DIRECTION.md) | Stil kilidi, palet, asset standartları |
-| [docs/WORKFLOW.md](docs/WORKFLOW.md) | Çalışma kuralları, iş kartı şablonu |
-| [docs/PRESENTATION.md](docs/PRESENTATION.md) | 5 dk sunum + jüri soruları |
-| [docs/sources/SOURCES.md](docs/sources/SOURCES.md) | Kaynaklar K1, R1-R18 |
-| [docs/licenses/licenses.md](docs/licenses/licenses.md) | Asset lisans / indirme kaydı |
-| [docs/decision-log/](docs/decision-log/) | Tarihli kararlar (001-009) |
-
-## Komutlar
-```bash
-npm install
-npm run dev        # geliştirme sunucusu (http://localhost:5173)
-npm run test       # vitest
-npm run typecheck  # tsc --noEmit
-npm run build      # dist/ (Cloudflare Pages: build=npm run build, output=dist)
-node scripts/generate-world-alpha.mjs   # public/assets/maps/world_alpha.json'u yeniden üretir
-```
+| [docs/SETUP.md](docs/SETUP.md) | Kurulum, ortam değişkenleri, Docker, yedekleme, CI |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Mimari, veri akışı, AI, güvenlik, veri modeli |
+| [docs/STUDENT_GUIDE.md](docs/STUDENT_GUIDE.md) · [docs/TEACHER_GUIDE.md](docs/TEACHER_GUIDE.md) | Kullanıcı kılavuzları |
+| [docs/SIMULATION_ASSUMPTIONS.md](docs/SIMULATION_ASSUMPTIONS.md) | Tüm katsayılar, varsayımlar ve bilimsel dayanaklar |
+| [docs/sources/SOURCES.md](docs/sources/SOURCES.md) · [docs/licenses/licenses.md](docs/licenses/licenses.md) | Kaynaklar ve asset lisansları |
+| [docs/KNOWN_ISSUES.md](docs/KNOWN_ISSUES.md) · [docs/TEST_RESULTS.md](docs/TEST_RESULTS.md) | Dürüstlük kaydı ve test sonuçları |
+| docs/PLAN.md, ROADMAP.md, ACCEPTANCE.md, decision-log/ | Creathon P0 dönemine ait tarihsel kayıtlar |
 
 ## Yapı
-`src/game` (Phaser sahneleri, karar/iklim motoru, harita ve dekor), `src/ui` (React HUD, pencereler, paneller), `src/state` (ortak store adapter), `src/ai` (hazır geri bildirim + istemci), `src/teacher` (rapor mantığı), `src/data` (senaryo, sabitler, kaynaklar), `src/tests`, `functions/` (Cloudflare taslağı), `public/assets` (harita, Kenney atlasları), `design/third_party/kenney` (orijinal ZIP'ler).
+`packages/shared` (simülasyon, içerik, AI doğrulama) · `apps/web` (React + Phaser) · `apps/server` (Fastify + Prisma) · `apps/web/e2e` (Playwright) · `scripts/backup.sh` · `Dockerfile`, `docker-compose.yml`, `.github/workflows/ci.yml`
 
 ## Dürüstlük notu
-Oyundaki değerler **simülasyon göstergeleridir**; gerçek saha ölçümü veya kanıtlanmış karbon azaltımı değildir.
-Doğrulanmış katsayı olmadan kgCO₂e üretilmez. Öğretmen paneli örnek verileri "DEMO VERİSİ" olarak etiketlenir. Çocuklardan ad, fotoğraf, konum, e-posta toplanmaz.
+Oyundaki değerler **simülasyon göstergeleridir**; gerçek saha ölçümü veya kanıtlanmış karbon azaltımı değildir. kg CO₂e hesaplanmaz, emisyon birimsiz bir endekstir. Öğrencilerden ad, e-posta, fotoğraf veya konum toplanmaz.

@@ -1,0 +1,26 @@
+# Yerel/okul sunucusu kurulumu. Üretimde önüne HTTPS sonlandıran bir ters vekil (Caddy, Nginx, Traefik) koyun.
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: yarinlab
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-yarinlab}
+      POSTGRES_DB: yarinlab
+    volumes: [dbdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U yarinlab"]
+      interval: 5s
+      retries: 10
+  app:
+    build: .
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      DATABASE_URL: postgresql://yarinlab:${POSTGRES_PASSWORD:-yarinlab}@db:5432/yarinlab
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      AI_PROVIDER: ${AI_PROVIDER:-none}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      AI_MODEL: ${AI_MODEL:-claude-opus-5-5}
+    ports: ["3001:3001"]
+volumes:
+  dbdata:

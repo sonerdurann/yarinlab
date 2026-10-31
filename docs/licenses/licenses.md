@@ -21,3 +21,13 @@ Kenney paketleri CC0 (ticari kullanım serbest, atıf zorunlu değil; oyunda kay
 - Binalar çoğunlukla 132×127 (büyük) ve 99×54-85 (küçük).
 
 Ekip yapımı özel asset'ler (`license: team-owned`, `source: custom-compatible-art`): `BootScene` içinde kodla üretilen ağaç, güneş paneli, batarya, rüzgâr türbini, ayrıştırma kutusu ve ekin sırası dokuları. Kenney sanatından kopya değildir; aynı 2:1 elmas, palet ve yumuşak gölge dilini izler.
+
+## Ek kayıtlar (31 Ekim 2026, A2-A7)
+| Öğe | Kaynak | Lisans | Konum |
+|---|---|---|---|
+| DejaVu Sans / Sans Bold (PDF raporlarında Türkçe karakter) | Debian `fonts-dejavu-core` | Bitstream Vera türevi, serbest dağıtım (bkz. `LICENSE-DejaVu.txt`) | `apps/server/assets/fonts/` |
+| Yapı alanı işareti, yağmur damlası, araç, yaya dokuları | `BootScene` içinde kodla üretildi | ekip yapımı | `apps/web/src/game/scenes/BootScene.ts` |
+| Ses efektleri (karar, inşa, gün, rozet, uyarı) | WebAudio osilatörüyle kodla üretildi; ses dosyası yok | ekip yapımı | `apps/web/src/audio/sfx.ts` |
+| Yeni yapıların görünümü (güneş, türbin, batarya, park, tamir merkezi vb.) | Kenney Buildings karelerinin yeniden kullanımı + kodla üretilmiş dokular | CC0 + ekip yapımı | `packages/shared/src/sim/buildings.ts` (`sprite`) |
+
+Üçüncü taraf yazılım bağımlılıkları npm üzerinden kendi lisanslarıyla gelir (Phaser MIT, React MIT, Fastify MIT, Prisma Apache-2.0, pdfkit MIT, @anthropic-ai/sdk MIT, zod MIT).

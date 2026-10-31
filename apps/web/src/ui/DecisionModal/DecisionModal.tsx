@@ -149,7 +149,7 @@ export function DecisionModal() {
         </>
       ) : (
         <>
-          <h3>
+          <h3 tabIndex={-1} ref={(el) => { if (el && document.activeElement === document.body) el.focus(); }}>
             Sonuç – {chosen?.id} · {chosen?.label}
           </h3>
           <table className="result">

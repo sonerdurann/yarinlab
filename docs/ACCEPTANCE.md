@@ -1,3 +1,5 @@
+> **Tarihsel kayıt (Creathon P0 dönemi, 31 Ekim 2026 sabahı).** Güncel durum için README.md, docs/ARCHITECTURE.md ve docs/KNOWN_ISSUES.md belgelerine bakın.
+
 # Kabul testleri (kılavuz §23)
 
 Son çalıştırma: 2026-10-31 · `npm run test` 72/72 · `tsc` 0 hata. P2: şehir, karbon (tarım karosu), kıyı ve meclis oynanır; taşkın, kıyı, iddia ve meclis puanları simülasyon varsayımıdır. 360 px ve üretim derlemesi bu turda yeniden ölçülmedi.

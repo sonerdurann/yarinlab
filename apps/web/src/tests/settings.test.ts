@@ -28,3 +28,27 @@ describe('ayarlar', () => {
     expect(settingsStore.get().open).toBe(false);
   });
 });
+
+import { sfxFor } from '../audio/sfx';
+import { gameStore } from '../state/gameStore';
+describe('ses ve grafik ayarları', () => {
+  it('ses seviyesi 0..1 aralığında; düşük grafik ortam animasyonlarını kapatır', async () => {
+    const { settingsStore, isReducedMotion } = await import('../state/settingsStore');
+    settingsStore.setVolume(3);
+    expect(settingsStore.get().volume).toBe(1);
+    settingsStore.setMotion('full');
+    settingsStore.setGraphics('low');
+    expect(isReducedMotion()).toBe(true);
+    settingsStore.reset();
+    expect(settingsStore.get()).toMatchObject({ sound: true, graphics: 'high', volume: 0.4 });
+  });
+  it('olay sesleri store değişiminden türetilir', () => {
+    gameStore.resetSession();
+    const a = gameStore.get();
+    gameStore.endDay();
+    expect(['day', 'warn']).toContain(sfxFor(a, gameStore.get()));
+    const b = gameStore.get();
+    gameStore.build('solar', 'en-1');
+    expect(sfxFor(b, gameStore.get())).toBe('build');
+  });
+});

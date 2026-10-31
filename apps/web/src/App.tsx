@@ -21,6 +21,7 @@ import { PeriodSwitch, PeriodTint } from './ui/PeriodSwitch/PeriodSwitch';
 import { AuthPanel } from './ui/Auth/AuthPanel';
 import { authStore } from './state/authStore';
 import { startSaveSync } from './state/saveSync';
+import { startSfx } from './audio/sfx';
 import { SchoolPanel } from './ui/SchoolPanel/SchoolPanel';
 
 export function App() {
@@ -46,7 +47,7 @@ export function App() {
     };
   }, []);
 
-  useEffect(() => { startSaveSync(); void authStore.refresh(); }, []);
+  useEffect(() => { startSaveSync(); startSfx(); void authStore.refresh(); }, []);
 
   const zoom = (delta: number) => game.current?.scene.getScene('WorldScene')?.events.emit('zoom', delta);
 

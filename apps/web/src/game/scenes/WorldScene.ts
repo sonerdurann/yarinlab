@@ -373,11 +373,12 @@ export class WorldScene extends Phaser.Scene {
   private addHotspots() {
     this.input.on('pointermove', (p: Phaser.Input.Pointer) => {
       if (p.isDown) return;
+      if (!this.isWorldPointer(p)) return this.hover(undefined);
       const h = this.hotspotAtPointer(p);
       this.hover(h);
     });
     this.input.on('pointerup', (p: Phaser.Input.Pointer) => {
-      if (this.dragged) return;
+      if (this.dragged || !this.isWorldPointer(p)) return;
       const w = this.cameras.main.getWorldPoint(p.x, p.y);
       const t = this.toTile(w.x, w.y);
       const slot = BUILD_SLOTS.find((s) => Math.floor(t.x) === s.x && Math.floor(t.y) === s.y);
@@ -390,6 +391,17 @@ export class WorldScene extends Phaser.Scene {
       const h = this.hotspotAtPointer(p);
       if (h) gameStore.selectHotspot(h.id);
     });
+  }
+
+  /**
+   * Yalnızca kanvasın kendisine gelen ve açık pencere yokken yapılan tıklamalar dünyayı etkiler. Phaser bırakma
+   * olaylarını pencere düzeyinde dinlediği için, arayüz pencerelerindeki tıklamalar aksi hâlde alttaki bölgeyi açardı.
+   */
+  private isWorldPointer(p: Phaser.Input.Pointer) {
+    const canvas = this.game.canvas;
+    const target = (p.event as Event | undefined)?.target ?? null;
+    if (target !== canvas || (p.downElement && p.downElement !== canvas)) return false;
+    return !document.querySelector('[role=dialog]');
   }
 
   private hovered?: string;
@@ -425,7 +437,7 @@ export class WorldScene extends Phaser.Scene {
       this.dragged = false;
     });
     this.input.on('pointermove', (p: Phaser.Input.Pointer) => {
-      if (!p.isDown) return;
+      if (!p.isDown || (p.downElement && p.downElement !== this.game.canvas)) return;
       if (Math.abs(p.x - p.downX) + Math.abs(p.y - p.downY) > 6) this.dragged = true;
       if (this.dragged) {
         cam.scrollX -= (p.x - p.prevPosition.x) / cam.zoom;

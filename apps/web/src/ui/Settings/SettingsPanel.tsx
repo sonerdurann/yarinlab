@@ -12,7 +12,7 @@ const SIZES: { id: TextSize; label: string }[] = [
   { id: 'xlarge', label: 'Çok büyük' },
 ];
 
-/** Ayarlar (kılavuz §09, §13): hareket azaltma ve yazı boyutu; bu cihazda saklanır. */
+/** Ayarlar ve erişilebilirlik: hareket, yazı boyutu, ses, grafik kalitesi; bu cihazda saklanır. */
 export function SettingsPanel() {
   const s = useSettings();
   if (!s.open) return null;
@@ -39,6 +39,19 @@ export function SettingsPanel() {
             </label>
           ))}
         </div>
+      </fieldset>
+      <fieldset className="setting">
+        <legend>Ses</legend>
+        <label className="radio-row"><input type="checkbox" checked={s.sound} onChange={(e) => settingsStore.setSound(e.target.checked)} /> Ses efektleri açık</label>
+        <label className="radio-row">Ses seviyesi
+          <input type="range" min={0} max={100} step={5} value={Math.round(s.volume * 100)} disabled={!s.sound} aria-valuetext={`%${Math.round(s.volume * 100)}`} onChange={(e) => settingsStore.setVolume(Number(e.target.value) / 100)} />
+          <span>%{Math.round(s.volume * 100)}</span>
+        </label>
+      </fieldset>
+      <fieldset className="setting">
+        <legend>Grafik</legend>
+        <label className="radio-row"><input type="radio" name="graphics" checked={s.graphics === 'high'} onChange={() => settingsStore.setGraphics('high')} /> <strong>Yüksek</strong> <small>araçlar, yayalar, hava efektleri</small></label>
+        <label className="radio-row"><input type="radio" name="graphics" checked={s.graphics === 'low'} onChange={() => settingsStore.setGraphics('low')} /> <strong>Düşük</strong> <small>eski tabletler için: sürekli animasyonlar kapalı</small></label>
       </fieldset>
       <p className="hint">Ayarlar yalnızca bu cihazda saklanır; kişisel veri toplanmaz.</p>
       <div className="actions">

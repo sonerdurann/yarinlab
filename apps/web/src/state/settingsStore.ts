@@ -7,7 +7,10 @@ export type TextSize = 'normal' | 'large' | 'xlarge';
 export const TEXT_PERCENT: Record<TextSize, number> = { normal: 100, large: 112.5, xlarge: 125 };
 const KEY = 'yarinlab.settings.v1';
 
-export type SettingsState = { motion: MotionSetting; textSize: TextSize; open: boolean };
+export type Graphics = 'high' | 'low';
+export type SettingsState = { motion: MotionSetting; textSize: TextSize; sound: boolean; volume: number; graphics: Graphics; open: boolean };
+type Persisted = Pick<SettingsState, 'motion' | 'textSize' | 'sound' | 'volume' | 'graphics'>;
+const DEFAULTS: Persisted = { motion: 'auto', textSize: 'normal', sound: true, volume: 0.4, graphics: 'high' };
 
 /** Otomatik: cihazın "hareketi azalt" tercihi geçerli; "azalt/tam" onu geçersiz kılar. */
 export const resolveMotion = (setting: MotionSetting, systemReduced: boolean) => setting === 'reduce' || (setting === 'auto' && systemReduced);
@@ -18,23 +21,30 @@ const isMotion = (v: unknown): v is MotionSetting => v === 'auto' || v === 'redu
 const isSize = (v: unknown): v is TextSize => v === 'normal' || v === 'large' || v === 'xlarge';
 
 /** Depolama kapalı/bozuksa sessizce varsayılana döner. */
-function load(): Pick<SettingsState, 'motion' | 'textSize'> {
+function load(): Persisted {
   try {
     const raw = localStorage.getItem(KEY);
     if (raw) {
-      const p = JSON.parse(raw) as { motion?: unknown; textSize?: unknown };
-      return { motion: isMotion(p.motion) ? p.motion : 'auto', textSize: isSize(p.textSize) ? p.textSize : 'normal' };
+      const p = JSON.parse(raw) as Record<string, unknown>;
+      return {
+        motion: isMotion(p.motion) ? p.motion : 'auto',
+        textSize: isSize(p.textSize) ? p.textSize : 'normal',
+        sound: typeof p.sound === 'boolean' ? p.sound : DEFAULTS.sound,
+        volume: typeof p.volume === 'number' && p.volume >= 0 && p.volume <= 1 ? p.volume : DEFAULTS.volume,
+        graphics: p.graphics === 'low' ? 'low' : 'high',
+      };
     }
   } catch {
     /* yoksay */
   }
-  return { motion: 'auto', textSize: 'normal' };
+  return { ...DEFAULTS };
 }
 
 let state: SettingsState = { ...load(), open: false };
 const listeners = new Set<() => void>();
 
-export const isReducedMotion = () => resolveMotion(state.motion, systemReduced());
+/** Hareket azaltma veya düşük grafik: sürekli ortam animasyonları kapanır. */
+export const isReducedMotion = () => resolveMotion(state.motion, systemReduced()) || state.graphics === 'low';
 
 function applyDom() {
   if (typeof document === 'undefined') return;
@@ -45,7 +55,7 @@ function applyDom() {
 const set = (patch: Partial<SettingsState>) => {
   state = { ...state, ...patch };
   try {
-    localStorage.setItem(KEY, JSON.stringify({ motion: state.motion, textSize: state.textSize }));
+    localStorage.setItem(KEY, JSON.stringify({ motion: state.motion, textSize: state.textSize, sound: state.sound, volume: state.volume, graphics: state.graphics }));
   } catch {
     /* yoksay */
   }
@@ -71,7 +81,10 @@ export const settingsStore = {
   close: () => set({ open: false }),
   setMotion: (motion: MotionSetting) => set({ motion }),
   setTextSize: (textSize: TextSize) => set({ textSize }),
-  reset: () => set({ motion: 'auto', textSize: 'normal' }),
+  setSound: (sound: boolean) => set({ sound }),
+  setVolume: (volume: number) => set({ volume: Math.max(0, Math.min(1, volume)) }),
+  setGraphics: (graphics: Graphics) => set({ graphics }),
+  reset: () => set({ ...DEFAULTS }),
 };
 
 export function useSettings(): SettingsState {

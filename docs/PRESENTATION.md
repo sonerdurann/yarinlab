@@ -1,3 +1,5 @@
+> **Tarihsel kayıt (Creathon P0 dönemi, 31 Ekim 2026 sabahı).** Güncel durum için README.md, docs/ARCHITECTURE.md ve docs/KNOWN_ISSUES.md belgelerine bakın.
+
 # COP31 sunum planı (kılavuz §25) – 5 dk + 3 dk soru-cevap
 
 | Süre | İçerik | Jüriye kanıt |

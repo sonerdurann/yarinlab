@@ -1,6 +1,7 @@
 :root {
   --night: #12263a;
-  --climate-green: #2e9e6b;
+  /* Beyaz yazıyla WCAG AA (≥4.5:1) kontrast: #1d7a52 üzerinde beyaz ≈ 5.3:1 */
+  --climate-green: #1d7a52;
   --mint: #bfeadb;
   --water: #4aa8d8;
   --energy-gold: #e8b73a;

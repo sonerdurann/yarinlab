@@ -1,3 +1,5 @@
+> **Tarihsel kayıt (Creathon P0 dönemi, 31 Ekim 2026 sabahı).** Güncel durum için README.md, docs/ARCHITECTURE.md ve docs/KNOWN_ISSUES.md belgelerine bakın.
+
 # YarinLab – Ana Plan (kılavuz §01-§04, §14, §16, §18-§20)
 
 ## Ürün
