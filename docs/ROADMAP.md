@@ -16,7 +16,7 @@ Final: 15-16 Kas, 24 saat geliştirme, 5 dk sunum + 3 dk soru-cevap. Finalde 3 k
 ## Başlangıç kontrol listesi (§27)
 - [x] 01 Proje ana klasörü `yarinlab`
 - [x] 02 Phaser + React + TypeScript şablonu
-- [ ] 03 Kenney City, Buildings, Landscape, UI Pack indir + lisanslar
+- [x] 03 Kenney City, Buildings, Landscape, UI Pack indirildi + lisanslar doğrulandı
 - [~] 04 Tiled 32×32 izometrik harita (JSON üretildi; tile metadata Kenney ile)
 - [x] 05 Okul ve kantin binaları haritada (geçici)
 - [ ] 06 Kantin hotspot + React görev paneli
