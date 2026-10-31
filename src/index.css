@@ -178,3 +178,17 @@ legend { font-weight: 600; padding: 0 6px; }
 .delta-fill.flat { background: #8a97a6; }
 .delta-before { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--night); border-radius: 1px; }
 @media (max-width: 760px) { .choices { grid-template-columns: 1fr; } .choice { flex-direction: row; align-items: center; } }
+
+/* Öğretmen paneli grafikleri */
+.charts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 0 12px; }
+.chart { background: #fff; border-radius: var(--radius); padding: 10px 14px; }
+.chart h4 { margin: 4px 0 6px; font-size: 0.875rem; }
+.chart h4 small { font-weight: 400; opacity: 0.75; }
+.hbar { display: grid; grid-template-columns: 120px 1fr 74px; gap: 8px; align-items: center; margin: 6px 0; font-size: 0.8125rem; }
+.hbar-track { height: 10px; background: #e5e3dc; border-radius: 5px; overflow: hidden; }
+.hbar-fill { display: block; height: 100%; border-radius: 5px; transition: width 600ms cubic-bezier(.2,.7,.2,1); }
+.hbar-fill.water { background: var(--water); }
+.hbar-fill.green { background: var(--climate-green); }
+.hbar-fill.gold { background: var(--energy-gold); }
+.hbar-val { text-align: right; font-weight: 600; white-space: nowrap; }
+@media (max-width: 760px) { .charts { grid-template-columns: 1fr; } .hbar { grid-template-columns: 1fr 74px; } .hbar-label { grid-column: 1 / -1; } .hbar-track { grid-column: 1; } .hbar-val { grid-column: 2; } }

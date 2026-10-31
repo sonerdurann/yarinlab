@@ -21,3 +21,6 @@ Binalara yumuşak yer gölgesi (`shadow` dokusu), yuvarlak köşeli etiketler (k
 
 ## Görsel cila 5: karar penceresi
 Seçenekler A/B/C rozetli kartlara döndü (mobilde alt alta; yerel radyo düğmeleri korunur, klavye/odak halkası kartta görünür). Sonuç tablosuna başlangıçtan yeni değere uzayan çubuk ve yön oku + sayı + metin içeren değişim etiketi eklendi (renk tek başına anlam taşımaz; ekran okuyucuya "olumlu/olumsuz yönde" metni korunur). Pencere girişinde 160-220 ms solma/yükselme animasyonu (hareket azaltma açıkken kapalı). 360 px'te taşma yok, hedefler ≥44 px.
+
+## Görsel cila 6: öğretmen paneli grafikleri
+Seçim dağılımı, ön/son test (ham puan /5), gerekçe kalitesi (/3) ve "iki seçenek deneyen" yatay çubuklarla gösterilir; yalnızca DEMO verisi görünürken çıkar ve "DEMO VERİSİ" rozetiyle birlikte durur. Çubuklar görseldir (`aria-hidden`); aynı değerler metin olarak "Öğrenme göstergeleri" listesinde ve kartlarda da bulunur. Ön/son test farkı etki iddiası değildir uyarısı korunur.

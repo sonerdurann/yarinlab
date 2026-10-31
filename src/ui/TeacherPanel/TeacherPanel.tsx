@@ -6,6 +6,20 @@ import { gameStore, isTaskComplete, useGameState } from '../../state/gameStore';
 import { teacherStore, useTeacherState } from '../../state/teacherStore';
 import { Modal } from '../Modal/Modal';
 
+/** Yatay çubuk satırı (görsel); anlam sayı ve etiketle de verilir. */
+function Bar({ label, value, max, display, tone = 'water' }: { label: string; value: number | null; max: number; display: string; tone?: 'water' | 'green' | 'gold' }) {
+  const pct = value === null ? 0 : Math.max(0, Math.min(100, (value / max) * 100));
+  return (
+    <div className="hbar">
+      <span className="hbar-label">{label}</span>
+      <span className="hbar-track" aria-hidden="true">
+        <span className={`hbar-fill ${tone}`} style={{ width: `${pct}%` }} />
+      </span>
+      <span className="hbar-val">{display}</span>
+    </div>
+  );
+}
+
 const fmt = (n: number | null, unit = '') => (n === null ? '–' : `${n.toLocaleString('tr-TR')}${unit}`);
 
 /** Öğretmen yönetim ekranı (kılavuz §12, Ekran 04). Örnek veriler DEMO VERİSİ olarak etiketlenir. */
@@ -37,6 +51,25 @@ export function TeacherPanel() {
       </div>
       {t.demoVisible && demo.avgGain !== null && (
         <p className="hint">Ortalama ham puan farkı {fmt(demo.avgGain)}. Ön ve son test farklı soru setleridir; fark zorluk dengesine bağlıdır ve etki iddiası değildir.</p>
+      )}
+
+      {t.demoVisible && demo.completed > 0 && (
+        <div className="charts" role="group" aria-label="Sınıf grafikleri (DEMO VERİSİ)">
+          <div className="chart">
+            <h4>Seçim dağılımı <small>(tamamlayanlar)</small></h4>
+            {food.choices.map((c) => (
+              <Bar key={c.id} label={`${c.id} · ${c.label}`} value={demo.choiceCounts[c.id] ?? 0} max={demo.completed} display={`${demo.choiceCounts[c.id] ?? 0} öğrenci`} tone="green" />
+            ))}
+          </div>
+          <div className="chart">
+            <h4>Ön / son test <small>(ham puan, /5)</small></h4>
+            <Bar label="Ön test" value={demo.avgPre} max={5} display={fmt(demo.avgPre)} />
+            <Bar label="Son test" value={demo.avgPost} max={5} display={fmt(demo.avgPost)} tone="gold" />
+            <h4>Gerekçe ve denge</h4>
+            <Bar label="Gerekçe kalitesi" value={demo.avgRationale} max={3} display={`${fmt(demo.avgRationale)} / 3`} tone="green" />
+            <Bar label="İki seçenek deneyen" value={demo.balanced} max={demo.completed} display={`${demo.balanced} / ${demo.completed}`} />
+          </div>
+        </div>
       )}
 
       <h3>Öğrenme göstergeleri</h3>
