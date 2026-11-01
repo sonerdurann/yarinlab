@@ -27,6 +27,7 @@ import { fallbackForComparison } from '../../ai/fallbackResponses';
 import { Modal } from '../Modal/Modal';
 import { Mascot, Speech } from '../Mascot';
 import { FutureSlider } from './FutureDiorama';
+import { themeOf } from '../theme/modules';
 
 type Metric = { key: string; label: string; unit: string; max: number; lowerIsBetter?: boolean; read: (r: Resources, choice: PlayableChoice) => number };
 
@@ -156,8 +157,10 @@ export function FutureComparison() {
       </p>
       <Speech mood="think">Çizgiyi sürükle: solda A, sağda B. Aynı şehir, farklı kararlar. Hangisi daha dengeli? Sayılara ve nedenlerine de bak!</Speech>
       {(() => {
-        const risk = metrics.find((m) => m.key === 'flood' || m.key === 'coast');
-        const p = (x: (typeof sides)[number]) => ({ score: x.score, after: x.after, flood: risk?.read(x.after, x.f), label: x.f.id === 'N' ? 'Kararlar yok' : x.f.label });
+        const p = (x: (typeof sides)[number]) => ({
+          score: x.score, module: themeOf(scenario.id).id, label: x.f.id === 'N' ? 'Kararlar yok' : x.f.label,
+          metrics: metrics.map((m) => ({ key: m.key, label: m.label, unit: m.unit, max: m.max, lowerIsBetter: m.lowerIsBetter, value: m.read(x.after, x.f) })),
+        });
         return <FutureSlider a={p(sides[0])} b={p(sides[1])} />;
       })()}
       <div className="future-grid">

@@ -402,4 +402,12 @@ export function generateArt(scene: Phaser.Scene) {
   icon('seagrass', (g) => { g.lineStyle(3, PAL.leaf, 0.9); for (let k = 0; k < 5; k++) g.beginPath().moveTo(6 + k * 6, 40).lineTo(4 + k * 6 + (k % 2) * 6, 10 + (k % 3) * 6).strokePath(); }, 40, 42);
   icon('litter', (g) => { g.fillStyle(PAL.white, 0.9).fillRect(2, 4, 10, 6); g.fillStyle(PAL.coral, 0.9).fillCircle(18, 8, 4); }, 24, 14);
   icon('reed', (g) => { g.lineStyle(2, 0x7a9b4a, 1); for (let k = 0; k < 6; k++) g.lineBetween(4 + k * 4, 30, 2 + k * 5, 4 + (k % 3) * 4); g.fillStyle(PAL.wood, 1).fillRect(9, 3, 3, 8).fillRect(19, 6, 3, 8); }, 32, 32);
+  icon('boat', (g) => {
+    g.fillStyle(PAL.ink, 0.18).fillEllipse(34, 44, 56, 10);
+    g.fillStyle(PAL.coral, 1).fillTriangle(6, 30, 62, 30, 52, 42).fillTriangle(6, 30, 16, 42, 52, 42);
+    g.fillStyle(PAL.white, 1).fillRect(10, 26, 50, 5);
+    g.fillStyle(PAL.cloud, 1).fillRect(26, 14, 16, 12);
+    g.fillStyle(PAL.teal, 1).fillRect(29, 17, 10, 5);
+    g.lineStyle(2, PAL.ink, 1).lineBetween(46, 26, 46, 4);
+  }, 68, 50);
 }

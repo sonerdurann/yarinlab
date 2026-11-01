@@ -1,7 +1,10 @@
 /** Kıyı haritası 24x24: kara (x+y<=11), kumsal (12-15), sığ su (16-18), derin deniz (19+). */
 export const COAST_N = 24;
-export type CoastGround = 'grass' | 'sand' | 'shallow' | 'deep';
+export type CoastGround = 'grass' | 'sand' | 'shallow' | 'deep' | 'river';
+/** Dere: karadan denize akan küçük su yolu; kara kaynaklı atık buradan kıyıya ulaşır (Mavi Nöbet). */
+export const RIVER: [number, number][] = [0, 1, 2, 3, 4, 5].map((x) => [x, 9]);
 export const coastGround = (x: number, y: number): CoastGround => {
+  if (RIVER.some(([rx, ry]) => rx === x && ry === y)) return 'river';
   const s = x + y;
   return s <= 11 ? 'grass' : s <= 15 ? 'sand' : s <= 18 ? 'shallow' : 'deep';
 };

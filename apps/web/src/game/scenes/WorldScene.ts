@@ -131,7 +131,7 @@ export class WorldScene extends Phaser.Scene {
       }
     });
     this.events.once('shutdown', unsubView);
-    this.events.on('wake', () => { this.cameras.main.fadeIn(reducedMotion() ? 0 : 260, 165, 221, 242); this.scale.updateBounds(); });
+    this.events.on('wake', () => { this.cameras.main.fadeIn(reducedMotion() ? 0 : 260, 165, 221, 242); this.scale.updateBounds(); setTimeout(() => this.cameras.main.resetFX(), 700); });
     gameStore.setWorldReady();
   }
 

@@ -1428,6 +1428,24 @@
         1
       ],
       "interactive": false
+    },
+    {
+      "id": "boat",
+      "file": null,
+      "generator": "apps/web/src/game/art/isoArt.ts",
+      "category": "kiyi",
+      "description": "Balıkçı teknesi (kıyıda yüzey yaşamı)",
+      "source": "custom-compatible-art",
+      "license": "team-owned",
+      "anchor": {
+        "x": 0.5,
+        "y": 0.5
+      },
+      "tileFootprint": [
+        1,
+        1
+      ],
+      "interactive": false
     }
   ]
 }

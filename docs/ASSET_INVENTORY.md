@@ -1,6 +1,6 @@
 # Asset envanteri
 
-Bu dosya `apps/web/public/assets/manifest.json` dosyasından üretilir (`node scripts/asset-inventory.mjs`). Toplam **87** kayıt.
+Bu dosya `apps/web/public/assets/manifest.json` dosyasından üretilir (`node scripts/asset-inventory.mjs`). Toplam **88** kayıt.
 
 Lisanslar: `team-owned` = bu projede kodla üretildi (dosya yok, `generator` çalışma anında çizer). `CC0` = Kenney. Ayrıntı: `docs/licenses/licenses.md`.
 
@@ -126,7 +126,7 @@ Lisanslar: `team-owned` = bu projede kodla üretildi (dosya yok, `generator` ça
 | `player-0` | Oyuncu karakteri (avatar renkleriyle; duruş karesi) | 1×1 | 0.5, 1 | hayır | apps/web/src/game/art/player.ts | team-owned |
 | `player-1` | Oyuncu karakteri (avatar renkleriyle; adım karesi) | 1×1 | 0.5, 1 | hayır | apps/web/src/game/art/player.ts | team-owned |
 
-## kiyi (5)
+## kiyi (6)
 
 | Kimlik | Açıklama | Taban (karo) | Pivot | Etkileşim | Kaynak | Lisans |
 |---|---|---|---|---|---|---|
@@ -135,6 +135,7 @@ Lisanslar: `team-owned` = bu projede kodla üretildi (dosya yok, `generator` ça
 | `seagrass` | Deniz çayırı | 1×1 | 0.5, 1 | hayır | apps/web/src/game/art/isoArt.ts | team-owned |
 | `litter` | Denizde atık | 1×1 | 0.5, 0.5 | hayır | apps/web/src/game/art/isoArt.ts | team-owned |
 | `reed` | Saz | 1×1 | 0.5, 1 | hayır | apps/web/src/game/art/isoArt.ts | team-owned |
+| `boat` | Balıkçı teknesi (kıyıda yüzey yaşamı) | 1×1 | 0.5, 0.5 | hayır | apps/web/src/game/art/isoArt.ts | team-owned |
 
 ## ses (9)
 

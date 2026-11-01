@@ -116,6 +116,24 @@ function Layers() {
   );
 }
 
+/** Kıyı durumu: kıyı riski, habitat bakımı ve denizdeki atık; Mavi Nöbet görevine ve kıyı yapılarına kısayol. */
+function CoastStatus() {
+  const s = useGameState();
+  const c = cityOf(s);
+  const risk = c.indicators.coastalRisk, habitat = Math.round(c.effective.habitatCare);
+  const tone = (v: number, bad: boolean) => (bad ? 'bad' : v >= 60 ? 'good' : 'ok');
+  return (
+    <section className="coast-status panel" aria-label="Kıyı durumu">
+      <h3>🌊 Kıyı durumu</h3>
+      <p className={`cs-row tone-${tone(100 - risk, risk >= 45)}`}><span>Kıyı riski</span><b>{risk}/100</b></p>
+      <p className={`cs-row tone-${tone(habitat, habitat < 25)}`}><span>Habitat bakımı</span><b>{habitat}</b></p>
+      <p className="hint">{risk >= 30 ? 'Dereden gelen atık denize ulaşıyor; habitat baskı altında.' : 'Deniz daha temiz; canlılar geri dönüyor.'} Su altı katmanıyla bak.</p>
+      <button className="primary" onClick={() => gameStore.selectHotspot('ocean')}>🐢 Mavi Nöbet görevi</button>
+      <button onClick={() => gameStore.openOverlay('build', 'ocean')}>🏗️ Kıyıya yapı kur</button>
+    </section>
+  );
+}
+
 /** Sağ HUD: yakınlaştırma, mini harita, bildirim merkezi, harita katmanları; kıyıdayken şehre dönüş. */
 export function RightHud({ game, onZoom }: Props) {
   const s = useGameState();
@@ -128,7 +146,12 @@ export function RightHud({ game, onZoom }: Props) {
           <button aria-label="Uzaklaştır" onClick={() => onZoom(-0.1)}><Icon name="zoomOut" tone="black" size={24} /></button>
         </div>
       </div>
-      {s.mapView === 'world' ? <Minimap game={game} /> : <button className="primary back-city" onClick={() => gameStore.setMapView('world')}>🏙️ Şehre dön</button>}
+      {s.mapView === 'world' ? <Minimap game={game} /> : (
+        <>
+          <button className="primary back-city" onClick={() => gameStore.setMapView('world')}>🏙️ Şehre dön</button>
+          <CoastStatus />
+        </>
+      )}
       <Layers />
     </aside>
   );

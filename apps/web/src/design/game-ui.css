@@ -342,3 +342,17 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 /* Dar masaüstünde marka yazısı yerine yalnız logo */
 @media (max-width: 1500px) { .hud-top .brand .slogan-mini { display: none; } }
 @media (max-width: 1320px) { .hud-top .brand strong { display: none; } }
+.fs-compare { display: flex; justify-content: space-between; gap: 12px; margin-top: 8px; }
+.fs-chips { display: flex; flex-wrap: wrap; gap: 6px; flex: 1; }
+.fs-chips-right { justify-content: flex-end; }
+.fs-chips .chip { background: #fff; border: 2px solid #24344722; border-radius: 999px; padding: 2px 10px; font-size: 0.85rem; font-weight: 700; }
+.fs-chips .chip.better { border-color: var(--yl-green); background: #e6f6ef; }
+.fs-chips-left .chip { border-left: 6px solid #7a4fd6; }
+.fs-chips-right .chip { border-right: 6px solid #ff9f1c; }
+.coast-status { padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+.coast-status h3 { margin: 0; font-family: var(--yl-font-display); font-size: 1.05rem; }
+.coast-status .cs-row { margin: 0; display: flex; justify-content: space-between; font-weight: 700; font-size: var(--yl-fs-sm); border-left: 5px solid #24344733; padding-left: 8px; }
+.coast-status .cs-row.tone-bad { border-color: var(--yl-coral); }
+.coast-status .cs-row.tone-good { border-color: var(--yl-green); }
+.coast-status .cs-row.tone-ok { border-color: var(--yl-sun); }
+.coast-status button { width: 100%; font-size: var(--yl-fs-sm); }
