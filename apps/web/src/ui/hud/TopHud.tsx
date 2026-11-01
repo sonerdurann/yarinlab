@@ -31,7 +31,7 @@ type Res = { key: string; ico: string; label: string; value: number; unit?: stri
 /** Kaynak göstergesi: tıklayınca açıklama kartı açılır (prompt §5 üst panel). */
 function ResourcePill({ r, open, onToggle }: { r: Res; open: boolean; onToggle: () => void }) {
   return (
-    <span className={`pill tone-${r.tone}${r.hide ? ' hide-sm' : ''}`} title={r.info}>
+    <span className={`pill tone-${r.tone} res-${r.key}${r.hide ? ' hide-sm' : ''}`} title={r.info}>
       <button className="pill-btn" aria-expanded={open} aria-controls={`res-${r.key}`} onClick={onToggle}>
         <span className="ico" aria-hidden="true">{r.ico}</span><span className="sr-only">{r.label} </span><Num value={r.value} />{r.unit ? <span className="unit">{r.unit}</span> : null}
       </button>

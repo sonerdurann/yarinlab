@@ -201,7 +201,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .hud-right { width: 220px; }
   .hud-drawer { left: 326px; width: 420px; }
 }
-@media (max-width: 1400px) { .hud-top .pill.hide-sm, .hud-top .sync { display: none; } }
+@media (max-width: 1400px) { .hud-top .sync { display: none; } }
 @media (max-width: 1200px) {
   .hud-top .brand strong { display: none; }
   .hud-left { width: 240px; }
@@ -297,7 +297,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .hud-top .pills .pill { display: inline-flex; }
 .hud-top .pills .pill.hide-sm { display: inline-flex; }
 .hud-top .ico-only { display: none; }
-@media (max-width: 1400px) { .hud-top .pills .pill.hide-sm { display: none; } }
 @media (max-width: 1250px) {
   .hud-top .pills { gap: 4px; }
   .hud-top .pill-btn { padding: 2px 9px; }
@@ -329,3 +328,17 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .hud-top .topbar-actions > button { min-width: 40px; padding: 4px 6px; }
 }
 .kicon { display: inline-block; vertical-align: middle; pointer-events: none; }
+
+/* Kaynak çubukları: kendi genişliklerine göre sığar (kesilmez). Öncelik: bütçe, enerji > atık > su > emisyon, refah. */
+.hud-top .pills { container-type: inline-size; justify-content: flex-start; overflow: hidden; flex: 1 1 0 !important; min-width: 0; }
+.hud-top .pills .pill { flex: none; }
+@container (max-width: 540px) { .hud-top .pills .pill.hide-sm { display: none; } }
+@container (max-width: 440px) {
+  .hud-top .pill-btn { padding: 2px 8px; gap: 4px; }
+  .hud-top .pill .unit { display: none; }
+}
+@container (max-width: 330px) { .hud-top .pills .pill.res-water { display: none; } }
+@container (max-width: 250px) { .hud-top .pills .pill.res-waste { display: none; } }
+/* Dar masaüstünde marka yazısı yerine yalnız logo */
+@media (max-width: 1500px) { .hud-top .brand .slogan-mini { display: none; } }
+@media (max-width: 1320px) { .hud-top .brand strong { display: none; } }
