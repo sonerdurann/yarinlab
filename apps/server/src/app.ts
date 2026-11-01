@@ -24,7 +24,15 @@ const envLimits = (): Partial<AiLimits> => {
 };
 
 export async function buildApp(opts: { logger?: boolean; authRateMax?: number; aiProvider?: LlmProvider; aiLimits?: Partial<AiLimits> } = {}) {
-  const app = Fastify({ logger: opts.logger ?? false, bodyLimit: 256 * 1024 });
+  // Vercel hizmet yönlendirmesi /api önekini kırparak iletirse rotalar yine bulunur (önek varsa dokunulmaz).
+  const rewriteUrl = process.env.VERCEL
+    ? (req: { url?: string }) => {
+      const u = req.url ?? '/';
+      if (u.startsWith('/api/') || u === '/api' || u.startsWith('/healthz')) return u;
+      return u === '/' ? '/healthz' : `/api${u}`;
+    }
+    : undefined;
+  const app = Fastify({ logger: opts.logger ?? false, bodyLimit: 256 * 1024, rewriteUrl });
   await app.register(helmet, {
     contentSecurityPolicy: {
       directives: {
@@ -45,10 +53,12 @@ export async function buildApp(opts: { logger?: boolean; authRateMax?: number; a
     return reply.code(500).send({ error: 'internal_error' }); // ayrıntı sızdırılmaz
   });
 
-  app.get('/healthz', async () => {
+  const health = async () => {
     await prisma.$queryRaw`select 1`;
     return { ok: true };
-  });
+  };
+  app.get('/healthz', health);
+  app.get('/api/healthz', health);
   await app.register(authRoutes, { authRateMax: opts.authRateMax ?? (process.env.VITEST ? 1000 : 10) });
   await app.register(gameRoutes);
   const ai = new AiService(opts.aiProvider ?? providerFromEnv(), prismaAiLog, prismaUserCallsToday, { ...DEFAULT_LIMITS, ...envLimits(), ...opts.aiLimits });

@@ -10,7 +10,8 @@
     "test": "vitest run",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate deploy",
-    "prisma:dev": "prisma migrate dev"
+    "prisma:dev": "prisma migrate dev",
+    "vercel-build": "node ../../scripts/vercel-server-build.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",

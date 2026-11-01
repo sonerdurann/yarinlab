@@ -15,34 +15,30 @@ Kılavuzdaki yol: GitHub deposunu Pages'e bağlayın.
 - API'yi ayrı bir sunucuda çalıştırırsanız aynı alan adı altında `/api/*` yönlendirmesi (Pages Functions proxy) gerekir; çerez tabanlı oturum aynı köken ister.
 
 ## Seçenek C — Vercel (vercel.app, tam ürün: oyun + hesaplar + öğretmen paneli)
-Depo Vercel'e hazırdır: `vercel.json` derleme komutu `scripts/vercel-build.mjs`'i çalıştırır. Betik Vercel Build Output API ile `.vercel/output` üretir:
-- `static/`: web derlemesi (Phaser + React), güvenlik başlıkları (CSP, HSTS, nosniff, frame engeli), `index.html`/`sw.js` önbelleksiz, SPA yönlendirmesi.
-- `functions/api.func`: aynı Fastify uygulaması tek Node 22 fonksiyonu olarak (`/api/*` ve `/healthz`). Prisma motoru (rhel-openssl-3.0.x), pdfkit ve DejaVu fontları pakete dahildir.
-- Derleme sırasında `DATABASE_URL` tanımlıysa `prisma migrate deploy` çalışır (tablolar otomatik oluşur).
+Depo Vercel **Services** biçimindedir (`vercel.json`). Tek proje, tek alan adı, iki hizmet:
+
+| Hizmet | Kök | Çerçeve | Herkese açık yol | Derleme |
+|---|---|---|---|---|
+| `web` | `apps/web` | Vite | `/` (diğer tüm yollar) | `npm run build` → `dist` |
+| `server` | `apps/server` | Fastify | `/api/*`, `/healthz` | `npm run vercel-build` → `dist/server.mjs` |
+
+- Hizmetler arası bağlantı (binding) yoktur: tarayıcı API'yi aynı adresteki `/api` ile çağırır, sunucu web'i çağırmaz.
+- `server` derlemesi (`scripts/vercel-server-build.mjs`): `prisma generate`, `DATABASE_URL` varsa `prisma migrate deploy` (tablolar otomatik kurulur), esbuild ile ortak TypeScript paketi dahil `dist/server.mjs`, PDF fontları.
+- Vercel `/api` önekini sunucuya kırparak iletse de rotalar bulunur (`VERCEL` ortamında önek tamamlanır).
+- Statik dosyalara güvenlik başlıkları (`vercel.json` `headers`); API yanıtlarına Fastify/helmet ekler.
 
 **Adımlar**
-1. [vercel.com](https://vercel.com) → **Add New… → Project** → GitHub'daki `yarinlab` deposunu seçin. Framework Preset: **Other** (ayarlar `vercel.json`'dan gelir; Root Directory boş bırakılır).
-2. **Storage → Create Database → Neon (Postgres)** ile ücretsiz bir veri tabanı oluşturup projeye bağlayın. Entegrasyon `DATABASE_URL` ve `DATABASE_URL_UNPOOLED` değişkenlerini otomatik ekler. (Başka bir PostgreSQL kullanırsanız ikisini de kendiniz girin; havuzsuz adres yoksa ikisine aynı adresi yazın.)
-3. **Settings → Environment Variables**:
-   | Değişken | Değer | Zorunlu |
-   |---|---|---|
-   | `DATABASE_URL` | Neon havuzlu bağlantı (`...-pooler...?sslmode=require`) | evet (entegrasyon ekler) |
-   | `DATABASE_URL_UNPOOLED` | Neon doğrudan bağlantı | evet (entegrasyon ekler) |
-   | `COOKIE_SECURE` | `true` | evet |
-   | `AI_PROVIDER` | `anthropic` (yoksa `none`) | hayır |
-   | `ANTHROPIC_API_KEY` | anahtar | yalnızca AI açıksa |
-4. **Deploy**. Derleme ~1-2 dk sürer. Bittiğinde `https://<proje>.vercel.app/healthz` → `{"ok":true}`.
-5. Gizli pencerede kontrol: oyun açılır, öğretmen kaydı → sınıf oluştur → izin akışı → öğrenci kodla katılır → görev → öğretmen raporu PDF/CSV.
+1. Vercel → **Add New → Project** → `yarinlab` deposu. Ekran “birden fazla uygulama / Hizmetler” gösterir; depodaki `vercel.json` kullanılır (önerilen başka `vercel.json` eklenmez). Kök dizin `./`.
+2. Ortam değişkeni: `COOKIE_SECURE` = `true` (isteğe bağlı `AI_PROVIDER=anthropic`, `ANTHROPIC_API_KEY`). **Deploy**.
+3. Proje → **Storage → Create Database → Neon** → projeye bağla (`DATABASE_URL`, `DATABASE_URL_UNPOOLED` otomatik eklenir).
+4. **Deployments → ⋯ → Redeploy** (göçler bu derlemede çalışır).
+5. `https://<proje>.vercel.app/healthz` → `{"ok":true}`; gizli pencerede öğretmen kaydı → sınıf → öğrenci → görev → rapor.
 
-Yerelde aynı çıktıyı üretmek için: `npm run build:vercel` (yerel PostgreSQL ile göç de çalışır).
+**Sınırlar:** Hız sınırı hizmet örneği başına bellekte; soğuk başlangıç olabilir; ücretsiz Neon boştayken uyur.
 
-**Vercel'e özgü sınırlar**
-- Hız sınırı fonksiyon örneği başına bellektedir; çok sayıda eşzamanlı örnekte sınır gevşer (okul ölçeğinde yeterli; büyük ölçekte Redis/Upstash önerilir).
-- İlk istekte soğuk başlangıç (~1-2 sn) olabilir. AI zaman aşımı (6 sn) fonksiyon süresinin (30 sn) altındadır.
-- Ücretsiz Neon veri tabanı boştayken uyur; ilk sorgu birkaç saniye sürebilir.
-- Yedekleme: Neon'un nokta zamanlı geri yükleme özelliği kullanılır (`scripts/backup.sh` Docker kurulumu içindir).
+**Durum:** Vercel belgelerine bu ortamdan erişilemedi ve canlı dağıtım yapılamadı. `dist/server.mjs` yerelde `VERCEL=1` ile çalıştırıldı: önekli ve öneki kırpılmış yollar, öğretmen kaydı, sınıf ve Türkçe fontlu PDF çalıştı; web derlemesi başarılı. İlk Vercel derlemesinde hata olursa derleme kaydı incelenmelidir.
 
-**Durum:** Bu çalışma ortamından Vercel hesabına erişim olmadığı için canlı dağıtım yapılmadı. `.vercel/output` yerelde üretildi; paketlenmiş fonksiyon depo dışındaki izole bir klasörde (kaynak `node_modules` olmadan) Vercel rotalarını taklit eden bir sarmalayıcıyla çalıştırıldı: `/healthz`, öğretmen kaydı, sınıf, PDF (Türkçe font), CSV, AI önerisi ve tarayıcıda yeni oyun → görev → giriş penceresi hatasız çalıştı.
+Alternatif: tek proje Build Output API çıktısı `npm run build:vercel` (`scripts/vercel-build.mjs`) Vercel CLI ile `vercel deploy --prebuilt` için korunur.
 
 ## Yayın sonrası kontrol listesi
 - [ ] HTTPS ve HSTS etkin (`COOKIE_SECURE=true`).

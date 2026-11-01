@@ -16,3 +16,4 @@ test-results/
 
 # Vercel derleme çıktısı
 .vercel/
+apps/server/dist/

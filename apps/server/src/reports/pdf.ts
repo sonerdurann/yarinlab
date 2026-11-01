@@ -6,7 +6,7 @@ import type { ClassReport } from './classReport.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 // Geliştirmede kaynak ağacı, paketlenmiş (Vercel) fonksiyonda paketin yanındaki assets klasörü.
-const fontDir = [path.resolve(here, '../../assets/fonts'), path.resolve(here, 'assets/fonts'), path.resolve(process.cwd(), 'assets/fonts')]
+const fontDir = [path.resolve(here, '../../assets/fonts'), path.resolve(here, 'assets/fonts'), path.resolve(here, '../assets/fonts'), path.resolve(process.cwd(), 'assets/fonts')]
   .find((d) => existsSync(path.join(d, 'DejaVuSans.ttf'))) ?? path.resolve(here, '../../assets/fonts');
 const FONT = path.join(fontDir, 'DejaVuSans.ttf');
 const BOLD = path.join(fontDir, 'DejaVuSans-Bold.ttf');
@@ -19,7 +19,9 @@ export function reportToPdf(r: ClassReport): Promise<Buffer> {
     doc.on('data', (c: Buffer) => chunks.push(c));
     doc.on('end', () => resolve(Buffer.concat(chunks)));
     doc.on('error', reject);
-    doc.registerFont('r', FONT).registerFont('b', BOLD);
+    // Font dosyası pakette bulunamazsa yerleşik Helvetica kullanılır (Türkçe harfler eksik görünebilir).
+    if (existsSync(FONT) && existsSync(BOLD)) doc.registerFont('r', FONT).registerFont('b', BOLD);
+    else doc.registerFont('r', 'Helvetica').registerFont('b', 'Helvetica-Bold');
     const h = (t: string) => { doc.moveDown(0.6).font('b').fontSize(13).fillColor('#12263a').text(t).moveDown(0.2).font('r').fontSize(9.5).fillColor('#222'); };
     const line = (t: string) => doc.text(t, { width: 515 });
     const table = (head: string[], rows: (string | number)[][], widths: number[]) => {
