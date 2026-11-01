@@ -46,6 +46,7 @@ Ayrıntı: [docs/SETUP.md](docs/SETUP.md) · Docker: `docker compose up -d --bui
 |---|---|
 | [docs/SETUP.md](docs/SETUP.md) | Kurulum, ortam değişkenleri, Docker, yedekleme, CI |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Mimari, veri akışı, AI, güvenlik, veri modeli |
+| [docs/PRESENTATION.md](docs/PRESENTATION.md) | Proje sunumu (web destesi bağlantısı, konuşma akışı, jüri soruları) |
 | [docs/STUDENT_GUIDE.md](docs/STUDENT_GUIDE.md) · [docs/TEACHER_GUIDE.md](docs/TEACHER_GUIDE.md) | Kullanıcı kılavuzları |
 | [docs/SIMULATION_ASSUMPTIONS.md](docs/SIMULATION_ASSUMPTIONS.md) | Tüm katsayılar, varsayımlar ve bilimsel dayanaklar |
 | [docs/sources/SOURCES.md](docs/sources/SOURCES.md) · [docs/licenses/licenses.md](docs/licenses/licenses.md) | Kaynaklar ve asset lisansları |

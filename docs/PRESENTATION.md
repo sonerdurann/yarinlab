@@ -1,3 +1,9 @@
+# Proje sunumu
+
+**Web destesi (18 slayt):** https://claude.ai/artifact/3aBRaEa4NDQCHjCm5PTjTi — tarayıcıda açılır, sunum modunda gösterilir, PowerPoint/PDF olarak indirilebilir. Bağlantı varsayılan olarak özeldir; jüri veya ekiple paylaşmak için sayfanın **Paylaş** menüsünü kullanın.
+
+Akış: sorun → çözüm (Yarın Şehri) → oyun döngüsü → 7 modül → ortak simülasyon → görev ekranı → iki gelecek → rehber Yarı (AI) → canlı dünya → öğretmen paneli → öğrenme ölçümü → KVKK ve erişilebilirlik → teknoloji → kalite → Vercel yayını → sonraki adımlar → kapanış. Her slaytta konuşma notu vardır. Ekran görüntüleri `docs/screenshots/`.
+
 # COP31 sunum planı (5 dk + 3 dk soru-cevap, kılavuz §25)
 
 | Süre | İçerik | Ekranda kanıt |
