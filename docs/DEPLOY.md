@@ -20,7 +20,7 @@ Depo Vercel **Services** biçimindedir (`vercel.json`). Tek proje, tek alan adı
 | Hizmet | Kök | Çerçeve | Herkese açık yol | Derleme |
 |---|---|---|---|---|
 | `web` | `apps/web` | Vite | `/` (diğer tüm yollar) | `npm run build` → `dist` |
-| `server` | `apps/server` | Fastify | `/api/*`, `/healthz` | `npm run vercel-build` → `dist/server.mjs` |
+| `server` | `apps/server` | Fastify (giriş: `vercel-entry.mjs`) | `/api/*`, `/healthz` | `npm run vercel-build` → `dist/server.mjs` |
 
 - Hizmetler arası bağlantı (binding) yoktur: tarayıcı API'yi aynı adresteki `/api` ile çağırır, sunucu web'i çağırmaz.
 - `server` derlemesi (`scripts/vercel-server-build.mjs`): `prisma generate`, `DATABASE_URL` varsa `prisma migrate deploy` (tablolar otomatik kurulur), esbuild ile ortak TypeScript paketi dahil `dist/server.mjs`, PDF fontları.
