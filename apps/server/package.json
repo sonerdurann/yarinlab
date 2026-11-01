@@ -27,6 +27,7 @@
   "devDependencies": {
     "@types/node": "^22.0.0",
     "@types/pdfkit": "^0.17.0",
+    "@vercel/nft": "^0.29.4",
     "prisma": "^6.19.0",
     "tsx": "^4.20.0",
     "typescript": "^7.0.2",

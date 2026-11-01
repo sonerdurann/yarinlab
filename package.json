@@ -3,14 +3,21 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "workspaces": ["packages/*", "apps/*"],
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
     "dev": "npm-run-all2 --parallel dev:server dev:web",
     "dev:web": "npm -w @yarinlab/web run dev",
     "dev:server": "npm -w @yarinlab/server run dev",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "build": "npm run build --workspaces --if-present"
+    "build": "npm run build --workspaces --if-present",
+    "build:vercel": "node scripts/vercel-build.mjs"
   },
-  "devDependencies": { "npm-run-all2": "^8.0.4" }
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "npm-run-all2": "^8.0.4"
+  }
 }

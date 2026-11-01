@@ -1,11 +1,15 @@
+import { existsSync } from 'node:fs';
 import PDFDocument from 'pdfkit';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import type { ClassReport } from './classReport.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const FONT = path.resolve(here, '../../assets/fonts/DejaVuSans.ttf');
-const BOLD = path.resolve(here, '../../assets/fonts/DejaVuSans-Bold.ttf');
+// Geliştirmede kaynak ağacı, paketlenmiş (Vercel) fonksiyonda paketin yanındaki assets klasörü.
+const fontDir = [path.resolve(here, '../../assets/fonts'), path.resolve(here, 'assets/fonts'), path.resolve(process.cwd(), 'assets/fonts')]
+  .find((d) => existsSync(path.join(d, 'DejaVuSans.ttf'))) ?? path.resolve(here, '../../assets/fonts');
+const FONT = path.join(fontDir, 'DejaVuSans.ttf');
+const BOLD = path.join(fontDir, 'DejaVuSans-Bold.ttf');
 
 /** Sınıf raporu PDF'i (Türkçe karakterler için DejaVu Sans gömülür). */
 export function reportToPdf(r: ClassReport): Promise<Buffer> {

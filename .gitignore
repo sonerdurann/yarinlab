@@ -13,3 +13,6 @@ design/third_party/kenney/*/
 # Yerel arac ayarlari (repoya girmez)
 .claude/
 test-results/
+
+# Vercel derleme çıktısı
+.vercel/

@@ -3,7 +3,7 @@
 Bu liste, test edilmemiş veya bu ortamda yapılamamış işleri açıkça bildirir. Burada yer alan hiçbir madde “tamamlandı” sayılmaz.
 
 ## Yapılamadı / doğrulanmadı
-- **Canlı yayın yok:** Ürün HTTPS'li bir sunucuda yayımlanmadı. Doğrulanmış canlı adres yok. Docker, compose ve CI dosyaları hazır; gerçek dağıtım ortamınızda çalıştırılmalı.
+- **Canlı yayın yok:** Ürün HTTPS'li bir sunucuda yayımlanmadı; doğrulanmış canlı adres yok. Vercel yapısı (`vercel.json`, `scripts/vercel-build.mjs`) yerelde üretilip izole klasörde çalıştırıldı, ancak gerçek Vercel derleme ortamında denenmedi (hesap erişimi yok). Docker, compose ve CI dosyaları da hazır.
 - **Canlı dil modeli çağrısı test edilmedi:** Bu ortamda API anahtarı yok. Anthropic adaptörü yalnızca sahte istemciyle (istek biçimi ve yanıt ayrıştırma) test edildi. Anahtarsız durumda doğrulanmış yedek geri bildirim çalışır ve test edildi.
 - **Gerçek cihaz ve performans ölçümü yapılmadı:** Masaüstü (1366×768) ve tablet (1024×768, dokunmatik) görünümleri yalnızca headless Chromium'da Playwright ile test edildi. Gerçek iPad/Android tabletlerde FPS ve yükleme süresi ölçülmedi. Hedefler: ilk etkileşim < 3 sn (okul Wi-Fi), harita ≥ 30 FPS (orta seviye tablet), sunucu yanıtı p95 < 300 ms.
 - **KVKK hukuki incelemesi yapılmadı:** İzin akışı ve bilgilendirme metni bir taslaktır. Okul ve veli izin süreçleri, veri saklama süresi ve aydınlatma metni hukuk birimince onaylanmalıdır.

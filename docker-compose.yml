@@ -17,6 +17,7 @@ services:
       db: { condition: service_healthy }
     environment:
       DATABASE_URL: postgresql://yarinlab:${POSTGRES_PASSWORD:-yarinlab}@db:5432/yarinlab
+      DATABASE_URL_UNPOOLED: postgresql://yarinlab:${POSTGRES_PASSWORD:-yarinlab}@db:5432/yarinlab
       COOKIE_SECURE: ${COOKIE_SECURE:-false}
       AI_PROVIDER: ${AI_PROVIDER:-none}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}

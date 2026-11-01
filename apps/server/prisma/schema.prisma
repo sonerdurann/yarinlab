@@ -1,10 +1,14 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  // Vercel Node 22 (Amazon Linux 2023) için motor
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url       = env("DATABASE_URL")
+  // Neon/Vercel Postgres: göçler havuzsuz bağlantıyla (yerelde aynı adres)
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 enum Role {

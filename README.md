@@ -35,6 +35,12 @@ npm run dev            # http://localhost:5173
 ```
 Ayrıntı: [docs/SETUP.md](docs/SETUP.md) · Docker: `docker compose up -d --build`
 
+## Vercel'e yayınla (vercel.app)
+1. Vercel'de **Add New → Project** ile bu depoyu içe aktarın (Framework: Other; ayarlar `vercel.json`'da).
+2. **Storage → Neon (Postgres)** veri tabanını projeye bağlayın (`DATABASE_URL`, `DATABASE_URL_UNPOOLED` otomatik gelir).
+3. Ortam değişkeni `COOKIE_SECURE=true` ekleyin (isteğe bağlı: `AI_PROVIDER=anthropic`, `ANTHROPIC_API_KEY`).
+4. **Deploy** → `https://<proje>.vercel.app`. Tablolar derlemede otomatik oluşur. Ayrıntı ve sınırlar: [docs/DEPLOY.md](docs/DEPLOY.md#seçenek-c--vercel-vercelapp-tam-ürün-oyun--hesaplar--öğretmen-paneli).
+
 ## Belgeler
 | Belge | İçerik |
 |---|---|
